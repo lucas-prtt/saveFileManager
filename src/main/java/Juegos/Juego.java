@@ -7,6 +7,7 @@ import java.util.List;
 public class Juego {
     String titulo;
     List<Partida> partidas;
+    Partida partidaActual;
     List<String> saveFilePaths;
 
     public Juego(String titulo){
@@ -31,5 +32,14 @@ public class Juego {
     }
     public void removeSaveFilePath(int index){
         saveFilePaths.remove(index);
+    }
+    public List<Partida>getPartidas(){
+        return partidas;
+    }
+    public Partida getPartidaActual() {
+        return partidaActual;
+    }
+    public void setPartidaActual(Partida partidaActual){
+        this.partidaActual = partidaActual;
     }
 }
