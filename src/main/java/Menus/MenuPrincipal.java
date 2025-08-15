@@ -1,4 +1,4 @@
-package lprtt;
+package Menus;
 
 import java.util.Scanner;
 
@@ -6,12 +6,12 @@ public class MenuPrincipal {
 
 
     public void abrirMenu(){
-        boolean valid = false;
+        boolean exit = false;
         int opcion = 0;
-        while (!valid){
+        while (!exit){
             try{
                 opcion = elegirOpcionMenuPrincipal();
-                valid = true;
+                exit = ejecutarOperacionMenuPrincipal(opcion);
             }
             catch(Exception e){
                 System.out.println(e.getMessage());
@@ -29,17 +29,18 @@ public class MenuPrincipal {
         verificarValidez(r);
         return r;
     }
-    private void EjecutarOperacionMenuPrincipal(Integer opcion) throws Exception {
+    private boolean ejecutarOperacionMenuPrincipal(Integer opcion) throws Exception {
         switch (opcion){
             case 1:
                 break;
             case 2:
                 break;
             case 3:
-                break;
+                return true;
             default:
                 throw new Exception("Error: Opcion Invalida - Case fallado");
         }
+        return false;
     }
     private void verificarValidez(int opcion) throws Exception {
         if(opcion>3 || opcion<1)
