@@ -1,6 +1,8 @@
 package Controllers;
 
 import Juegos.Juego;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class JuegosController {
@@ -8,6 +10,7 @@ public class JuegosController {
     static JuegosController instance;
 
     private JuegosController(){
+        juegos = new ArrayList<Juego>();
     }
 
     public static JuegosController getInstance(){

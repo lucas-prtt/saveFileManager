@@ -17,7 +17,19 @@ public class Juego {
     public String getTitulo() {
         return titulo;
     }
+    public void setTitulo(String titulo){
+        this.titulo = titulo;
+    }
     public List<String> getTitulosPartidas() {
         return partidas.stream().map(Partida::getTitulo).toList();
+    }
+    public List<String> getSaveFilePaths() {
+        return saveFilePaths;
+    }
+    public void addSaveFilePath(String path){
+        saveFilePaths.add(path);
+    }
+    public void removeSaveFilePath(int index){
+        saveFilePaths.remove(index);
     }
 }

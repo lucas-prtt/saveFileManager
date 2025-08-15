@@ -1,5 +1,7 @@
 package Menus;
 
+import Controllers.JuegosController;
+
 import java.util.Scanner;
 
 public class MenuPrincipal extends Menu{
@@ -15,6 +17,7 @@ public class MenuPrincipal extends Menu{
     protected boolean ejecutarOperacionMenuPrincipal(Integer opcion) throws Exception {
         switch (opcion){
             case 1:
+                new MenuElegirJuego().abrirMenu();
                 break;
             case 2:
                 break;
