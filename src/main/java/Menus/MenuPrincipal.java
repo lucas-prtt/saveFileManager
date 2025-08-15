@@ -2,7 +2,7 @@ package Menus;
 
 import java.util.Scanner;
 
-public class MenuPrincipal {
+public class MenuPrincipal{
 
 
     public void abrirMenu(){
