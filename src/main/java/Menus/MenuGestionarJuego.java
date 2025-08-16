@@ -1,9 +1,7 @@
 package Menus;
 
 import Juegos.Juego;
-import SubMenus.SubMenuAgregarPath;
-import SubMenus.SubMenuElegirPartida;
-import SubMenus.SubMenuEliminarPath;
+import SubMenus.*;
 import Utils.SimularTachado;
 
 public class MenuGestionarJuego extends Menu{
@@ -25,7 +23,8 @@ public class MenuGestionarJuego extends Menu{
             System.out.println(SimularTachado.tachar("5. Elegir partida actual"));
         System.out.println("6. Eliminar Partida");
         System.out.println("7. Crear Partida");
-        System.out.println("8. Salir");
+        System.out.println("8. Vaciar archivos de guardado");
+        System.out.println("9. Salir");
 
     }
 
@@ -51,10 +50,16 @@ public class MenuGestionarJuego extends Menu{
                     System.out.println("Error: Opcion invalida, se debe crear una partida primero");
                 break;
             case 6:
+                new SubMenuEliminarPartida(juego).abrirMenu();
                 break;
             case 7:
+                new SubMenuCrearPartida(juego).abrirMenu();
                 break;
             case 8:
+                juego.setPartidaActual(null);
+                juego.vaciarArchivosDeGuardado();
+                break;
+            case 9:
                 return true;
         }
         return false;

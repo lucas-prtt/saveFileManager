@@ -13,7 +13,7 @@ public class SubMenuEliminarPath {
         if(juego.getSaveFilePaths().isEmpty())
             throw  new Exception("Error: no hay paths guardados");
         int i = 0;
-        System.out.println("Elija cual eliminar:");
+        System.out.println("Elija cual eliminar. Presione 0 para cancelar");
         for(String path : juego.getSaveFilePaths()){
             System.out.println(i+1 + ". " + path);
             i++;

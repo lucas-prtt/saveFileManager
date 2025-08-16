@@ -42,4 +42,13 @@ public class Juego {
     public void setPartidaActual(Partida partidaActual){
         this.partidaActual = partidaActual;
     }
+    public void eliminarPartida(int index){
+        partidas.remove(index);
+    }
+    public void agregarPartida(Partida partida){
+        partidas.add(partida);
+    }
+    public void vaciarArchivosDeGuardado(){
+        //TODO
+    }
 }

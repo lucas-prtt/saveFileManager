@@ -17,7 +17,7 @@ public class SubMenuGuardarCheckpoint {
 
     public void abrirMenu() throws Exception {
 
-        if (partida == juego.getPartidaActual()) {
+        if (partida == juego.getPartidaActual()) { // Si la partida es la actual
             System.out.println("Ingrese el nombre del checkpoint (opcional)");
             String nombre = new Scanner(System.in).nextLine();
             if(Objects.equals(nombre, ""))
@@ -25,11 +25,17 @@ public class SubMenuGuardarCheckpoint {
             else
                 partida.crearCheckpoint(nombre);
         }else{
-            System.out.println("Atención! La partida seleccionada es <"+partida.getTitulo()+">, la partida actualmente cargada es <"+juego.getPartidaActual().getTitulo()+">\nEsta seguro que desea guardar la partida actual aquí?" );
-            System.out.println("1. Si\n2. No");
-            int r = 0;
-            while (r != 1 && r != 2) {
-                r = new Scanner(System.in).nextInt();
+            int r;
+            if(juego.getPartidaActual() != null){// Si hay partida actual que no coincide, confirma sobreescritura
+                System.out.println("Atención! La partida seleccionada es <"+partida.getTitulo()+">, la partida actualmente cargada es <"+juego.getPartidaActual().getTitulo()+">\nEsta seguro que desea guardar la partida actual aquí?" );
+                System.out.println("1. Si\n2. No");
+                r = 0;
+                while (r != 1 && r != 2) {
+                    r = new Scanner(System.in).nextInt();
+                }
+            }
+            else{   // Si no hay partida actual, guarda de una
+                r = 1;
             }
             if(r == 1){
                 System.out.println("Ingrese el nombre del checkpoint (opcional)");
