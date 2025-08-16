@@ -2,6 +2,7 @@ package Menus;
 
 import Controllers.JuegosController;
 import Juegos.Juego;
+import SubMenus.SubMenuAgregarPath;
 import SubMenus.SubMenuEliminarPath;
 
 import java.util.Scanner;
@@ -39,8 +40,7 @@ public class MenuCargarJuego extends Menu{
                 juego.setTitulo(new Scanner(System.in).nextLine());
                 break;
             case 2:
-                System.out.println("Ingrese el Path a agregar:");
-                juego.addSaveFilePath(new Scanner(System.in).nextLine());
+                new SubMenuAgregarPath(juego).abrirMenu();
                 break;
             case 3:
                 new SubMenuEliminarPath(juego).abrirMenu();

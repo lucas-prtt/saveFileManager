@@ -19,7 +19,7 @@ public class MenuElegirJuego extends Menu {
     boolean ejecutarOperacionMenuPrincipal(Integer opcion) throws Exception {
         if (opcion == 0)
             return true;
-        if(opcion >= JuegosController.getInstance().getJuegos().size() || opcion < 0)
+        if(opcion > JuegosController.getInstance().getJuegos().size() || opcion < 0)
             throw new Exception("Opcion invalida");
         Juego juegoElegido = JuegosController.getInstance().getJuegos().get(opcion-1);
         new MenuGestionarJuego(juegoElegido).abrirMenu();
