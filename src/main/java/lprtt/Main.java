@@ -9,12 +9,18 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Programa iniciado!");
+
+
         //System.setProperty("logging.level.root", "OFF");
         SpringApplication app = new SpringApplication(Main.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.setLogStartupInfo(false);
         app.run();
+        System.out.println("Springboot configurado!");
+
+
         new MenuPrincipal().abrirMenu();
+        return;
     }
 
 }
