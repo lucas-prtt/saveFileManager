@@ -1,13 +1,21 @@
 package Juegos;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Juego {
+    @Getter @Setter
     String titulo;
+
     List<Partida> partidas;
+
+    @Setter
     Partida partidaActual;
+
     List<String> saveFilePaths;
 
     public Juego(String titulo){
@@ -15,12 +23,7 @@ public class Juego {
         this.partidas = new ArrayList<>();
         this.saveFilePaths = new ArrayList<>();
     }
-    public String getTitulo() {
-        return titulo;
-    }
-    public void setTitulo(String titulo){
-        this.titulo = titulo;
-    }
+
     public List<String> getTitulosPartidas() {
         return partidas.stream().map(Partida::getTitulo).toList();
     }
@@ -39,9 +42,7 @@ public class Juego {
     public Partida getPartidaActual() {
         return partidaActual;
     }
-    public void setPartidaActual(Partida partidaActual){
-        this.partidaActual = partidaActual;
-    }
+
     public void eliminarPartida(int index){
         partidas.remove(index);
     }
