@@ -11,9 +11,6 @@ public class SubMenuEliminarCheckpoint {
     public SubMenuEliminarCheckpoint(Partida partida) {
         this.partida = partida;
     }
-    public Partida getPartida() {
-        return partida;
-    }
 
     public void abrirMenu() throws Exception {
         System.out.println("Partidas actuales: ");
