@@ -19,10 +19,6 @@
         <maven.compiler.target>24</maven.compiler.target>
         <java.version>24</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <h2.port>9092</h2.port>
-        <h2.user>admin</h2.user>
-        <h2.password>admin</h2.password>
-        <h2.db.path>/data/database</h2.db.path>
     </properties>
 
     <parent>
