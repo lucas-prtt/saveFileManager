@@ -12,6 +12,7 @@ public class SubMenuElegirPartida {
         this.juego = juego;
     }
     public void abrirMenu(){
+        System.out.println("Elija la partida");
         int i = 1;
         for(String tituloPartida : juego.getTitulosPartidas()){
             System.out.println(i+". "+tituloPartida);

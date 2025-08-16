@@ -13,7 +13,7 @@ public class SubMenuEliminarCheckpoint {
     }
 
     public void abrirMenu() throws Exception {
-        System.out.println("Partidas actuales: ");
+        System.out.println("Checkpoints: ");
         int i = 1;
         for (Checkpoint checkpoint : partida.getCheckpoints()) {
             System.out.println(i + ". " + checkpoint.getStringReferencia());
@@ -24,7 +24,9 @@ public class SubMenuEliminarCheckpoint {
         if(indice == -1){
             return;
         }
-        else if (indice <0 || indice>=partida.getCheckpoints().size()){
+        else if (indice >=0 && indice<partida.getCheckpoints().size()){
+            if (indice == 0)
+                return;
             partida.eliminarCheckpoint(indice);
             return;
         }

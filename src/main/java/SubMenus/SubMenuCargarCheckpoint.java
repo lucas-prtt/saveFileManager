@@ -24,13 +24,13 @@ public class SubMenuCargarCheckpoint {
             i++;
         }
 
-        System.out.println("Elija la partida a cargar, o presione 0 para cancelar");
+        System.out.println("Elija el checkpoint a cargar, o presione 0 para cancelar");
         int indice = new Scanner(System.in).nextInt()-1;
         if(indice == -1){
             return;
         }
-        else if (indice <0 || indice>=partida.getCheckpoints().size()){
-            System.out.println("Atención! Desea guardar el estado actual de la partida antes de cargar la nueva?" );
+        else if (indice >=0 && indice<partida.getCheckpoints().size()){
+            System.out.println("Atención! Desea guardar el estado actual de la partida antes de cargar el checkpoint?" );
             System.out.println("1. Si\n2. No");
             int r = 0;
             while (r != 1 && r != 2) {

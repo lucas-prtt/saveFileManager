@@ -19,6 +19,9 @@ public class SubMenuEliminarPath {
             i++;
         }
         int eliminado = new Scanner(System.in).nextInt() - 1;
+        if(eliminado == -1){
+            return;
+        }
         if (eliminado > i || eliminado < 0)
             throw new Exception("Error: path invalido");
         System.out.println("Path \" " + juego.getSaveFilePaths().get(eliminado)+ "\" eliminado");

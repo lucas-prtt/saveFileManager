@@ -20,6 +20,7 @@ public class Partida {
         crearCheckpoint(null);
     };
     public void crearCheckpoint(String nombre){
+        checkpoints.add(new Checkpoint(nombre));
         //TODO
     }
     public void cargarUltimoCheckpoint(){

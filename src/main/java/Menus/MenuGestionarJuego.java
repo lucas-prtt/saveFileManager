@@ -16,8 +16,11 @@ public class MenuGestionarJuego extends Menu{
         System.out.println("1. Ver información del juego");
         System.out.println("2. Añadir path para saveFiles");
         System.out.println("3. Quitar path para saveFiles");
-        System.out.println("4. Elegir Partida");
-        if(!juego.getPartidas().isEmpty())
+        if(juego.getPartidas().isEmpty())
+            System.out.println(SimularTachado.tachar("4. Elegir partida"));
+        else
+            System.out.println("4. Elegir Partida");
+        if(juego.getPartidaActual() != null)
             System.out.println("5. Elegir partida actual ("+ juego.getPartidaActual().getTitulo()+")");
         else
             System.out.println(SimularTachado.tachar("5. Elegir partida actual"));
@@ -41,13 +44,16 @@ public class MenuGestionarJuego extends Menu{
                 new SubMenuEliminarPath(juego).abrirMenu();
                 break;
             case 4:
-                new SubMenuElegirPartida(juego).abrirMenu();
+                if (juego.getPartidas().isEmpty())
+                    System.out.println("Error: Opcion invalida, se debe crear una partida primero");
+                else
+                    new SubMenuElegirPartida(juego).abrirMenu();
                 break;
             case 5:
-                if (!juego.getPartidas().isEmpty())
+                if (juego.getPartidaActual() != null)
                     new MenuGestionarPartida(juego.getPartidaActual(), juego).abrirMenu();
                 else
-                    System.out.println("Error: Opcion invalida, se debe crear una partida primero");
+                    System.out.println("Error: Opcion invalida, se debe asignar una partida actual primero. Puede hacer esto cargandola desde la opcion superior.");
                 break;
             case 6:
                 new SubMenuEliminarPartida(juego).abrirMenu();
