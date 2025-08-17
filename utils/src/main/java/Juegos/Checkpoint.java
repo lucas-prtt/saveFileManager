@@ -3,7 +3,6 @@ package Juegos;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Getter;
-import org.springframework.data.repository.query.parser.Part;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,7 +13,8 @@ public class Checkpoint {
     LocalDateTime fechaDeCreacion;
     Partida partida;
     @Id
-    String Id;
+    @Getter
+    String id;
     @Getter
     String descripcion;
     public Checkpoint(){
@@ -24,7 +24,7 @@ public class Checkpoint {
         this.descripcion = descripcion;
         this.fechaDeCreacion = LocalDateTime.now();
         this.partida = partida;
-        this.Id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString();
     }
 
     public String getStringReferencia(){
@@ -32,5 +32,8 @@ public class Checkpoint {
             return fechaDeCreacion.toString();
         else
             return fechaDeCreacion.toString() + " - " + descripcion;
+    }
+    public CheckpointDTO toDTO(){
+        return new CheckpointDTO(id, fechaDeCreacion, descripcion);
     }
 }

@@ -8,6 +8,9 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 @Getter
 @Entity
 public class Juego {
@@ -47,5 +50,8 @@ public class Juego {
     }
     public void vaciarArchivosDeGuardado(){
         //TODO
+    }
+    public Optional<Partida> getPartidaByTitulo(String titulo){
+        return partidas.stream().filter(partida -> {return Objects.equals(partida.getTitulo(), titulo);}).findFirst();
     }
 }

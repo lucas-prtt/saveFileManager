@@ -4,18 +4,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 @Getter
 @Entity
 public class Partida {
-    @Id
     String titulo;
+    @Id
+    String Id;
     List<Checkpoint> checkpoints;
 
     public Partida(String titulo) {
         this.titulo = titulo;
         this.checkpoints = new ArrayList<>();
+        this.Id = UUID.randomUUID().toString();
     }
 
 
@@ -35,5 +37,12 @@ public class Partida {
 
     public void eliminarCheckpoint(int index){
         checkpoints.remove(index);
+    }
+    public List<CheckpointDTO> getCheckpointsDTO(){
+        return checkpoints.stream().map(Checkpoint::toDTO).toList();
+    }
+    public Optional<Checkpoint> getCheckpointById(String id){
+        return checkpoints.stream().filter(chk ->{return Objects.equals(chk.getId(), id);
+        }).findFirst();
     }
 }
