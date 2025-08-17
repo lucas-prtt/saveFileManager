@@ -51,4 +51,8 @@ public class Partida {
         return checkpoints.stream().filter(chk ->{return Objects.equals(chk.getId(), id);
         }).findFirst();
     }
+    public void agregarCheckpoint(Checkpoint checkpoint){
+        checkpoints.add(checkpoint);
+        return;
+    }
 }

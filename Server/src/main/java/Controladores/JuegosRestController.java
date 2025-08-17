@@ -7,6 +7,7 @@ import Juegos.Partida;
 import Repositorios.CheckpointRepository;
 import Repositorios.JuegoRepository;
 import Repositorios.PartidaRepository;
+import org.hibernate.annotations.Check;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -98,5 +99,19 @@ public class JuegosRestController {
         j.agregarPartida(partida);
         juegoRepository.save(j);
         return ResponseEntity.ok(partida);
+    }
+    @PostMapping("/{juego}/partidas/{partida}/checkpoints")
+    public ResponseEntity<Checkpoint> postPartida(@PathVariable String juego, @PathVariable String partida,@RequestBody Checkpoint checkpoint){
+        Optional<Juego> optj = juegoRepository.findById(juego);
+        if (optj.isEmpty())
+            return ResponseEntity.notFound().build();
+        Juego j = optj.get();
+        Optional<Partida> optp = j.getPartidaByTitulo(partida);
+        if(optp.isEmpty())
+            return ResponseEntity.notFound().build();
+        Partida p = optp.get();
+        p.agregarCheckpoint(checkpoint);
+        partidaRepository.save(p);
+        return ResponseEntity.ok(checkpoint);
     }
 }
