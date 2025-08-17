@@ -57,7 +57,7 @@ public class Carpeta extends Archivo{
         }
         return respuesta;
     }
-
+    @Override
     public void borrar(Path path) throws Exception {
         if (Objects.equals(nombre, "") || nombre == null) {
             throw new Exception("Se quiso borrar sin asignar el nombre a la carpeta");
