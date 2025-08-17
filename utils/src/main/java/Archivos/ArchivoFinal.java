@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ArchivoFinal extends Archivo{
@@ -17,8 +18,8 @@ public class ArchivoFinal extends Archivo{
         this.nombre = nombre;
     }
     @Override
-    public void escribirEn(String path) {
-        File archivo = new File(path+"/"+nombre);
+    public void escribirEn(Path path) {
+        File archivo = path.resolve(nombre).toFile();
         try (FileOutputStream fos = new FileOutputStream(archivo)) {
             fos.write(datos);
         } catch (IOException e) {
@@ -27,11 +28,18 @@ public class ArchivoFinal extends Archivo{
     }
 
     @Override
-    void cargarArchivoDe(String path) {
+    void cargarArchivoDe(Path path) {
         try {
-            datos = Files.readAllBytes(Paths.get(path+"/"+nombre));
+            Path archivo = path.resolve(nombre);
+            datos = Files.readAllBytes(archivo);
         } catch (IOException e) {
-            throw new RuntimeException("No se pudo leer el archivo:" + path + "/" + nombre);
+            throw new RuntimeException("No se pudo leer el archivo: " + path.resolve(nombre), e);
         }
+    }
+
+
+    @Override
+    String treeAux(int nivel) {
+        return " ".repeat(nivel)+nombre+"\n";
     }
 }
