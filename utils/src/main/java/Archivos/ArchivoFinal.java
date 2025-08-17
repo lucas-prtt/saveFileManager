@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class ArchivoFinal extends Archivo{
     @Lob
@@ -41,5 +42,15 @@ public class ArchivoFinal extends Archivo{
     @Override
     String treeAux(int nivel) {
         return " ".repeat(nivel)+nombre+"\n";
+    }
+
+    @Override
+    public void borrar(Path path) throws Exception {
+        if(Objects.equals(nombre, "") || nombre == null){
+            throw new Exception("Se quiso borrar sin asignar el nombre al archivo");
+        }
+        if (!path.resolve(nombre).toFile().delete()) {
+            throw new RuntimeException("No se pudo eliminar el archivo o carpeta: \"" + path.resolve(nombre) + "\"");
+        }
     }
 }

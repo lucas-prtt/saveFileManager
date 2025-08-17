@@ -26,4 +26,5 @@ public abstract class Archivo {
             throw new RuntimeException("Problema al leer el archivo");
         }
     }
+    abstract void borrar(Path path) throws Exception;
 }

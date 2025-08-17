@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 @Entity
 public class Carpeta extends Archivo{
     @OneToMany(cascade = CascadeType.ALL)
@@ -54,6 +56,33 @@ public class Carpeta extends Archivo{
             respuesta = respuesta + " ".repeat(nivel) + arch.treeAux(nivel + 1);
         }
         return respuesta;
+    }
+
+    public void borrar(Path path) throws Exception {
+        if (Objects.equals(nombre, "") || nombre == null) {
+            throw new Exception("Se quiso borrar sin asignar el nombre a la carpeta");
+        }
+
+        Path carpeta = path.resolve(nombre);
+
+        borrarRecursivo(carpeta);
+    }
+
+    private void borrarRecursivo(Path path) {
+        File archivo = path.toFile();
+
+        if (archivo.isDirectory()) {
+            File[] contenidos = archivo.listFiles();
+            if (contenidos != null) {
+                for (File f : contenidos) {
+                    borrarRecursivo(f.toPath());
+                }
+            }
+        }
+
+        if (!archivo.delete()) {
+            throw new RuntimeException("No se pudo eliminar: " + path.toAbsolutePath());
+        }
     }
 
 }
