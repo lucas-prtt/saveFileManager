@@ -1,8 +1,10 @@
 package Juegos;
 
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +19,7 @@ public class Juego {
     @Setter
     @Id
     String titulo;
-
+    @OneToMany(mappedBy = "juego", cascade = CascadeType.ALL)
     List<Partida> partidas;
 
     @Setter

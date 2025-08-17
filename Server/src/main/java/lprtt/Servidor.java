@@ -14,6 +14,7 @@ public class Servidor {
             System.out.println("Presiona Enter para detener el servidor...");
             System.in.read();
             System.out.println("Servidor detenido.");
+            System.exit(0);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

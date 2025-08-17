@@ -10,9 +10,7 @@ import Repositories.PartidaRepository;
 import org.hibernate.annotations.Check;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.Option;
 import java.util.List;
@@ -87,4 +85,20 @@ public class RestController {
         return ResponseEntity.ok(chk.get());
     }
 
+    @PostMapping
+    public ResponseEntity<Juego> postJuego(@RequestBody Juego juego){
+        juegoRepository.save(juego);
+        return ResponseEntity.ok(juego);
+    }
+
+    @PostMapping("/{juego}/partidas")
+    public ResponseEntity<Partida> postPartida(@PathVariable String juego, @RequestBody Partida partida){
+        Optional<Juego> optj = juegoRepository.findById(juego);
+        if (optj.isEmpty())
+            return ResponseEntity.notFound().build();
+        Juego j = optj.get();
+        j.agregarPartida(partida);
+        juegoRepository.save(j);
+        return ResponseEntity.ok(partida);
+    }
 }

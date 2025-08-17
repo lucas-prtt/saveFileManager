@@ -18,7 +18,7 @@ public class SubMenuCrearPartida {
             System.out.println("Creacion cancelada. Se requiere ingresar un nombre");
             return;
         }
-        juego.agregarPartida(new Partida(name));
+        juego.agregarPartida(new Partida(name, juego));
         System.out.println("Partida creada");
         if(juego.getPartidas().size() == 1){
             juego.setPartidaActual(juego.getPartidas().getFirst());
