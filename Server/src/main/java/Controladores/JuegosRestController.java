@@ -1,9 +1,6 @@
 package Controladores;
 
-import Juegos.Checkpoint;
-import Juegos.CheckpointDTO;
-import Juegos.Juego;
-import Juegos.Partida;
+import Juegos.*;
 import Repositorios.CheckpointRepository;
 import Repositorios.JuegoRepository;
 import Repositorios.PartidaRepository;
@@ -163,4 +160,17 @@ public class JuegosRestController {
         juegoRepository.save(j);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+    @PatchMapping("/{titulo}")
+    public ResponseEntity<Juego> patchJuego(@PathVariable String titulo, @RequestBody JuegoPatchDTO juegoDTO){
+        System.out.println("Patch de juego recibido");
+        Optional<Juego> optJuego = juegoRepository.findById(titulo);
+        if (optJuego.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        Juego j = optJuego.get();
+        j.patchWithDto(juegoDTO);
+        juegoRepository.save(j);
+        return ResponseEntity.ok(j);
+    }
+
 }

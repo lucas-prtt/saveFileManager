@@ -1,7 +1,11 @@
 package Juegos;
 
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.time.LocalDateTime;
+@Getter
+@Setter
 public class CheckpointDTO {
     private final String descripcion;
     private final String ID;

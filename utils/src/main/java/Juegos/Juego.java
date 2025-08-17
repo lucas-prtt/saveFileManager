@@ -59,5 +59,21 @@ public class Juego {
     public Optional<Partida> getPartidaByTitulo(String titulo){
         return partidas.stream().filter(partida -> {return Objects.equals(partida.getTitulo(), titulo);}).findFirst();
     }
+    public JuegoPatchDTO toDTO(){
+        return new JuegoPatchDTO(titulo, saveFilePaths, partidaActual.getTitulo());
+    }
+    public void patchWithDto(JuegoPatchDTO juegoDto){
+        if(juegoDto.titulo != null)
+            this.titulo = juegoDto.titulo;
+        if(juegoDto.saveFilePaths != null)
+            this.saveFilePaths =  juegoDto.saveFilePaths;
+        try {
+            if (juegoDto.partidaActual != null)
+                this.partidaActual = this.getPartidaByTitulo(juegoDto.partidaActual).orElseThrow();
+        }
+        catch (Exception e){
+            System.out.println("Partida no encontrada");
+        }
+    }
 
 }
