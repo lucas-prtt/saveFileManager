@@ -1,8 +1,6 @@
 package SubMenus;
 
 import Juegos.Juego;
-import Juegos.Partida;
-import Menus.MenuGestionarPartida;
 
 import java.util.Scanner;
 
@@ -26,7 +24,7 @@ public class SubMenuEliminarPartida {
             juego.setPartidaActual(null);
             System.out.println("Removida de partida actual");
         }
-        juego.eliminarPartida(indice);
+        juego.eliminarPartidaByIndex(indice);
         return;
     }
 }

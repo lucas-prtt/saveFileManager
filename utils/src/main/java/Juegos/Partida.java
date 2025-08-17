@@ -1,8 +1,10 @@
 package Juegos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.*;
 
@@ -12,17 +14,19 @@ import java.util.*;
 public class Partida {
     String titulo;
     @Id
-    String Id;
-    @OneToMany(mappedBy = "partida", cascade = CascadeType.ALL)
-    List<Checkpoint> checkpoints;
+            @Setter
+    String id;
+    @OneToMany(mappedBy = "partida", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Checkpoint> checkpoints = new ArrayList<>();
     @ManyToOne
     @JoinColumn
+            @Setter
+            @JsonIgnore
     Juego juego;
 
     public Partida(String titulo, Juego juego) {
         this.titulo = titulo;
-        this.checkpoints = new ArrayList<>();
-        this.Id = UUID.randomUUID().toString();
+        generateNewId();
         this.juego = juego;
     }
 
@@ -41,8 +45,11 @@ public class Partida {
         //TODO
     }
 
-    public void eliminarCheckpoint(int index){
+    public void eliminarCheckpointByIndex(int index){
         checkpoints.remove(index);
+    }
+    public void eliminarCheckpoint(Checkpoint chk){
+        checkpoints.remove(chk);
     }
     public List<CheckpointDTO> getCheckpointsDTO(){
         return checkpoints.stream().map(Checkpoint::toDTO).toList();
@@ -54,5 +61,8 @@ public class Partida {
     public void agregarCheckpoint(Checkpoint checkpoint){
         checkpoints.add(checkpoint);
         return;
+    }
+    public void generateNewId(){
+        id = UUID.randomUUID().toString();
     }
 }

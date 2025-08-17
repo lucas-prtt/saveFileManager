@@ -27,7 +27,7 @@ public class SubMenuEliminarCheckpoint {
         else if (indice >=0 && indice<partida.getCheckpoints().size()){
             if (indice == 0)
                 return;
-            partida.eliminarCheckpoint(indice);
+            partida.eliminarCheckpointByIndex(indice);
             return;
         }
         else throw new Exception("Opcion invalida para eliminar checkpoint");

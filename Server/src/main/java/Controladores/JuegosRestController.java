@@ -7,7 +7,7 @@ import Juegos.Partida;
 import Repositorios.CheckpointRepository;
 import Repositorios.JuegoRepository;
 import Repositorios.PartidaRepository;
-import org.hibernate.annotations.Check;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,16 +92,21 @@ public class JuegosRestController {
 
     @PostMapping("/{juego}/partidas")
     public ResponseEntity<Partida> postPartida(@PathVariable String juego, @RequestBody Partida partida){
+        System.out.println("Post de partida recibido");
         Optional<Juego> optj = juegoRepository.findById(juego);
         if (optj.isEmpty())
             return ResponseEntity.notFound().build();
         Juego j = optj.get();
+        partida.setJuego(j);
         j.agregarPartida(partida);
+        if (partida.getId() == null)
+            partida.generateNewId();
         juegoRepository.save(j);
         return ResponseEntity.ok(partida);
     }
     @PostMapping("/{juego}/partidas/{partida}/checkpoints")
     public ResponseEntity<Checkpoint> postPartida(@PathVariable String juego, @PathVariable String partida,@RequestBody Checkpoint checkpoint){
+        System.out.println("Post de checkpoint recibido");
         Optional<Juego> optj = juegoRepository.findById(juego);
         if (optj.isEmpty())
             return ResponseEntity.notFound().build();
@@ -110,8 +115,52 @@ public class JuegosRestController {
         if(optp.isEmpty())
             return ResponseEntity.notFound().build();
         Partida p = optp.get();
+        checkpoint.setPartida(p);
+        if (checkpoint.getId() == null)
+            checkpoint.generateNewId();
         p.agregarCheckpoint(checkpoint);
         partidaRepository.save(p);
         return ResponseEntity.ok(checkpoint);
+    }
+    @DeleteMapping("/{titulo}")
+    public ResponseEntity<?> eliminarJuegoPorTitulo(@PathVariable String titulo){
+        Optional<Juego> juego =  juegoRepository.findById(titulo);
+        if(juego.isPresent()) {
+            juegoRepository.delete(juego.get());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        else
+            return ResponseEntity.notFound().build();
+    }
+    @DeleteMapping("/{titulo}/partidas/{partida}")
+    public ResponseEntity<?> eliminarPartidaPorTitulo(@PathVariable String titulo, @PathVariable String partida){
+        Optional<Juego> juego =  juegoRepository.findById(titulo);
+        if(juego.isEmpty())
+            return ResponseEntity.notFound().build();
+        Juego j = juego.get();
+        Optional<Partida> optp = j.getPartidaByTitulo(partida);
+        if(optp.isEmpty())
+            return ResponseEntity.notFound().build();
+        j.eliminarPartida(optp.get());
+        juegoRepository.save(j);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+    @DeleteMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}")
+    public ResponseEntity<?> eliminarPartidaPorTitulo(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
+        Optional<Juego> juego =  juegoRepository.findById(titulo);
+        if(juego.isEmpty())
+            return ResponseEntity.notFound().build();
+        Juego j = juego.get();
+        Optional<Partida> optp = j.getPartidaByTitulo(partida);
+        if(optp.isEmpty())
+            return ResponseEntity.notFound().build();
+        Partida p = optp.get();
+        Optional<Checkpoint> optchk =  p.getCheckpointById(checkpoint);
+        if(optchk.isEmpty())
+            return ResponseEntity.notFound().build();
+        Checkpoint chk = optchk.get();
+        p.eliminarCheckpoint(chk);
+        juegoRepository.save(j);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -18,7 +18,7 @@ public class Juego {
     @Setter
     @Id
     String titulo;
-    @OneToMany(mappedBy = "juego", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "juego", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Partida> partidas;
 
     @Setter
@@ -44,7 +44,7 @@ public class Juego {
         saveFilePaths.remove(index);
     }
 
-    public void eliminarPartida(int index){
+    public void eliminarPartidaByIndex(int index){
         partidas.remove(index);
     }
     public void agregarPartida(Partida partida){
@@ -53,7 +53,11 @@ public class Juego {
     public void vaciarArchivosDeGuardado(){
         //TODO
     }
+    public void eliminarPartida(Partida partida){
+        partidas.remove(partida);
+    }
     public Optional<Partida> getPartidaByTitulo(String titulo){
         return partidas.stream().filter(partida -> {return Objects.equals(partida.getTitulo(), titulo);}).findFirst();
     }
+
 }

@@ -1,11 +1,13 @@
 package Juegos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,6 +18,8 @@ public class Checkpoint {
     LocalDateTime fechaDeCreacion;
     @ManyToOne
             @JoinColumn
+            @Setter
+            @JsonIgnore
     Partida partida;
     @Id
     @Getter
@@ -29,7 +33,7 @@ public class Checkpoint {
         this.descripcion = descripcion;
         this.fechaDeCreacion = LocalDateTime.now();
         this.partida = partida;
-        this.id = UUID.randomUUID().toString();
+        generateNewId();
     }
 
     public String getStringReferencia(){
@@ -40,5 +44,8 @@ public class Checkpoint {
     }
     public CheckpointDTO toDTO(){
         return new CheckpointDTO(id, fechaDeCreacion, descripcion);
+    }
+    public void generateNewId(){
+        id = UUID.randomUUID().toString();
     }
 }
