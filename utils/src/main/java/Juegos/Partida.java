@@ -2,11 +2,13 @@ package Juegos;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.*;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class Partida {
     String titulo;
     @Id

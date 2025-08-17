@@ -4,26 +4,23 @@ import Juegos.Checkpoint;
 import Juegos.CheckpointDTO;
 import Juegos.Juego;
 import Juegos.Partida;
-import Repositories.CheckpointRepository;
-import Repositories.JuegoRepository;
-import Repositories.PartidaRepository;
-import org.hibernate.annotations.Check;
-import org.springframework.http.HttpStatus;
+import Repositorios.CheckpointRepository;
+import Repositorios.JuegoRepository;
+import Repositorios.PartidaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
-@org.springframework.web.bind.annotation.RestController
+@RestController
 @RequestMapping("/api/juegos")
-public class RestController {
+public class JuegosRestController {
     private final JuegoRepository juegoRepository;
     private final PartidaRepository partidaRepository;
     private final CheckpointRepository checkpointRepository;
 
-    public RestController(JuegoRepository juegoRepository, PartidaRepository partidaRepository, CheckpointRepository checkpointRepository) {
+    public JuegosRestController(JuegoRepository juegoRepository, PartidaRepository partidaRepository, CheckpointRepository checkpointRepository) {
         this.juegoRepository = juegoRepository;
         this.partidaRepository = partidaRepository;
         this.checkpointRepository = checkpointRepository;
@@ -87,6 +84,7 @@ public class RestController {
 
     @PostMapping
     public ResponseEntity<Juego> postJuego(@RequestBody Juego juego){
+        System.out.println("Post de juego recibido");
         juegoRepository.save(juego);
         return ResponseEntity.ok(juego);
     }

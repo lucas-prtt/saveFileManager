@@ -1,4 +1,4 @@
-package Repositories;
+package Repositorios;
 
 import Juegos.Juego;
 import org.springframework.data.jpa.repository.JpaRepository;

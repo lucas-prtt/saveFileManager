@@ -1,11 +1,9 @@
 package Juegos;
 
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -15,6 +13,7 @@ import java.util.Optional;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class Juego {
     @Setter
     @Id
@@ -23,8 +22,9 @@ public class Juego {
     List<Partida> partidas;
 
     @Setter
+            @OneToOne
     Partida partidaActual;
-
+    @ElementCollection
     List<String> saveFilePaths;
 
     public Juego(String titulo){
