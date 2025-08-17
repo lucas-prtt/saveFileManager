@@ -1,14 +1,18 @@
 package Juegos;
 
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Getter
+@Entity
 public class Juego {
-    @Getter @Setter
+    @Setter
+    @Id
     String titulo;
 
     List<Partida> partidas;
@@ -27,20 +31,12 @@ public class Juego {
     public List<String> getTitulosPartidas() {
         return partidas.stream().map(Partida::getTitulo).toList();
     }
-    public List<String> getSaveFilePaths() {
-        return saveFilePaths;
-    }
+
     public void addSaveFilePath(String path){
         saveFilePaths.add(path);
     }
     public void removeSaveFilePath(int index){
         saveFilePaths.remove(index);
-    }
-    public List<Partida>getPartidas(){
-        return partidas;
-    }
-    public Partida getPartidaActual() {
-        return partidaActual;
     }
 
     public void eliminarPartida(int index){
