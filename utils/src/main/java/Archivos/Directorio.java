@@ -1,6 +1,5 @@
 package Archivos;
 
-import jakarta.el.EvaluationListener;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,16 +18,31 @@ public class Directorio {
     // Clase encargada de manejar sinonimos para Paths
     Path pathPrincipal;
     List<Path> pathsSinonimos = new ArrayList<>();
+
+    public Directorio(Path pathPrincipal, List<Path> pathsSinonimos){
+        pathsSinonimos.forEach(this::addPathAsSynonim);
+        setPathPrincipal(pathPrincipal);
+    }
+    public Directorio(String pathPrincipal, List<String> pathsSinonimos){
+        pathsSinonimos.forEach(this::addPathAsSynonimFromString);
+        setPathPrincipalFromString(pathPrincipal);
+    }
+    public Directorio(String pathPrincipal){
+        setPathPrincipalFromString(pathPrincipal);
+    }
+    public Directorio(Path pathPrincipal){
+        setPathPrincipal(pathPrincipal);
+    }
     public Path pathFromString(String rutaTexto){
         return Paths.get(rutaTexto);
     }
-    public void setPathFromString(String rutaTexto){
-        setPath(pathFromString(rutaTexto));
+    public void setPathPrincipalFromString(String rutaTexto){
+        setPathPrincipal(pathFromString(rutaTexto));
     }
     public void addPathAsSynonimFromString(String rutaTexto){
         addPathAsSynonim(pathFromString(rutaTexto));
     }
-    public void setPath(Path ruta){
+    public void setPathPrincipal(Path ruta){
         pathPrincipal = ruta;
         if(!pathsSinonimos.contains(ruta))
             pathsSinonimos.add(ruta);

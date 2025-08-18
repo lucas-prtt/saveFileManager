@@ -2,6 +2,7 @@ package SubMenus;
 
 import Juegos.Juego;
 
+import java.nio.file.Path;
 import java.util.Scanner;
 
 public class SubMenuAgregarPath {
@@ -11,6 +12,6 @@ public class SubMenuAgregarPath {
     }
     public void abrirMenu() throws Exception {
         System.out.println("Ingrese el Path a agregar:");
-        juego.addSaveFilePath(new Scanner(System.in).nextLine());
+        juego.addSaveFilePath(Path.of(new Scanner(System.in).nextLine()));
     }
 }

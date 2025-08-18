@@ -1,11 +1,13 @@
 package Juegos;
 
 
+import Archivos.Directorio;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,7 +27,7 @@ public class Juego {
             @OneToOne
     Partida partidaActual;
     @ElementCollection
-    List<String> saveFilePaths;
+    List<Directorio> saveFilePaths;
 
     public Juego(String titulo){
         this.titulo = titulo;
@@ -37,8 +39,8 @@ public class Juego {
         return partidas.stream().map(Partida::getTitulo).toList();
     }
 
-    public void addSaveFilePath(String path){
-        saveFilePaths.add(path);
+    public void addSaveFilePath(Path path){
+        saveFilePaths.add(new Directorio(path));
     }
     public void removeSaveFilePath(int index){
         saveFilePaths.remove(index);
