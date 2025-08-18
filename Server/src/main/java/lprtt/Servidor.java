@@ -16,6 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackages = {"Juegos", "Archivos"})
 public class Servidor {
     public static void main(String[] args) {
+        System.out.println("Iniciando servidor...");
         SpringApplication app = new SpringApplication(Servidor.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.setLogStartupInfo(false);
@@ -23,7 +24,7 @@ public class Servidor {
         app.run();
         try{
             System.out.println("Servidor iniciado");
-            System.out.println("Presiona Enter para cerrar el servidor...");
+            System.out.println("Presiona Enter para cerrar el servidor.");
             System.in.read();
             System.out.println("Cerrando servidor...");
             System.exit(0);
