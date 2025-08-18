@@ -24,7 +24,6 @@ public class AlgoritmoPredictivoPaths {
                 Paths.get(System.getProperty("user.home"), "AppData", "Local", "Steam", "userdata"),
                 Paths.get("C:\\Program Files (x86)\\Steam")
         );
-        System.out.println("Raices: " + raicesBusqueda);
         Path mejorCoincidencia = buscarPathSimilar(raicesBusqueda, validos);
         if (mejorCoincidencia != null) {
             return mejorCoincidencia;
@@ -35,12 +34,10 @@ public class AlgoritmoPredictivoPaths {
     public static Path buscarPathSimilar(List<Path> raicesBusqueda, List<Path> pathValidos){
         List<Path> sufijos;
         sufijos = new ArrayList<>(pathValidos.stream().flatMap(p -> generarSufijos(p).stream()).toList()); // Obtiene lista con muchos posibles sufijos
-        System.out.println("Sufijos: " + sufijos);
         sufijos.sort((a, b) -> Integer.compare(
                 contarNiveles(b),
                 contarNiveles(a)
         ));// Los ordena de mas especificos a mas genericos
-        System.out.println("Sufijos ordenados: " + sufijos);
         final int[] mejorScore = {-1}; // Para comparar el mejor sufijo según cada raiz. Es lista porque se usa en otra clase
 
         final Path[] mejorMatch = {null}; // El mejor match hasta la fecha
