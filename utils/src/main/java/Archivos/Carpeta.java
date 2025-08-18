@@ -22,7 +22,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 public class Carpeta extends Archivo{
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL) // TODO: Que sea una relacion ManyToMany, donde solo se persistan los archivos con checksum distinto a los de la BD
     List<Archivo> archivos = new ArrayList<>();
 
     public Carpeta(String nombre){
