@@ -8,8 +8,8 @@ import java.util.concurrent.ExecutionException;
 @Entity
 public abstract class Archivo {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    protected String id; // Iria uuid?
     protected String nombre;
     abstract void escribirEn(Path path);
     abstract void cargarArchivoDe(Path path) throws Exception;

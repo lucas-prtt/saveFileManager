@@ -1,15 +1,16 @@
 package Juegos;
 
+import Archivos.Archivo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,15 +18,19 @@ public class Checkpoint {
     @Getter
     LocalDateTime fechaDeCreacion;
     @ManyToOne
-            @JoinColumn
-            @Setter
-            @JsonIgnore
+    @JoinColumn
+    @Setter
+    @JsonIgnore
     Partida partida;
     @Id
     @Getter
     String id;
     @Getter
     String descripcion;
+    @Getter @Setter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Archivo> archivos = new ArrayList<>();
+
     public Checkpoint(){
         this.fechaDeCreacion = LocalDateTime.now();
     }
