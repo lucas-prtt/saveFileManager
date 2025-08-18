@@ -27,7 +27,7 @@ public class Checkpoint {
     String id;
     @Getter
     String descripcion;
-    @Getter @Setter
+    @Getter @Setter @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     List<Archivo> archivos = new ArrayList<>();
 

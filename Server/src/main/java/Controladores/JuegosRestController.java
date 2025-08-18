@@ -1,5 +1,6 @@
 package Controladores;
 
+import Archivos.Archivo;
 import Juegos.*;
 import Repositorios.CheckpointRepository;
 import Repositorios.JuegoRepository;
@@ -65,8 +66,8 @@ public class JuegosRestController {
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(partidaObtenida.get().getCheckpointsDTO());
     }
-    @GetMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}")
-    public ResponseEntity<Checkpoint> obtenerCheckpoints(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
+    @GetMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}") // No se incluye los archivos
+    public ResponseEntity<Checkpoint> obtenerCheckpoint(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
         Optional<Juego> juegoObtenido = juegoRepository.findById(titulo);
         if(juegoObtenido.isEmpty())
             return ResponseEntity.notFound().build();
@@ -78,6 +79,20 @@ public class JuegosRestController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(chk.get());
+    }
+    @GetMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}/archivos")
+    public ResponseEntity<List<Archivo>> obtenerArchivosCheckpoint(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
+        Optional<Juego> juegoObtenido = juegoRepository.findById(titulo);
+        if(juegoObtenido.isEmpty())
+            return ResponseEntity.notFound().build();
+        Optional <Partida> partidaObtenida = juegoObtenido.get().getPartidaByTitulo(partida);
+        if(partidaObtenida.isEmpty())
+            return ResponseEntity.notFound().build();
+        Optional<Checkpoint> chk = partidaObtenida.get().getCheckpointById(checkpoint);
+        if(chk.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(chk.get().getArchivos());
     }
 
     @PostMapping
