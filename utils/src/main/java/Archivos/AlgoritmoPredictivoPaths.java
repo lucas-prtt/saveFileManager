@@ -16,8 +16,8 @@ public class AlgoritmoPredictivoPaths {
             Paths.get(System.getProperty("user.home"), "AppData", "Roaming"),
             Paths.get(System.getProperty("user.home"), "Saved Games"),
             Paths.get(System.getProperty("user.home"), ".config"),
-            Paths.get(System.getProperty("user.home"), ".local", "share")
-            //,Paths.get("C:\\Program Files (x86)\\Steam")
+            Paths.get(System.getProperty("user.home"), ".local", "share"),
+            Paths.get("C:\\Program Files (x86)\\Steam")
     );
     static List<Path> directoriosProhibidos = new ArrayList<>();
     static List<Path> raicesBusqueda = new ArrayList<>(raicesBusquedaDefault);
