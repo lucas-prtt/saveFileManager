@@ -1,9 +1,7 @@
 package Archivos;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.*;
-import java.io.FileWriter;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,19 +9,34 @@ import java.util.List;
 
 
 public class AlgoritmoPredictivoPaths {
+    static List<Path> raicesBusquedaDefault = List.of(
+            Paths.get(System.getProperty("user.home"), "Documents"),
+            Paths.get(System.getProperty("user.home"), "AppData", "Local"),
+            Paths.get(System.getProperty("user.home"), "AppData", "LocalLow"),
+            Paths.get(System.getProperty("user.home"), "AppData", "Roaming"),
+            Paths.get(System.getProperty("user.home"), "Saved Games"),
+            Paths.get(System.getProperty("user.home"), ".config"),
+            Paths.get(System.getProperty("user.home"), ".local", "share")
+            //,Paths.get("C:\\Program Files (x86)\\Steam")
+    );
+    static List<Path> directoriosProhibidos = new ArrayList<>();
+    static List<Path> raicesBusqueda = new ArrayList<>(raicesBusquedaDefault);
+    public static void addDirectoriosProhibido(Path path){
+        directoriosProhibidos.add(path);
+    }
+    public static void quitarDeDirectoriosProhibidos(Path path){
+        directoriosProhibidos.remove(path);
+    }
+    public static void addRaiz(Path path){
+        raicesBusqueda.add(path);
+    }
+    public static void quitarRaiz(Path path){
+        raicesBusqueda.remove(path);
+    }
+
+
     public static Path predecir(List<Path> validos) throws Exception {
-        List<Path> raicesBusqueda = List.of(
-                Paths.get(System.getProperty("user.home")),
-                Paths.get(System.getProperty("user.home"), "AppData", "Local"),
-                Paths.get(System.getProperty("user.home"), "AppData", "LocalLow"),
-                Paths.get(System.getProperty("user.home"), "AppData", "Roaming"),
-                Paths.get(System.getProperty("user.home"), "Documents"),
-                Paths.get(System.getProperty("user.home"), "Saved Games"),
-                Paths.get(System.getProperty("user.home"), ".config"),
-                Paths.get(System.getProperty("user.home"), ".local", "share"),
-                Paths.get(System.getProperty("user.home"), "AppData", "Local", "Steam", "userdata"),
-                Paths.get("C:\\Program Files (x86)\\Steam")
-        );
+
         Path mejorCoincidencia = buscarPathSimilar(raicesBusqueda, validos);
         if (mejorCoincidencia != null) {
             return mejorCoincidencia;
@@ -33,6 +46,8 @@ public class AlgoritmoPredictivoPaths {
     }
     public static Path buscarPathSimilar(List<Path> raicesBusqueda, List<Path> pathValidos){
         List<Path> sufijos;
+
+
         sufijos = new ArrayList<>(pathValidos.stream().flatMap(p -> generarSufijos(p).stream()).toList()); // Obtiene lista con muchos posibles sufijos
         sufijos.sort((a, b) -> Integer.compare(
                 contarNiveles(b),
@@ -49,6 +64,7 @@ public class AlgoritmoPredictivoPaths {
                 Files.walkFileTree(raiz, new SimpleFileVisitor<>() { // Explora cada raiz
                     @Override
                     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) { // Ejecuta walkFileTree desde la raiz, con esta clase a modo de visitor. Solo visita directorios
+                        if(directoriosProhibidos.contains(dir)) return FileVisitResult.SKIP_SUBTREE;
                         for (Path sufijo: sufijos) {
                             if (dir.endsWith(sufijo)) {
                                 int score = contarNiveles(sufijo);
