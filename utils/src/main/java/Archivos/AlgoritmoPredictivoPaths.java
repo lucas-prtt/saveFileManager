@@ -1,7 +1,9 @@
 package Archivos;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.*;
+import java.io.FileWriter;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +21,8 @@ public class AlgoritmoPredictivoPaths {
                 Paths.get(System.getProperty("user.home"), "Saved Games"),
                 Paths.get(System.getProperty("user.home"), ".config"),
                 Paths.get(System.getProperty("user.home"), ".local", "share"),
-                Paths.get(System.getProperty("user.home"), "AppData", "Local", "Steam", "userdata")
+                Paths.get(System.getProperty("user.home"), "AppData", "Local", "Steam", "userdata"),
+                Paths.get("C:\\Program Files (x86)\\Steam")
         );
         Path mejorCoincidencia = buscarPathSimilar(raicesBusqueda, validos);
         if (mejorCoincidencia != null) {
@@ -49,13 +52,11 @@ public class AlgoritmoPredictivoPaths {
         for (Path raiz : raicesBusqueda) {
             if (!Files.exists(raiz) || !Files.isDirectory(raiz)) continue;  // Si no existe la raiz, no tiene sentido seguir analizando. Se va a la raiz siguiente
 
-
             try {
                 Files.walkFileTree(raiz, new SimpleFileVisitor<>() { // Explora cada raiz
                     @Override
                     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) { // Ejecuta walkFileTree desde la raiz, con esta clase a modo de visitor. Solo visita directorios
                         String dirPath = dir.toAbsolutePath().normalize().toString().replace('\\', '/'); // Normaliza la raiz. Se analiza de atras para adelante, por lo que no se saca C: o eso
-
                         for (String sufijo : sufijos) {
                             if (dirPath.endsWith(sufijo)) {
                                 int score = sufijo.split("/").length;
@@ -68,13 +69,14 @@ public class AlgoritmoPredictivoPaths {
                         }
                         return FileVisitResult.CONTINUE; // Visita subdirectorios (si los hay)
                     }
+                    public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                        return FileVisitResult.CONTINUE;
+                    }
                 });
             } catch (IOException e) {
-                // Podés registrar si querés, pero no interrumpimos
                 System.err.println("Error escaneando raíz: " + raiz + " -> " + e.getMessage());
             }
         }
-
         return mejorMatch[0]; // Devuelve el directorio mas adecuado, en formato Path
     }
     public static List<String> generarSufijos(Path pathValido) {
