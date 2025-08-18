@@ -24,6 +24,7 @@ public class AlgoritmoPredictivoPaths {
                 Paths.get(System.getProperty("user.home"), "AppData", "Local", "Steam", "userdata"),
                 Paths.get("C:\\Program Files (x86)\\Steam")
         );
+        System.out.println("Raices: " + raicesBusqueda);
         Path mejorCoincidencia = buscarPathSimilar(raicesBusqueda, validos);
         if (mejorCoincidencia != null) {
             return mejorCoincidencia;
@@ -32,19 +33,14 @@ public class AlgoritmoPredictivoPaths {
         }
     }
     public static Path buscarPathSimilar(List<Path> raicesBusqueda, List<Path> pathValidos){
-        List<String> sufijos = new ArrayList<>(pathValidos.stream()
-                .map(path -> path.normalize().toString().replace('\\', '/'))
-                .map(p -> p.replaceAll("^[a-zA-Z]:", "")) // quitar letra del disco si hay
-                .map(p -> p.startsWith("/") ? p.substring(1) : p) // quitar / inicial
-                .flatMap(p -> generarSufijos(Path.of(p)).stream())
-                .toList()); // Obtiene lista con muchos posibles sufijos
-
-
+        List<Path> sufijos;
+        sufijos = new ArrayList<>(pathValidos.stream().flatMap(p -> generarSufijos(p).stream()).toList()); // Obtiene lista con muchos posibles sufijos
+        System.out.println("Sufijos: " + sufijos);
         sufijos.sort((a, b) -> Integer.compare(
                 contarNiveles(b),
                 contarNiveles(a)
         ));// Los ordena de mas especificos a mas genericos
-
+        System.out.println("Sufijos ordenados: " + sufijos);
         final int[] mejorScore = {-1}; // Para comparar el mejor sufijo según cada raiz. Es lista porque se usa en otra clase
 
         final Path[] mejorMatch = {null}; // El mejor match hasta la fecha
@@ -56,10 +52,9 @@ public class AlgoritmoPredictivoPaths {
                 Files.walkFileTree(raiz, new SimpleFileVisitor<>() { // Explora cada raiz
                     @Override
                     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) { // Ejecuta walkFileTree desde la raiz, con esta clase a modo de visitor. Solo visita directorios
-                        String dirPath = dir.toAbsolutePath().normalize().toString().replace('\\', '/'); // Normaliza la raiz. Se analiza de atras para adelante, por lo que no se saca C: o eso
-                        for (String sufijo : sufijos) {
-                            if (dirPath.endsWith(sufijo)) {
-                                int score = sufijo.split("/").length;
+                        for (Path sufijo: sufijos) {
+                            if (dir.endsWith(sufijo)) {
+                                int score = contarNiveles(sufijo);
                                     if (score > mejorScore[0]) {
                                         mejorScore[0] = score;
                                         mejorMatch[0] = dir; // Guardo dir, no dirpath
@@ -79,7 +74,7 @@ public class AlgoritmoPredictivoPaths {
         }
         return mejorMatch[0]; // Devuelve el directorio mas adecuado, en formato Path
     }
-    public static List<String> generarSufijos(Path pathValido) {
+    public static List<Path> generarSufijos(Path pathValido) {
         List<String> sufijos = new ArrayList<>();
         List<String> acumulador = new ArrayList<>();
         List<String> partes = new ArrayList<>();
@@ -93,9 +88,9 @@ public class AlgoritmoPredictivoPaths {
             String sufijo = String.join("/", acumulador); // Forma el path, creando un objeto nuevo
             sufijos.add(sufijo);    // Añade el objeto nuevo a la lista de sufijos a chequear
         }
-        return sufijos;// Genera algo tipo ["Fallout", "Bethesda/Fallout", "Games/Bethesda/Fallout", etc...]
+        return sufijos.stream().map(Path::of).toList();// Genera algo tipo ["Fallout", "Bethesda/Fallout", "Games/Bethesda/Fallout", etc...]
         }
-    private static int contarNiveles(String path) {
-        return path.split("/").length;
+    private static int contarNiveles(Path path) {
+        return path.getNameCount();
     }
 }
