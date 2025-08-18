@@ -1,5 +1,8 @@
 package Archivos;
 
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,27 +13,37 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
 public class Directorio {
     // Clase encargada de manejar sinonimos para Paths
+    @Id
+    String id;
+    @Convert(converter = PathConverter.class)
     Path pathPrincipal;
+    @Convert(converter = PathConverter.class)
     List<Path> pathsSinonimos = new ArrayList<>();
 
     public Directorio(Path pathPrincipal, List<Path> pathsSinonimos){
+        id = UUID.randomUUID().toString();
         pathsSinonimos.forEach(this::addPathAsSynonim);
         setPathPrincipal(pathPrincipal);
     }
     public Directorio(String pathPrincipal, List<String> pathsSinonimos){
+        id = UUID.randomUUID().toString();
         pathsSinonimos.forEach(this::addPathAsSynonimFromString);
         setPathPrincipalFromString(pathPrincipal);
     }
     public Directorio(String pathPrincipal){
+        id = UUID.randomUUID().toString();
         setPathPrincipalFromString(pathPrincipal);
     }
     public Directorio(Path pathPrincipal){
+        id = UUID.randomUUID().toString();
         setPathPrincipal(pathPrincipal);
     }
     public Path pathFromString(String rutaTexto){

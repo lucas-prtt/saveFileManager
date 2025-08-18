@@ -1,5 +1,6 @@
 package Menus;
 
+import Archivos.Directorio;
 import Controllers.JuegosController;
 import Juegos.Juego;
 import SubMenus.SubMenuAgregarPath;
@@ -18,8 +19,8 @@ public class MenuCargarJuego extends Menu{
         System.out.println("Titulo: " + juego.getTitulo());
 
         System.out.println("Paths de guardado: ");
-        for(String path : juego.getSaveFilePaths()){
-            System.out.println("> " + path);
+        for(Directorio path : juego.getSaveFilePaths()){
+            System.out.println("> " + path.getPathPrincipal());
         }
         if(juego.getSaveFilePaths().isEmpty())
             System.out.println("Ningun filepath guardado");
