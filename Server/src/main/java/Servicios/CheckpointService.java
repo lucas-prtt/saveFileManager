@@ -1,10 +1,14 @@
 package Servicios;
 
+import Exceptions.MalformedResourceException;
+import Exceptions.ResourceAlreadyExistsException;
+import Exceptions.ResourceNotFoundException;
 import Juegos.Checkpoint;
 import Juegos.Partida;
 import Repositorios.CheckpointRepository;
 import Repositorios.JuegoRepository;
 import Repositorios.PartidaRepository;
+import ch.qos.logback.core.recovery.ResilientFileOutputStream;
 
 import java.util.Optional;
 
@@ -20,13 +24,25 @@ public class CheckpointService {
         this.partidaService = partidaService;
     }
 
-    public Checkpoint obtenerCheckpointPorJuegoPartidaYUuid(String juegotitulo, String partidatitulo, String uuid) throws Exception {
+    public Checkpoint obtenerCheckpointPorJuegoPartidaYUuid(String juegotitulo, String partidatitulo, String uuid) throws ResourceNotFoundException {
         Partida partida = partidaService.obtenerPartidaDeJuegoPorTitulo(juegotitulo, partidatitulo);
         Optional<Checkpoint> c = partida.getCheckpointById(uuid);
         if(c.isPresent()){
             return c.get();
         }
         else
-            throw new Exception("No se encontro la partida");
+            throw new ResourceNotFoundException("No se encontro el checkpoint");
     }
+    public void guardarNuevoCheckpoint(String juegoTitulo, String partidaTitulo, Checkpoint checkpoint) throws ResourceNotFoundException, ResourceAlreadyExistsException{
+        Partida partida = partidaService.obtenerPartidaDeJuegoPorTitulo(juegoTitulo, partidaTitulo);
+        if(checkpoint.getId() == null)
+            checkpoint.generateNewId();
+        else if(partida.getAllCheckpointsId().contains(checkpoint.getId()))
+            throw new ResourceAlreadyExistsException("El checkpoint con el mismo ID ya existe");
+        partida.agregarCheckpoint(checkpoint);
+        partidaService.actualizarPartida(partida);
+    }
+
+
+
 }

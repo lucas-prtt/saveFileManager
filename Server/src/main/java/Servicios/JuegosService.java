@@ -1,10 +1,9 @@
 package Servicios;
 
+import Exceptions.ResourceAlreadyExistsException;
+import Exceptions.ResourceNotFoundException;
 import Juegos.Juego;
-import Repositorios.CheckpointRepository;
 import Repositorios.JuegoRepository;
-import Repositorios.PartidaRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,12 +19,22 @@ public class JuegosService {
     public List<String> titulosDeTodosLosJuegos(){
         return juegoRepository.findAll().stream().map(Juego::getTitulo).toList();
     }
-    public Juego obtenerJuegoPorTitulo(String titulo) throws Exception {
+    public Juego obtenerJuegoPorTitulo(String titulo) throws ResourceNotFoundException {
         Optional<Juego> juego =  juegoRepository.findById(titulo);
         if(juego.isPresent())
             return juego.get();
         else
-            throw new Exception("Juego no encontrado");
+            throw new ResourceNotFoundException("Juego no encontrado");
+    }
+    public void guardarNuevoJuego(Juego juego) throws ResourceAlreadyExistsException{
+        if(juegoRepository.findById(juego.getTitulo()).isPresent())
+            throw new ResourceAlreadyExistsException("Juego ya existe con el mismo titulo");
+        juegoRepository.save(juego);
+    }
+
+
+    public void actualizarJuego(Juego juego){
+        juegoRepository.save(juego);
     }
 
 }

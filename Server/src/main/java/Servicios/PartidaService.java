@@ -1,9 +1,9 @@
 package Servicios;
 
+import Exceptions.ResourceAlreadyExistsException;
+import Exceptions.ResourceNotFoundException;
 import Juegos.Juego;
 import Juegos.Partida;
-import Repositorios.CheckpointRepository;
-import Repositorios.JuegoRepository;
 import Repositorios.PartidaRepository;
 
 import java.util.Optional;
@@ -17,7 +17,7 @@ public class PartidaService {
         this.partidaRepository = partidaRepository;
         this.juegosService = juegosService;
     }
-    public Partida obtenerPartidaDeJuegoPorTitulo(String juegotitulo, String partida) throws Exception {
+    public Partida obtenerPartidaDeJuegoPorTitulo(String juegotitulo, String partida) throws ResourceNotFoundException {
         Juego juego;
         juego = juegosService.obtenerJuegoPorTitulo(juegotitulo);
         Optional<Partida> p = juego.getPartidaByTitulo(partida);
@@ -25,7 +25,16 @@ public class PartidaService {
             return p.get();
         }
         else
-            throw new Exception("No se encontro la partida");
+            throw new ResourceNotFoundException("No se encontro la partida");
     }
-
+    public void guardarPartida(String juegotitulo, Partida partida) throws ResourceAlreadyExistsException, ResourceNotFoundException  {
+        Juego juego = juegosService.obtenerJuegoPorTitulo(juegotitulo);
+        if(juego.getTitulosPartidas().contains(juegotitulo))
+            throw new ResourceAlreadyExistsException("Partida ya existe con el mismo titulo");
+        juego.agregarPartida(partida);
+        juegosService.actualizarJuego(juego);
+    }
+    public void actualizarPartida(Partida partida){
+        partidaRepository.save(partida);
+    }
 }

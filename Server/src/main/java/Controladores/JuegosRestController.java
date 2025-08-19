@@ -1,10 +1,9 @@
 package Controladores;
 
 import Archivos.Archivo;
+import Exceptions.ResourceAlreadyExistsException;
+import Exceptions.ResourceNotFoundException;
 import Juegos.*;
-import Repositorios.CheckpointRepository;
-import Repositorios.JuegoRepository;
-import Repositorios.PartidaRepository;
 import Servicios.CheckpointService;
 import Servicios.JuegosService;
 import Servicios.PartidaService;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +37,7 @@ public class JuegosRestController {
         try {
             return ResponseEntity.ok(juegoService.obtenerJuegoPorTitulo(titulo));
         }
-        catch (Exception e){
+        catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
         }
     }
@@ -48,7 +46,7 @@ public class JuegosRestController {
         try {
             return ResponseEntity.ok(juegoService.obtenerJuegoPorTitulo(titulo).getTitulosPartidas());
         }
-        catch (Exception e){
+        catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
         }
     }
@@ -56,68 +54,63 @@ public class JuegosRestController {
     public ResponseEntity<Partida> obtenerPartidaPorJuegoYPartida(@PathVariable String titulo, @PathVariable String partida){
         try
         {return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(titulo, partida));}
-        catch (Exception e)
+        catch (ResourceNotFoundException e)
         {return ResponseEntity.notFound().build();}
     }
     @GetMapping("/{titulo}/partidas/{partida}/checkpoints")
     public ResponseEntity<List<CheckpointDTO>> obtenerCheckpoints(@PathVariable String titulo, @PathVariable String partida){
         try
         {return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(titulo, partida).getCheckpointsDTO());}
-        catch (Exception e)
+        catch (ResourceNotFoundException e)
         {return ResponseEntity.notFound().build();}
     }
     @GetMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}") // No se incluye los archivos
     public ResponseEntity<Checkpoint> obtenerCheckpoint(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
         try
         {return ResponseEntity.ok(checkpointService.obtenerCheckpointPorJuegoPartidaYUuid(titulo, partida, checkpoint));}
-        catch (Exception e)
+        catch (ResourceNotFoundException e)
         {return ResponseEntity.notFound().build();}
     }
     @GetMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}/archivos")
     public ResponseEntity<List<Archivo>> obtenerArchivosCheckpoint(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
         try
         {return ResponseEntity.ok(checkpointService.obtenerCheckpointPorJuegoPartidaYUuid(titulo, partida, checkpoint).getArchivos());}
-        catch (Exception e)
+        catch (ResourceNotFoundException e)
         {return ResponseEntity.notFound().build();}
     }
 
     @PostMapping
     public ResponseEntity<Juego> postJuego(@RequestBody Juego juego){
         System.out.println("Post de juego recibido");
-        juegoRepository.save(juego);
-        return ResponseEntity.ok(juego);
+        try {
+            juegoService.guardarNuevoJuego(juego);
+            return ResponseEntity.ok(juego);
+        }catch (ResourceAlreadyExistsException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     @PostMapping("/{juego}/partidas")
     public ResponseEntity<Partida> postPartida(@PathVariable String juego, @RequestBody Partida partida){
-        System.out.println("Post de partida recibido");
-        Optional<Juego> optj = juegoRepository.findById(juego);
-        if (optj.isEmpty())
+        try {
+            partidaService.guardarPartida(juego, partida);
+        } catch (ResourceAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
-        Juego j = optj.get();
-        partida.setJuego(j);
-        j.agregarPartida(partida);
-        if (partida.getId() == null)
-            partida.generateNewId();
-        juegoRepository.save(j);
+        }
         return ResponseEntity.ok(partida);
     }
     @PostMapping("/{juego}/partidas/{partida}/checkpoints")
     public ResponseEntity<Checkpoint> postPartida(@PathVariable String juego, @PathVariable String partida,@RequestBody Checkpoint checkpoint){
         System.out.println("Post de checkpoint recibido");
-        Optional<Juego> optj = juegoRepository.findById(juego);
-        if (optj.isEmpty())
+        try {
+            checkpointService.guardarNuevoCheckpoint(juego, partida, checkpoint);
+        }catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
-        Juego j = optj.get();
-        Optional<Partida> optp = j.getPartidaByTitulo(partida);
-        if(optp.isEmpty())
-            return ResponseEntity.notFound().build();
-        Partida p = optp.get();
-        checkpoint.setPartida(p);
-        if (checkpoint.getId() == null)
-            checkpoint.generateNewId();
-        p.agregarCheckpoint(checkpoint);
-        partidaRepository.save(p);
+        }catch (ResourceAlreadyExistsException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
         return ResponseEntity.ok(checkpoint);
     }
     @DeleteMapping("/{titulo}")

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Check;
 
 import java.util.*;
 
@@ -53,6 +54,9 @@ public class Partida {
     }
     public List<CheckpointDTO> getCheckpointsDTO(){
         return checkpoints.stream().map(Checkpoint::toDTO).toList();
+    }
+    public List<String> getAllCheckpointsId(){
+        return checkpoints.stream().map(Checkpoint::getId).toList();
     }
     public Optional<Checkpoint> getCheckpointById(String id){
         return checkpoints.stream().filter(chk ->{return Objects.equals(chk.getId(), id);
