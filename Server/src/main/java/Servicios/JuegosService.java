@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static java.nio.file.Files.delete;
+
 @Service
 public class JuegosService {
     private final JuegoRepository juegoRepository;
@@ -32,9 +34,13 @@ public class JuegosService {
         juegoRepository.save(juego);
     }
 
-
     public void actualizarJuego(Juego juego){
         juegoRepository.save(juego);
+    }
+
+    public void eliminarJuego(String juego) throws ResourceNotFoundException{
+        obtenerJuegoPorTitulo(juego);
+        juegoRepository.deleteById(juego);
     }
 
 }

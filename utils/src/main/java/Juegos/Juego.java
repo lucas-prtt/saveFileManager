@@ -49,6 +49,9 @@ public class Juego {
     public void eliminarPartidaByIndex(int index){
         partidas.remove(index);
     }
+    public void eliminarPartidaByTitulo(String titulo){
+        partidas.removeIf(partida -> Objects.equals(partida.titulo, titulo));
+    }
     public void agregarPartida(Partida partida){
         partidas.add(partida);
     }

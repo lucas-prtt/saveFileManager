@@ -55,6 +55,7 @@ public class Partida {
     public List<CheckpointDTO> getCheckpointsDTO(){
         return checkpoints.stream().map(Checkpoint::toDTO).toList();
     }
+
     public List<String> getAllCheckpointsId(){
         return checkpoints.stream().map(Checkpoint::getId).toList();
     }
@@ -68,5 +69,8 @@ public class Partida {
     }
     public void generateNewId(){
         id = UUID.randomUUID().toString();
+    }
+    public void eliminarCheckpointById(String id){
+        checkpoints.removeIf(checkpoint -> Objects.equals(checkpoint.getId(), id));
     }
 }

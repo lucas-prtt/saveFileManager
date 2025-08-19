@@ -37,4 +37,12 @@ public class PartidaService {
     public void actualizarPartida(Partida partida){
         partidaRepository.save(partida);
     }
+    public void eliminarPartida(String tituloJuego, String tituloPartida) throws ResourceNotFoundException{
+        Juego juego = juegosService.obtenerJuegoPorTitulo(tituloJuego);
+        if(juego.getTitulosPartidas().contains(tituloPartida)){
+            throw new ResourceNotFoundException("No se encontro la partida");
+        }
+        juego.eliminarPartidaByTitulo(tituloPartida);
+        juegosService.actualizarJuego(juego);
+    }
 }

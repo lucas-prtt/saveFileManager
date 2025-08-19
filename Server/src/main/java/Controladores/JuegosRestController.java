@@ -115,44 +115,30 @@ public class JuegosRestController {
     }
     @DeleteMapping("/{titulo}")
     public ResponseEntity<?> eliminarJuegoPorTitulo(@PathVariable String titulo){
-        Optional<Juego> juego =  juegoRepository.findById(titulo);
-        if(juego.isPresent()) {
-            juegoRepository.delete(juego.get());
+        try {
+            juegoService.eliminarJuego(titulo);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        else
+        }catch (ResourceNotFoundException e) {
             return ResponseEntity.notFound().build();
+        }
     }
     @DeleteMapping("/{titulo}/partidas/{partida}")
     public ResponseEntity<?> eliminarPartidaPorTitulo(@PathVariable String titulo, @PathVariable String partida){
-        Optional<Juego> juego =  juegoRepository.findById(titulo);
-        if(juego.isEmpty())
+        try {
+            partidaService.eliminarPartida(titulo, partida);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
-        Juego j = juego.get();
-        Optional<Partida> optp = j.getPartidaByTitulo(partida);
-        if(optp.isEmpty())
-            return ResponseEntity.notFound().build();
-        j.eliminarPartida(optp.get());
-        juegoRepository.save(j);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
     }
     @DeleteMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}")
-    public ResponseEntity<?> eliminarPartidaPorTitulo(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
-        Optional<Juego> juego =  juegoRepository.findById(titulo);
-        if(juego.isEmpty())
+    public ResponseEntity<?> eliminarCheckpointPorTituloPartidaYUUID(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
+        try{
+            checkpointService.eliminarCheckpoint(titulo, partida, checkpoint);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
-        Juego j = juego.get();
-        Optional<Partida> optp = j.getPartidaByTitulo(partida);
-        if(optp.isEmpty())
-            return ResponseEntity.notFound().build();
-        Partida p = optp.get();
-        Optional<Checkpoint> optchk =  p.getCheckpointById(checkpoint);
-        if(optchk.isEmpty())
-            return ResponseEntity.notFound().build();
-        Checkpoint chk = optchk.get();
-        p.eliminarCheckpoint(chk);
-        juegoRepository.save(j);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
     }
     @PatchMapping("/{titulo}")
     public ResponseEntity<Juego> patchJuego(@PathVariable String titulo, @RequestBody JuegoPatchDTO juegoDTO){

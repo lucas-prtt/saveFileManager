@@ -42,6 +42,13 @@ public class CheckpointService {
         partida.agregarCheckpoint(checkpoint);
         partidaService.actualizarPartida(partida);
     }
+    public void eliminarCheckpoint(String juegoTitulo, String partidaTitulo, String uuidCheckpoint) throws ResourceNotFoundException{
+        Partida partida = partidaService.obtenerPartidaDeJuegoPorTitulo(juegoTitulo, partidaTitulo);
+        if (!partida.getAllCheckpointsId().contains(uuidCheckpoint))
+            throw new ResourceNotFoundException("No se encontro el checkpoint");
+        partida.eliminarCheckpointById(uuidCheckpoint);
+        partidaService.actualizarPartida(partida);
+    }
 
 
 
