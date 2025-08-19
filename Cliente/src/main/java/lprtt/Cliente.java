@@ -4,8 +4,14 @@ package lprtt;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import java.util.Collections;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import java.util.Collections;
+@ComponentScan(basePackages = {"ApiClients", "ServerManagment"})
+//@EnableJpaRepositories(basePackages = "Repositorios")
+@EntityScan(basePackages = {"Juegos", "Archivos"})
 @SpringBootApplication
 public class Cliente {
 

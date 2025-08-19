@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 @Service
 public class ServerManager {
-    @Value("${app.nombre}")
+    @Value("${server.port}")
     private Integer puertoDefault;
     private final List<ServerConnection> servidoresRegistrados = new ArrayList<>();
 
