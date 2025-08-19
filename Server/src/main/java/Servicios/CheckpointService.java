@@ -9,9 +9,10 @@ import Repositorios.CheckpointRepository;
 import Repositorios.JuegoRepository;
 import Repositorios.PartidaRepository;
 import ch.qos.logback.core.recovery.ResilientFileOutputStream;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
+@Service
 public class CheckpointService {
 
     private final CheckpointRepository checkpointRepository;

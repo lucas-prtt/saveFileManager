@@ -73,4 +73,8 @@ public class Partida {
     public void eliminarCheckpointById(String id){
         checkpoints.removeIf(checkpoint -> Objects.equals(checkpoint.getId(), id));
     }
+    public void patchWithDto(PartidaPatchDTO patch){
+        if (!titulo.isEmpty())
+            titulo = patch.getTitulo();
+    }
 }

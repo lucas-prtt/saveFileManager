@@ -3,6 +3,7 @@ package Servicios;
 import Exceptions.ResourceAlreadyExistsException;
 import Exceptions.ResourceNotFoundException;
 import Juegos.Juego;
+import Juegos.JuegoPatchDTO;
 import Repositorios.JuegoRepository;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +42,12 @@ public class JuegosService {
     public void eliminarJuego(String juego) throws ResourceNotFoundException{
         obtenerJuegoPorTitulo(juego);
         juegoRepository.deleteById(juego);
+    }
+
+    public void patchJuegoWithDTO(String juegoTitulo, JuegoPatchDTO patch) throws ResourceNotFoundException{
+        Juego juego = obtenerJuegoPorTitulo(juegoTitulo);
+        juego.patchWithDto(patch);
+        actualizarJuego(juego);
     }
 
 }

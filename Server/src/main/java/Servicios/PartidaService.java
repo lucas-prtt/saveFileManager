@@ -4,10 +4,12 @@ import Exceptions.ResourceAlreadyExistsException;
 import Exceptions.ResourceNotFoundException;
 import Juegos.Juego;
 import Juegos.Partida;
+import Juegos.PartidaPatchDTO;
 import Repositorios.PartidaRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
+@Service
 public class PartidaService {
 
     private final PartidaRepository partidaRepository;
@@ -44,5 +46,10 @@ public class PartidaService {
         }
         juego.eliminarPartidaByTitulo(tituloPartida);
         juegosService.actualizarJuego(juego);
+    }
+    public void patchPartida(String tituloJuego, String tituloPartida, PartidaPatchDTO patchDTO) throws ResourceNotFoundException{
+        Partida partida = obtenerPartidaDeJuegoPorTitulo(tituloJuego, tituloPartida);
+        partida.patchWithDto(patchDTO);
+        actualizarPartida(partida);
     }
 }
