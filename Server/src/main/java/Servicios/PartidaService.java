@@ -11,11 +11,15 @@ import java.util.Optional;
 public class PartidaService {
 
     private final PartidaRepository partidaRepository;
+    private final JuegosService juegosService;
 
-    public PartidaService(PartidaRepository partidaRepository) {
+    public PartidaService(PartidaRepository partidaRepository, JuegosService juegosService) {
         this.partidaRepository = partidaRepository;
+        this.juegosService = juegosService;
     }
-    public Partida obtenerPartidaDeJuegoPorTitulo(Juego juego, String partida) throws Exception {
+    public Partida obtenerPartidaDeJuegoPorTitulo(String juegotitulo, String partida) throws Exception {
+        Juego juego;
+        juego = juegosService.obtenerJuegoPorTitulo(juegotitulo);
         Optional<Partida> p = juego.getPartidaByTitulo(partida);
         if(p.isPresent()){
             return p.get();
@@ -23,4 +27,5 @@ public class PartidaService {
         else
             throw new Exception("No se encontro la partida");
     }
+
 }

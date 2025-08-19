@@ -55,34 +55,28 @@ public class JuegosRestController {
     @GetMapping("/{titulo}/partidas/{partida}")
     public ResponseEntity<Partida> obtenerPartidaPorJuegoYPartida(@PathVariable String titulo, @PathVariable String partida){
         try
-        {return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(juegoService.obtenerJuegoPorTitulo(titulo), partida));}
+        {return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(titulo, partida));}
         catch (Exception e)
         {return ResponseEntity.notFound().build();}
     }
     @GetMapping("/{titulo}/partidas/{partida}/checkpoints")
     public ResponseEntity<List<CheckpointDTO>> obtenerCheckpoints(@PathVariable String titulo, @PathVariable String partida){
         try
-        {return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(juegoService.obtenerJuegoPorTitulo(titulo), partida).getCheckpointsDTO());}
+        {return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(titulo, partida).getCheckpointsDTO());}
         catch (Exception e)
         {return ResponseEntity.notFound().build();}
     }
     @GetMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}") // No se incluye los archivos
     public ResponseEntity<Checkpoint> obtenerCheckpoint(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
         try
-        {return ResponseEntity.ok(
-                checkpointService.obtenerCheckpointPorId(partidaService.obtenerPartidaDeJuegoPorTitulo(
-                juegoService.obtenerJuegoPorTitulo(titulo), partida), checkpoint));
-        }
+        {return ResponseEntity.ok(checkpointService.obtenerCheckpointPorJuegoPartidaYUuid(titulo, partida, checkpoint));}
         catch (Exception e)
         {return ResponseEntity.notFound().build();}
     }
     @GetMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}/archivos")
     public ResponseEntity<List<Archivo>> obtenerArchivosCheckpoint(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
         try
-        {return ResponseEntity.ok(
-                checkpointService.obtenerCheckpointPorId(partidaService.obtenerPartidaDeJuegoPorTitulo(
-                        juegoService.obtenerJuegoPorTitulo(titulo), partida), checkpoint).getArchivos());
-        }
+        {return ResponseEntity.ok(checkpointService.obtenerCheckpointPorJuegoPartidaYUuid(titulo, partida, checkpoint).getArchivos());}
         catch (Exception e)
         {return ResponseEntity.notFound().build();}
     }

@@ -11,12 +11,17 @@ import java.util.Optional;
 public class CheckpointService {
 
     private final CheckpointRepository checkpointRepository;
+    private final JuegosService juegosService;
+    private final PartidaService partidaService;
 
-    public CheckpointService(CheckpointRepository checkpointRepository) {
+    public CheckpointService(CheckpointRepository checkpointRepository, JuegosService juegosService, PartidaService partidaService) {
         this.checkpointRepository = checkpointRepository;
+        this.juegosService = juegosService;
+        this.partidaService = partidaService;
     }
 
-    public Checkpoint obtenerCheckpointPorId(Partida partida, String uuid) throws Exception {
+    public Checkpoint obtenerCheckpointPorJuegoPartidaYUuid(String juegotitulo, String partidatitulo, String uuid) throws Exception {
+        Partida partida = partidaService.obtenerPartidaDeJuegoPorTitulo(juegotitulo, partidatitulo);
         Optional<Checkpoint> c = partida.getCheckpointById(uuid);
         if(c.isPresent()){
             return c.get();
