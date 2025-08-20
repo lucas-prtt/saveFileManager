@@ -3,7 +3,6 @@ package Servicios;
 import Exceptions.ResourceAlreadyExistsException;
 import Exceptions.ResourceNotFoundException;
 import Juegos.Juego;
-import Juegos.JuegoPatchDTO;
 import JuegosConverter.JuegoConverter;
 import JuegosDtos.JuegoDTO;
 import Repositorios.JuegoRepository;
@@ -51,7 +50,7 @@ public class JuegosService {
         juegoRepository.deleteById(juego);
     }
 
-    public void patchJuegoWithDTO(String juegoTitulo, JuegoPatchDTO patch) throws ResourceNotFoundException{
+    public void patchJuegoWithDTO(String juegoTitulo, JuegoDTO patch) throws ResourceNotFoundException{
         Juego juego = obtenerJuegoPorTitulo(juegoTitulo);
         juego.patchWithDto(patch);
         actualizarJuego(juego);

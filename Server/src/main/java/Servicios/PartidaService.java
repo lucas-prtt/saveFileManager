@@ -4,7 +4,6 @@ import Exceptions.ResourceAlreadyExistsException;
 import Exceptions.ResourceNotFoundException;
 import Juegos.Juego;
 import Juegos.Partida;
-import Juegos.PartidaPatchDTO;
 import JuegosConverter.PartidaConverter;
 import JuegosDtos.PartidaDTO;
 import Repositorios.PartidaRepository;
@@ -52,7 +51,7 @@ public class PartidaService {
         juego.eliminarPartidaByTitulo(tituloPartida);
         juegosService.actualizarJuego(juego);
     }
-    public void patchPartida(String tituloJuego, String tituloPartida, PartidaPatchDTO patchDTO) throws ResourceNotFoundException{
+    public void patchPartida(String tituloJuego, String tituloPartida, PartidaDTO patchDTO) throws ResourceNotFoundException{
         Partida partida = obtenerPartidaDeJuegoPorTitulo(tituloJuego, tituloPartida);
         partida.patchWithDto(patchDTO);
         actualizarPartida(partida);

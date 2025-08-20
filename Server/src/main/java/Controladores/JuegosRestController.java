@@ -156,23 +156,23 @@ public class JuegosRestController {
         }
     }
     @PatchMapping("/{titulo}")
-    public ResponseEntity<Juego> patchJuego(@PathVariable String titulo, @RequestBody JuegoPatchDTO juegoDTO){
+    public ResponseEntity<JuegoDTO> patchJuego(@PathVariable String titulo, @RequestBody JuegoDTO juegoDTO){
         System.out.println("Patch juego");
         try {
             juegoService.patchJuegoWithDTO(titulo, juegoDTO);
             Juego jue = juegoService.obtenerJuegoPorTitulo(titulo);
-            return ResponseEntity.ok(jue);
+            return ResponseEntity.ok(jue.toJuegoDTO());
         }catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
         }
     }
     @PatchMapping("/{titulo}/partidas/{partida}")
-    public ResponseEntity<Partida> partchPartida( @PathVariable String tituloJuego, @PathVariable String partida, @RequestBody PartidaPatchDTO patch){
+    public ResponseEntity<PartidaDTO> partchPartida( @PathVariable String tituloJuego, @PathVariable String partida, @RequestBody PartidaDTO patch){
         System.out.println("Patch partida");
         try {
             partidaService.patchPartida(tituloJuego, partida, patch);
             Partida ptd = partidaService.obtenerPartidaDeJuegoPorTitulo(tituloJuego, partida);
-            return ResponseEntity.ok(ptd);
+            return ResponseEntity.ok(ptd.toPartidaDTO());
         }catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
         }
