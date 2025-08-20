@@ -3,10 +3,10 @@ package Juegos;
 
 import Archivos.Directorio;
 import Exceptions.ResourceNotFoundException;
+import JuegosDtos.JuegoDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.nio.file.Path;
@@ -81,7 +81,7 @@ public class Juego {
     public Optional<Partida> getPartidaByTitulo(String titulo){
         return partidas.stream().filter(partida -> {return Objects.equals(partida.getTitulo(), titulo);}).findFirst();
     }
-    public JuegoPatchDTO toDTO(){
+    public JuegoPatchDTO toPatchDTO(){
         if(this.partidaActual != null)
             return new JuegoPatchDTO(titulo, saveFilePaths, partidaActual.getTitulo());
         return new JuegoPatchDTO(titulo, saveFilePaths, null);
@@ -101,5 +101,9 @@ public class Juego {
             System.out.println("Partida no encontrada");
         }
     }
+    public JuegoDTO toJuegoDTO(){
+        return new JuegoDTO(titulo, partidaActual.getTitulo(), getTitulosPartidas(), saveFilePaths);
+    }
+
 
 }

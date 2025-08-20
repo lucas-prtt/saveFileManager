@@ -1,5 +1,8 @@
 package Juegos;
 
+import JuegosDtos.CheckpointDTO;
+import JuegosDtos.JuegoDTO;
+import JuegosDtos.PartidaDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -57,7 +60,7 @@ public class Partida {
     }
     @JsonIgnore
     public List<CheckpointDTO> getCheckpointsDTO(){
-        return checkpoints.stream().map(Checkpoint::toDTO).toList();
+        return checkpoints.stream().map(Checkpoint::toCheckpointDTO).toList();
     }
     @JsonIgnore
     public List<String> getAllCheckpointsId(){
@@ -81,5 +84,9 @@ public class Partida {
     public void patchWithDto(PartidaPatchDTO patch){
         if (!patch.getTitulo().isEmpty())
             titulo = patch.getTitulo();
+    }
+
+    public PartidaDTO toPartidaDTO(){
+        return new PartidaDTO(juego.getTitulo(), id, titulo, getAllCheckpointsId());
     }
 }

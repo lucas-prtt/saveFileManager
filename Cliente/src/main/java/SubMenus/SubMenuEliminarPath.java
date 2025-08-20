@@ -29,6 +29,6 @@ public class SubMenuEliminarPath {
             throw new Exception("Error: path invalido");
         System.out.println("Path \" " + juego.getSaveFilePaths().get(eliminado)+ "\" eliminado");
         juego.removeSaveFilePath(eliminado);
-        new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
+        new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toPatchDTO());
     }
 }

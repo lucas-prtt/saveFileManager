@@ -2,11 +2,9 @@ package SubMenus;
 
 import ApiClients.CheckpointClient;
 import ApiClients.JuegoClient;
-import ApiClients.PartidaClient;
 import Juegos.Checkpoint;
 import Juegos.Juego;
 import Juegos.Partida;
-import ServerManagment.ServerConnection;
 import ServerManagment.ServerManager;
 
 import java.util.Objects;
@@ -44,7 +42,7 @@ public class SubMenuCargarUltimoCheckpoint {
             partida.cargarUltimoCheckpoint();
             new CheckpointClient().postearCheckpoint(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.getPartidaActual().getTitulo(), chk);
             juego.setPartidaActual(partida);
-            new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
+            new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toPatchDTO());
         }
     }
 }

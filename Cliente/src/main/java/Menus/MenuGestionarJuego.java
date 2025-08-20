@@ -6,7 +6,6 @@ import Juegos.Juego;
 import ServerManagment.ServerManager;
 import SubMenus.*;
 import Utils.SimularTachado;
-import org.apache.tomcat.util.modeler.ParameterInfo;
 
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class MenuGestionarJuego extends Menu{
             case 8:
                 juego.setPartidaActual(null);
                 juego.vaciarArchivosDeGuardado();
-                new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
+                new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toPatchDTO());
                 break;
             case 9:
                 return true;

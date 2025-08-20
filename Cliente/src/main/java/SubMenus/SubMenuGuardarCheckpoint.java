@@ -2,11 +2,9 @@ package SubMenus;
 
 import ApiClients.CheckpointClient;
 import ApiClients.JuegoClient;
-import ApiClients.PartidaClient;
 import Juegos.Checkpoint;
 import Juegos.Juego;
 import Juegos.Partida;
-import ServerManagment.ServerConnection;
 import ServerManagment.ServerManager;
 
 import java.util.Objects;
@@ -53,7 +51,7 @@ public class SubMenuGuardarCheckpoint {
                     chk = partida.crearCheckpoint(nombre);
                 juego.setPartidaActual(partida);
                 System.out.println("La partida actual se ha actualizado a la seleccionada ("+partida.getTitulo()+")");
-                new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
+                new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toPatchDTO());
                 new CheckpointClient().postearCheckpoint(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), partida.getTitulo(), chk);
             }
         }

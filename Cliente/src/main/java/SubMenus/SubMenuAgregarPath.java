@@ -15,6 +15,6 @@ public class SubMenuAgregarPath {
     public void abrirMenu() throws Exception {
         System.out.println("Ingrese el Path a agregar:");
         juego.addSaveFilePath(Path.of(new Scanner(System.in).nextLine()));
-        new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
+        new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toPatchDTO());
     }
 }

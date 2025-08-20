@@ -1,10 +1,13 @@
 package Juegos;
 
 import Archivos.Archivo;
+import JuegosDtos.CheckpointDTO;
+import JuegosDtos.PartidaDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Check;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,10 +48,10 @@ public class Checkpoint {
         else
             return fechaDeCreacion.toString() + " - " + descripcion;
     }
-    public CheckpointDTO toDTO(){
-        return new CheckpointDTO(id, fechaDeCreacion, descripcion);
-    }
     public void generateNewId(){
         id = UUID.randomUUID().toString();
+    }
+    public CheckpointDTO toCheckpointDTO(){
+        return new CheckpointDTO(id, descripcion, fechaDeCreacion, partida.getTitulo());
     }
 }

@@ -50,7 +50,7 @@ public class SubMenuCargarCheckpoint {
                 }
                 new CheckpointClient().postearCheckpoint(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.getPartidaActual().getTitulo(), chk);
                 juego.setPartidaActual(partida);
-                new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
+                new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toPatchDTO());
             }
             partida.cargarCheckpoint(partida.getCheckpoints().get(indice));
             return;
