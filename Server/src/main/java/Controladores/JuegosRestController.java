@@ -4,6 +4,9 @@ import Archivos.Archivo;
 import Exceptions.ResourceAlreadyExistsException;
 import Exceptions.ResourceNotFoundException;
 import Juegos.*;
+import JuegosDtos.CheckpointDTO;
+import JuegosDtos.JuegoDTO;
+import JuegosDtos.PartidaDTO;
 import Servicios.CheckpointService;
 import Servicios.JuegosService;
 import Servicios.PartidaService;
@@ -29,15 +32,15 @@ public class JuegosRestController {
 
     @GetMapping
     public ResponseEntity<List<String>> listarJuegos(){
-        System.out.println("Patch juegos");
+        System.out.println("Get juegos");
         return ResponseEntity.ok(juegoService.titulosDeTodosLosJuegos());
     }
 
     @GetMapping("/{titulo}")
-    public ResponseEntity<Juego> obtenerJuegoPorTitulo(@PathVariable String titulo){
+    public ResponseEntity<JuegoDTO> obtenerJuegoPorTitulo(@PathVariable String titulo){
         System.out.println("Get juego");
         try {
-            return ResponseEntity.ok(juegoService.obtenerJuegoPorTitulo(titulo));
+            return ResponseEntity.ok(juegoService.obtenerJuegoPorTitulo(titulo).toJuegoDTO());
         }
         catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
@@ -53,24 +56,11 @@ public class JuegosRestController {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping("/{titulo}/partidaActual")
-    public ResponseEntity<String> obtenerPartidaActualPorJuego(@PathVariable String titulo){
-        System.out.println("Get PartidaActual");
-        try {
-            Partida pActual = juegoService.obtenerJuegoPorTitulo(titulo).getPartidaActual();
-            if (pActual == null)
-                return ResponseEntity.ok(null);
-            return ResponseEntity.ok(pActual.getTitulo());
-        }
-        catch (ResourceNotFoundException e){
-            return ResponseEntity.notFound().build();
-        }
-    }
     @GetMapping("/{titulo}/partidas/{partida}")
-    public ResponseEntity<Partida> obtenerPartidaPorJuegoYPartida(@PathVariable String titulo, @PathVariable String partida){
+    public ResponseEntity<PartidaDTO> obtenerPartidaPorJuegoYPartida(@PathVariable String titulo, @PathVariable String partida){
         System.out.println("Get Partida");
         try
-        {return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(titulo, partida));}
+        {return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(titulo, partida).toPartidaDTO());}
         catch (ResourceNotFoundException e)
         {return ResponseEntity.notFound().build();}
     }
@@ -83,10 +73,10 @@ public class JuegosRestController {
         {return ResponseEntity.notFound().build();}
     }
     @GetMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}") // No se incluye los archivos
-    public ResponseEntity<Checkpoint> obtenerCheckpoint(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
+    public ResponseEntity<CheckpointDTO> obtenerCheckpoint(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
         System.out.println("Get Checkpoint");
         try
-        {return ResponseEntity.ok(checkpointService.obtenerCheckpointPorJuegoPartidaYUuid(titulo, partida, checkpoint));}
+        {return ResponseEntity.ok(checkpointService.obtenerCheckpointPorJuegoPartidaYUuid(titulo, partida, checkpoint).toCheckpointDTO());}
         catch (ResourceNotFoundException e)
         {return ResponseEntity.notFound().build();}
     }
