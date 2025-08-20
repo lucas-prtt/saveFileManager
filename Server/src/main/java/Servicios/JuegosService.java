@@ -24,10 +24,12 @@ public class JuegosService {
     }
     public Juego obtenerJuegoPorTitulo(String titulo) throws ResourceNotFoundException {
         Optional<Juego> juego =  juegoRepository.findById(titulo);
-        if(juego.isPresent())
+        if(juego.isPresent()) {
             return juego.get();
-        else
+        }
+        else{
             throw new ResourceNotFoundException("Juego no encontrado");
+        }
     }
     public void guardarNuevoJuego(Juego juego) throws ResourceAlreadyExistsException{
         if(juegoRepository.findById(juego.getTitulo()).isPresent())

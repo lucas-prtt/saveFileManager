@@ -29,11 +29,13 @@ public class JuegosRestController {
 
     @GetMapping
     public ResponseEntity<List<String>> listarJuegos(){
+        System.out.println("Patch juegos");
         return ResponseEntity.ok(juegoService.titulosDeTodosLosJuegos());
     }
 
     @GetMapping("/{titulo}")
     public ResponseEntity<Juego> obtenerJuegoPorTitulo(@PathVariable String titulo){
+        System.out.println("Get juego");
         try {
             return ResponseEntity.ok(juegoService.obtenerJuegoPorTitulo(titulo));
         }
@@ -43,6 +45,7 @@ public class JuegosRestController {
     }
     @GetMapping("/{titulo}/partidas")
     public ResponseEntity<List<String>> listarPartidasPorJuego(@PathVariable String titulo){
+        System.out.println("Get Partidas");
         try {
             return ResponseEntity.ok(juegoService.obtenerJuegoPorTitulo(titulo).getTitulosPartidas());
         }
@@ -52,6 +55,7 @@ public class JuegosRestController {
     }
     @GetMapping("/{titulo}/partidas/{partida}")
     public ResponseEntity<Partida> obtenerPartidaPorJuegoYPartida(@PathVariable String titulo, @PathVariable String partida){
+        System.out.println("Get Partida");
         try
         {return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(titulo, partida));}
         catch (ResourceNotFoundException e)
@@ -59,6 +63,7 @@ public class JuegosRestController {
     }
     @GetMapping("/{titulo}/partidas/{partida}/checkpoints")
     public ResponseEntity<List<CheckpointDTO>> obtenerCheckpoints(@PathVariable String titulo, @PathVariable String partida){
+        System.out.println("Get Checkpoints");
         try
         {return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(titulo, partida).getCheckpointsDTO());}
         catch (ResourceNotFoundException e)
@@ -66,6 +71,7 @@ public class JuegosRestController {
     }
     @GetMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}") // No se incluye los archivos
     public ResponseEntity<Checkpoint> obtenerCheckpoint(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
+        System.out.println("Get Checkpoint");
         try
         {return ResponseEntity.ok(checkpointService.obtenerCheckpointPorJuegoPartidaYUuid(titulo, partida, checkpoint));}
         catch (ResourceNotFoundException e)
@@ -73,6 +79,7 @@ public class JuegosRestController {
     }
     @GetMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}/archivos")
     public ResponseEntity<List<Archivo>> obtenerArchivosCheckpoint(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
+        System.out.println("Get Archivos");
         try
         {return ResponseEntity.ok(checkpointService.obtenerCheckpointPorJuegoPartidaYUuid(titulo, partida, checkpoint).getArchivos());}
         catch (ResourceNotFoundException e)
@@ -81,7 +88,7 @@ public class JuegosRestController {
 
     @PostMapping
     public ResponseEntity<Juego> postJuego(@RequestBody Juego juego){
-        System.out.println("Post de juego recibido");
+        System.out.println("Post Juego");
         try {
             juegoService.guardarNuevoJuego(juego);
             return ResponseEntity.ok(juego);
@@ -92,6 +99,7 @@ public class JuegosRestController {
 
     @PostMapping("/{juego}/partidas")
     public ResponseEntity<Partida> postPartida(@PathVariable String juego, @RequestBody Partida partida){
+        System.out.println("Post Partida");
         try {
             partidaService.guardarPartida(juego, partida);
         } catch (ResourceAlreadyExistsException e) {
@@ -103,7 +111,7 @@ public class JuegosRestController {
     }
     @PostMapping("/{juego}/partidas/{partida}/checkpoints")
     public ResponseEntity<Checkpoint> postPartida(@PathVariable String juego, @PathVariable String partida,@RequestBody Checkpoint checkpoint){
-        System.out.println("Post de checkpoint recibido");
+        System.out.println("Post Checkpoint");
         try {
             checkpointService.guardarNuevoCheckpoint(juego, partida, checkpoint);
         }catch (ResourceNotFoundException e){
@@ -115,6 +123,7 @@ public class JuegosRestController {
     }
     @DeleteMapping("/{titulo}")
     public ResponseEntity<?> eliminarJuegoPorTitulo(@PathVariable String titulo){
+        System.out.println("Delete juego");
         try {
             juegoService.eliminarJuego(titulo);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -124,6 +133,7 @@ public class JuegosRestController {
     }
     @DeleteMapping("/{titulo}/partidas/{partida}")
     public ResponseEntity<?> eliminarPartidaPorTitulo(@PathVariable String titulo, @PathVariable String partida){
+        System.out.println("Delete partida");
         try {
             partidaService.eliminarPartida(titulo, partida);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -133,6 +143,8 @@ public class JuegosRestController {
     }
     @DeleteMapping("/{titulo}/partidas/{partida}/checkpoints/{checkpoint}")
     public ResponseEntity<?> eliminarCheckpointPorTituloPartidaYUUID(@PathVariable String titulo, @PathVariable String partida, @PathVariable String checkpoint){
+        System.out.println("Delete checkpoint");
+
         try{
             checkpointService.eliminarCheckpoint(titulo, partida, checkpoint);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -142,6 +154,7 @@ public class JuegosRestController {
     }
     @PatchMapping("/{titulo}")
     public ResponseEntity<Juego> patchJuego(@PathVariable String titulo, @RequestBody JuegoPatchDTO juegoDTO){
+        System.out.println("Patch juego");
         try {
             juegoService.patchJuegoWithDTO(titulo, juegoDTO);
             return ResponseEntity.ok(juegoService.obtenerJuegoPorTitulo(titulo));
@@ -151,6 +164,7 @@ public class JuegosRestController {
     }
     @PatchMapping("/{titulo}/partidas/{partida}")
     public ResponseEntity<Partida> partchPartida( @PathVariable String tituloJuego, @PathVariable String partida, @RequestBody PartidaPatchDTO patch){
+        System.out.println("Patch partida");
         try {
             partidaService.patchPartida(tituloJuego, partida, patch);
             return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(tituloJuego, partida));

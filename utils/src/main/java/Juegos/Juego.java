@@ -27,6 +27,7 @@ public class Juego {
             @OneToOne
     Partida partidaActual;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+            @JoinColumn(name = "juego_titulo")
     List<Directorio> saveFilePaths;
 
     public Juego(String titulo){

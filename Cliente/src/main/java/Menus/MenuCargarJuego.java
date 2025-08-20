@@ -9,6 +9,7 @@ import SubMenus.SubMenuAgregarPath;
 import SubMenus.SubMenuEliminarPath;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.nio.file.Path;
 import java.util.Scanner;
 
 public class MenuCargarJuego extends Menu{
@@ -47,10 +48,28 @@ public class MenuCargarJuego extends Menu{
                 juego.setTitulo(new Scanner(System.in).nextLine());
                 break;
             case 2:
-                new SubMenuAgregarPath(juego).abrirMenu();
+                System.out.println("Ingrese el Path a agregar:");
+                juego.addSaveFilePath(Path.of(new Scanner(System.in).nextLine()));
                 break;
             case 3:
-                new SubMenuEliminarPath(juego).abrirMenu();
+                if(juego.getSaveFilePaths().isEmpty())
+                    throw  new Exception("Error: no hay paths guardados");
+                int i = 0;
+                System.out.println("Elija cual eliminar. Presione 0 para cancelar");
+                for(Directorio path : juego.getSaveFilePaths()){
+                    System.out.println(i+1 + ". " + path.getPathPrincipal());
+                    i++;
+                }
+                int eliminado = new Scanner(System.in).nextInt() - 1;
+                if(eliminado == -1){
+                    break;
+                }
+                if (eliminado > i || eliminado < 0){
+                    System.out.println("Error, path invalido");
+                    break;
+                }
+                System.out.println("Path \" " + juego.getSaveFilePaths().get(eliminado)+ "\" eliminado");
+                juego.removeSaveFilePath(eliminado);
                 break;
             case 4:
                 new JuegoClient().postearJuego(ServerManager.getInstance().getServidorLocal(), juego);

@@ -31,8 +31,9 @@ public class PartidaService {
     }
     public void guardarPartida(String juegotitulo, Partida partida) throws ResourceAlreadyExistsException, ResourceNotFoundException  {
         Juego juego = juegosService.obtenerJuegoPorTitulo(juegotitulo);
-        if(juego.getTitulosPartidas().contains(juegotitulo))
+        if(juego.getTitulosPartidas().contains(juegotitulo)) {
             throw new ResourceAlreadyExistsException("Partida ya existe con el mismo titulo");
+        }
         juego.agregarPartida(partida);
         juegosService.actualizarJuego(juego);
     }

@@ -21,7 +21,7 @@ public class Partida {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     List<Checkpoint> checkpoints = new ArrayList<>();
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name="juego_titulo")
             @Setter
             @JsonIgnore
     Juego juego;
