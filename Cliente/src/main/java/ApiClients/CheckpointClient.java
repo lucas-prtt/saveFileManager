@@ -5,15 +5,11 @@ import Juegos.*;
 import ServerManagment.ServerConnection;
 import ServerManagment.ServerManager;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 public class CheckpointClient {
 
-    ServerManager serverManager;
-    public CheckpointClient(ServerManager serverManager){
-        this.serverManager = serverManager;
-    }
 
     // GET
     public List<CheckpointDTO> obtenerCheckpointsDTO(ServerConnection servidor, String tituloJuego, String tituloPartida){

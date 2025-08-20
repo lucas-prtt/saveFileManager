@@ -1,20 +1,12 @@
 package ApiClients;
 
-import Archivos.Archivo;
 import Juegos.*;
 import ServerManagment.ServerConnection;
-import ServerManagment.ServerManager;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class JuegoClient {
-    ServerManager serverManager;
-    public JuegoClient(ServerManager serverManager){
-        this.serverManager = serverManager;
-    }
 
     // GET
 

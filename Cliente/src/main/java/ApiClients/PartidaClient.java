@@ -5,15 +5,10 @@ import Juegos.*;
 import ServerManagment.ServerConnection;
 import ServerManagment.ServerManager;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 public class PartidaClient {
-
-    ServerManager serverManager;
-    public PartidaClient(ServerManager serverManager){
-        this.serverManager = serverManager;
-    }
 
     // GET
 

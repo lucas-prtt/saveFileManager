@@ -1,15 +1,22 @@
 package Menus;
 
+import ApiClients.JuegoClient;
 import Archivos.Directorio;
 import Controllers.JuegosController;
 import Juegos.Juego;
+import ServerManagment.ServerConnection;
+import ServerManagment.ServerManager;
 import SubMenus.SubMenuAgregarPath;
 import SubMenus.SubMenuEliminarPath;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Scanner;
 
 public class MenuCargarJuego extends Menu{
     Juego juego;
+
+
+
     public MenuCargarJuego(){
         juego = new Juego("Nombre del juego");
     }
@@ -47,7 +54,7 @@ public class MenuCargarJuego extends Menu{
                 new SubMenuEliminarPath(juego).abrirMenu();
                 break;
             case 4:
-                JuegosController.getInstance().addJuego(juego);
+                new JuegoClient().postearJuego(ServerManager.getInstance().getServidorLocal(), juego);
                 return true;
             case 5:
                 return true;
