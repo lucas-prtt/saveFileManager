@@ -157,7 +157,8 @@ public class JuegosRestController {
         System.out.println("Patch juego");
         try {
             juegoService.patchJuegoWithDTO(titulo, juegoDTO);
-            return ResponseEntity.ok(juegoService.obtenerJuegoPorTitulo(titulo));
+            Juego jue = juegoService.obtenerJuegoPorTitulo(titulo);
+            return ResponseEntity.ok(jue);
         }catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
         }
@@ -167,7 +168,8 @@ public class JuegosRestController {
         System.out.println("Patch partida");
         try {
             partidaService.patchPartida(tituloJuego, partida, patch);
-            return ResponseEntity.ok(partidaService.obtenerPartidaDeJuegoPorTitulo(tituloJuego, partida));
+            Partida ptd = partidaService.obtenerPartidaDeJuegoPorTitulo(tituloJuego, partida);
+            return ResponseEntity.ok(ptd);
         }catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();
         }

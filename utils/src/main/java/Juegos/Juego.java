@@ -13,21 +13,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Setter
 @Getter
 @Entity
 @NoArgsConstructor
 public class Juego {
-    @Setter
     @Id
     String titulo;
     @OneToMany(mappedBy = "juego", cascade = CascadeType.ALL, orphanRemoval = true)
+
     List<Partida> partidas;
 
-    @Setter
-            @OneToOne
+    @OneToOne
+
     Partida partidaActual;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-            @JoinColumn(name = "juego_titulo")
+    @JoinColumn(name = "juego_titulo")
     List<Directorio> saveFilePaths;
 
     public Juego(String titulo){
@@ -54,6 +55,7 @@ public class Juego {
         partidas.removeIf(partida -> Objects.equals(partida.titulo, titulo));
     }
     public void agregarPartida(Partida partida){
+        partida.setJuego(this);
         partidas.add(partida);
     }
     public void vaciarArchivosDeGuardado(){
