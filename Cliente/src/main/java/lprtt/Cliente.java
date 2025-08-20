@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.Collections;
 @ComponentScan(basePackages = {"ApiClients", "ServerManagment"})
-//@EnableJpaRepositories(basePackages = "Repositorios")
+@EnableJpaRepositories(basePackages = "Repositorios")
 @EntityScan(basePackages = {"Juegos", "Archivos"})
 @SpringBootApplication
 public class Cliente {
