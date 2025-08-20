@@ -27,8 +27,6 @@ public class SubMenuEliminarCheckpoint {
             return;
         }
         else if (indice >=0 && indice<partida.getCheckpoints().size()){
-            if (indice == 0)
-                return;
             Checkpoint chk = partida.getCheckpoints().get(indice);
             new CheckpointClient().eliminarCheckpoint(ServerManager.getInstance().getServidorLocal(), partida.getJuego().getTitulo(), partida.getTitulo(), chk.getId());
             partida.eliminarCheckpointByIndex(indice);

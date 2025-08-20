@@ -54,10 +54,13 @@ public class JuegosRestController {
         }
     }
     @GetMapping("/{titulo}/partidaActual")
-    public ResponseEntity<String> listarPartidaActualPorJuego(@PathVariable String titulo){
+    public ResponseEntity<String> obtenerPartidaActualPorJuego(@PathVariable String titulo){
         System.out.println("Get PartidaActual");
         try {
-            return ResponseEntity.ok(juegoService.obtenerJuegoPorTitulo(titulo).getPartidaActual().getTitulo());
+            Partida pActual = juegoService.obtenerJuegoPorTitulo(titulo).getPartidaActual();
+            if (pActual == null)
+                return ResponseEntity.ok(null);
+            return ResponseEntity.ok(pActual.getTitulo());
         }
         catch (ResourceNotFoundException e){
             return ResponseEntity.notFound().build();

@@ -23,7 +23,6 @@ public class Partida {
     @ManyToOne
     @JoinColumn(name="juego_titulo")
             @Setter
-            @JsonIgnore
     Juego juego;
 
     public Partida(String titulo, Juego juego) {
@@ -56,13 +55,15 @@ public class Partida {
     public void eliminarCheckpoint(Checkpoint chk){
         checkpoints.remove(chk);
     }
+    @JsonIgnore
     public List<CheckpointDTO> getCheckpointsDTO(){
         return checkpoints.stream().map(Checkpoint::toDTO).toList();
     }
-
+    @JsonIgnore
     public List<String> getAllCheckpointsId(){
         return checkpoints.stream().map(Checkpoint::getId).toList();
     }
+    @JsonIgnore
     public Optional<Checkpoint> getCheckpointById(String id){
         return checkpoints.stream().filter(chk ->{return Objects.equals(chk.getId(), id);
         }).findFirst();

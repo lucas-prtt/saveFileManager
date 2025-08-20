@@ -5,6 +5,7 @@ import ApiClients.PartidaClient;
 import Juegos.Juego;
 import Juegos.Partida;
 import ServerManagment.ServerManager;
+import jakarta.servlet.http.Part;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -25,11 +26,11 @@ public class SubMenuCrearPartida {
         juego.agregarPartida(partida);
         new PartidaClient().postearPartida(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), partida);
         System.out.println("Partida creada");
-        if(juego.getPartidas().size() == 1){
+        if(new PartidaClient().obtenerTitulosPartidas(ServerManager.getInstance().getServidorLocal(), juego.getTitulo()).isEmpty()){
             juego.setPartidaActual(juego.getPartidas().getFirst());
             System.out.println("Partida asignada como partida actual, por ser la unica disponible");
+            new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
         }
-        new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
         return;
     }
 }
