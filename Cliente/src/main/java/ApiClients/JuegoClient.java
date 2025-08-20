@@ -1,6 +1,7 @@
 package ApiClients;
 
 import Juegos.*;
+import JuegosDtos.JuegoDTO;
 import ServerManagment.ServerConnection;
 import org.springframework.core.ParameterizedTypeReference;
 
@@ -19,8 +20,8 @@ public class JuegoClient {
 
     // POST
 
-    public Juego postearJuego(ServerConnection servidor, Juego juego) {
-        return servidor.getWebClient().post().uri("/api/juegos").bodyValue(juego).retrieve().bodyToMono(Juego.class).block();
+    public void postearJuego(ServerConnection servidor, JuegoDTO juego) {
+        servidor.getWebClient().post().uri("/api/juegos").bodyValue(juego).retrieve().bodyToMono(JuegoDTO.class).block();
     }
 
     // DELETE

@@ -3,6 +3,7 @@ package Menus;
 import ApiClients.JuegoClient;
 import Archivos.Directorio;
 import Juegos.Juego;
+import JuegosDtos.JuegoDTO;
 import ServerManagment.ServerConnection;
 import ServerManagment.ServerManager;
 import SubMenus.SubMenuAgregarPath;
@@ -13,12 +14,13 @@ import java.nio.file.Path;
 import java.util.Scanner;
 
 public class MenuCargarJuego extends Menu{
-    Juego juego;
+    JuegoDTO juego;
 
 
 
     public MenuCargarJuego(){
-        juego = new Juego("Nombre del juego");
+        juego = new JuegoDTO();
+        juego.setTitulo("Nombre del juego");
     }
 
     @Override
@@ -49,11 +51,11 @@ public class MenuCargarJuego extends Menu{
                 break;
             case 2:
                 System.out.println("Ingrese el Path a agregar:");
-                juego.addSaveFilePath(Path.of(new Scanner(System.in).nextLine()));
+                juego.agregarDirectorio(new Directorio(Path.of(new Scanner(System.in).nextLine())));
                 break;
             case 3:
                 if(juego.getSaveFilePaths().isEmpty())
-                    throw  new Exception("Error: no hay paths guardados");
+                    throw new Exception("Error: no hay paths guardados");
                 int i = 0;
                 System.out.println("Elija cual eliminar. Presione 0 para cancelar");
                 for(Directorio path : juego.getSaveFilePaths()){
@@ -69,7 +71,7 @@ public class MenuCargarJuego extends Menu{
                     break;
                 }
                 System.out.println("Path \" " + juego.getSaveFilePaths().get(eliminado)+ "\" eliminado");
-                juego.removeSaveFilePath(eliminado);
+                juego.eliminarDirectorio(juego.getSaveFilePaths().get(i));
                 break;
             case 4:
                 new JuegoClient().postearJuego(ServerManager.getInstance().getServidorLocal(), juego);

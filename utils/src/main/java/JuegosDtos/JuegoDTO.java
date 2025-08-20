@@ -18,4 +18,13 @@ public class JuegoDTO {
     private String tituloPartidaActual;
     private List<String> tituloPartidas;
     private List<Directorio> saveFilePaths;
+
+
+    public void agregarDirectorio(Directorio directorio){
+        saveFilePaths.add(directorio);
+    }
+
+    public void eliminarDirectorio(Directorio directorio){
+        saveFilePaths.remove(directorio);
+    }
 }
