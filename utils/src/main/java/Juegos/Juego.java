@@ -6,6 +6,7 @@ import Exceptions.ResourceNotFoundException;
 import JuegosDtos.JuegoDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Getter
 @Entity
+@AllArgsConstructor
 public class Juego {
     @Id
     @Setter
@@ -38,11 +40,17 @@ public class Juego {
         this.partidas = new ArrayList<>();
         this.saveFilePaths = new ArrayList<>();
     }
+    public Juego(String titulo, List<Directorio> directorios){
+        this.titulo = titulo;
+        this.partidas = new ArrayList<>();
+        this.saveFilePaths = new ArrayList<>(directorios);
+    }
 
     public Juego(){
         this.partidas = new ArrayList<>();
         this.saveFilePaths = new ArrayList<>();
     }
+
     @JsonIgnore
     public List<String> getTitulosPartidas() {
         return partidas.stream().map(Partida::getTitulo).toList();

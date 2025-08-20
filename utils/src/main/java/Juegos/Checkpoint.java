@@ -52,6 +52,6 @@ public class Checkpoint {
         id = UUID.randomUUID().toString();
     }
     public CheckpointDTO toCheckpointDTO(){
-        return new CheckpointDTO(id, descripcion, fechaDeCreacion, partida.getTitulo());
+        return new CheckpointDTO(id, descripcion, fechaDeCreacion, partida.getTitulo(), partida.getJuego().getTitulo());
     }
 }

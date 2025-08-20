@@ -1,5 +1,7 @@
 package JuegosDtos;
 
+import Juegos.Partida;
+import jakarta.servlet.http.Part;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
