@@ -1,29 +1,38 @@
 package Menus;
 
 import ApiClients.JuegoClient;
+import ApiClients.PartidaClient;
 import Juegos.Juego;
 import ServerManagment.ServerManager;
 import SubMenus.*;
 import Utils.SimularTachado;
+import org.apache.tomcat.util.modeler.ParameterInfo;
+
+import java.util.List;
 
 public class MenuGestionarJuego extends Menu{
     Juego juego;
+    String partidaActual;
+    List<String> titulosPartidas;
     public MenuGestionarJuego(Juego juego){
         this.juego = juego;
+
     }
 
     @Override
     void mostrarTextoOpciones() {
+        partidaActual = new PartidaClient().obtenerPartidaActual(ServerManager.getInstance().getServidorLocal(), juego.getTitulo());
+        titulosPartidas = new PartidaClient().obtenerTitulosPartidas(ServerManager.getInstance().getServidorLocal(), juego.getTitulo());
         System.out.println("Elija una opcion:");
         System.out.println("1. Ver información del juego");
         System.out.println("2. Añadir path para saveFiles");
         System.out.println("3. Quitar path para saveFiles");
-        if(juego.getPartidas().isEmpty())
+        if(titulosPartidas == null || titulosPartidas.isEmpty())
             System.out.println(SimularTachado.tachar("4. Elegir partida"));
         else
             System.out.println("4. Elegir Partida");
-        if(juego.getPartidaActual() != null)
-            System.out.println("5. Elegir partida actual ("+ juego.getPartidaActual().getTitulo()+")");
+        if(partidaActual != null)
+            System.out.println("5. Elegir partida actual ("+ partidaActual +")");
         else
             System.out.println(SimularTachado.tachar("5. Elegir partida actual"));
         System.out.println("6. Eliminar Partida");
@@ -46,14 +55,14 @@ public class MenuGestionarJuego extends Menu{
                 new SubMenuEliminarPath(juego).abrirMenu();
                 break;
             case 4:
-                if (juego.getPartidas().isEmpty())
+                if (titulosPartidas == null || titulosPartidas.isEmpty())
                     System.out.println("Error: Opcion invalida, se debe crear una partida primero");
                 else
                     new SubMenuElegirPartida(juego).abrirMenu();
                 break;
             case 5:
-                if (juego.getPartidaActual() != null)
-                    new MenuGestionarPartida(juego.getPartidaActual(), juego).abrirMenu();
+                if (partidaActual != null)
+                    new MenuGestionarPartida( new  PartidaClient().obtenerPartida(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), partidaActual), juego).abrirMenu();
                 else
                     System.out.println("Error: Opcion invalida, se debe asignar una partida actual primero. Puede hacer esto cargandola desde la opcion superior.");
                 break;

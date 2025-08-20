@@ -2,6 +2,8 @@ package Juegos;
 
 
 import Archivos.Directorio;
+import Exceptions.ResourceNotFoundException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,20 +15,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Setter
 @Getter
 @Entity
-@NoArgsConstructor
 public class Juego {
     @Id
+    @Setter
     String titulo;
-    @OneToMany(mappedBy = "juego", cascade = CascadeType.ALL, orphanRemoval = true)
-
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     List<Partida> partidas;
-
+    @Setter
     @OneToOne
-
+    @JsonIgnore
     Partida partidaActual;
+    @Setter
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "juego_titulo")
     List<Directorio> saveFilePaths;
@@ -37,6 +39,11 @@ public class Juego {
         this.saveFilePaths = new ArrayList<>();
     }
 
+    public Juego(){
+        this.partidas = new ArrayList<>();
+        this.saveFilePaths = new ArrayList<>();
+    }
+    @JsonIgnore
     public List<String> getTitulosPartidas() {
         return partidas.stream().map(Partida::getTitulo).toList();
     }
@@ -52,7 +59,14 @@ public class Juego {
         partidas.remove(index);
     }
     public void eliminarPartidaByTitulo(String titulo){
-        partidas.removeIf(partida -> Objects.equals(partida.titulo, titulo));
+        Optional<Partida> partidaAEliminar = partidas.stream().filter(partida -> Objects.equals(partida.titulo, titulo)).findFirst();
+        if (partidaAEliminar.isEmpty()){
+            throw new ResourceNotFoundException("No esta la partida que se quiere eliminar");
+        }
+        if(partidaAEliminar.get() == partidaActual)
+            partidaActual = null;
+        partidas.remove(partidaAEliminar.get());
+
     }
     public void agregarPartida(Partida partida){
         partida.setJuego(this);

@@ -27,6 +27,7 @@ public class MenuElegirJuego extends Menu {
         if(opcion > titulosJuegos.size() || opcion < 0)
             throw new Exception("Opcion invalida");
         Juego juegoElegido = new JuegoClient().obtenerJuego(ServerManager.getInstance().getServidorLocal(), titulosJuegos.get(opcion-1));
+        System.out.println(juegoElegido.getTitulo());
         new MenuGestionarJuego(juegoElegido).abrirMenu();
         return false;
     }

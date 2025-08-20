@@ -18,6 +18,10 @@ public class PartidaClient {
     public Partida obtenerPartida(ServerConnection servidor, String tituloJuego, String tituloPartida){
         return servidor.getWebClient().get().uri("/api/juegos/" + tituloJuego + "/partidas/" + tituloPartida).retrieve().bodyToMono(Partida.class).block();
     }
+    public String obtenerPartidaActual(ServerConnection servidor, String tituloJuego){
+        return servidor.getWebClient().get().uri("/api/juegos/" + tituloJuego + "/partidaActual").retrieve().bodyToMono(String.class).block();
+    }
+
 
     // POST
 
