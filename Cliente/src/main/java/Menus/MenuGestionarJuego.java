@@ -3,6 +3,7 @@ package Menus;
 import ApiClients.JuegoClient;
 import ApiClients.PartidaClient;
 import Juegos.Juego;
+import JuegosDtos.JuegoDTO;
 import ServerManagment.ServerManager;
 import SubMenus.*;
 import Utils.SimularTachado;
@@ -10,12 +11,11 @@ import Utils.SimularTachado;
 import java.util.List;
 
 public class MenuGestionarJuego extends Menu{
-    Juego juego;
+    JuegoDTO juego;
     String partidaActual;
     List<String> titulosPartidas;
-    public MenuGestionarJuego(Juego juego){
+    public MenuGestionarJuego(JuegoDTO juego){
         this.juego = juego;
-
     }
 
     @Override

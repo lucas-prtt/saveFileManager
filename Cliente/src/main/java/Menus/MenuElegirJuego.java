@@ -2,6 +2,7 @@ package Menus;
 
 import ApiClients.JuegoClient;
 import Juegos.Juego;
+import JuegosDtos.JuegoDTO;
 import ServerManagment.ServerManager;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class MenuElegirJuego extends Menu {
             return true;
         if(opcion > titulosJuegos.size() || opcion < 0)
             throw new Exception("Opcion invalida");
-        Juego juegoElegido = new JuegoClient().obtenerJuego(ServerManager.getInstance().getServidorLocal(), titulosJuegos.get(opcion-1));
+        JuegoDTO juegoElegido = new JuegoClient().obtenerJuego(ServerManager.getInstance().getServidorLocal(), titulosJuegos.get(opcion-1));
         System.out.println(juegoElegido.getTitulo());
         new MenuGestionarJuego(juegoElegido).abrirMenu();
         return false;

@@ -3,13 +3,14 @@ package SubMenus;
 import ApiClients.JuegoClient;
 import Archivos.Directorio;
 import Juegos.Juego;
+import JuegosDtos.JuegoDTO;
 import ServerManagment.ServerManager;
 
 import java.util.Scanner;
 
 public class SubMenuEliminarPath {
-    Juego juego;
-    public SubMenuEliminarPath(Juego juego){
+    JuegoDTO juego;
+    public SubMenuEliminarPath(JuegoDTO juego){
         this.juego = juego;
     }
     public void abrirMenu() throws Exception {
@@ -28,7 +29,7 @@ public class SubMenuEliminarPath {
         if (eliminado > i || eliminado < 0)
             throw new Exception("Error: path invalido");
         System.out.println("Path \" " + juego.getSaveFilePaths().get(eliminado)+ "\" eliminado");
-        juego.removeSaveFilePath(eliminado);
-        new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toPatchDTO());
+        juego.eliminarDirectorio(juego.getSaveFilePaths().get(i));
+        new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego);
     }
 }

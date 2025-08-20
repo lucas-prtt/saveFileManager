@@ -14,8 +14,8 @@ public class JuegoClient {
     public List<String> obtenerTitulosJuegos(ServerConnection servidor){
         return servidor.getWebClient().get().uri("/api/juegos").retrieve().bodyToMono(new ParameterizedTypeReference<List<String>>(){}).block();
     }
-    public Juego obtenerJuego(ServerConnection servidor, String titulo){
-        return servidor.getWebClient().get().uri("/api/juegos/" + titulo).retrieve().bodyToMono(Juego.class).block();
+    public JuegoDTO obtenerJuego(ServerConnection servidor, String titulo){
+        return servidor.getWebClient().get().uri("/api/juegos/" + titulo).retrieve().bodyToMono(JuegoDTO.class).block();
     }
 
     // POST
