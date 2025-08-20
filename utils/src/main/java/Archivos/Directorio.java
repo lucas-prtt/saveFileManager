@@ -28,6 +28,10 @@ public class Directorio {
     @Convert(converter = PathConverter.class)
     List<Path> pathsSinonimos = new ArrayList<>();
 
+    @Override
+    public String toString(){
+        return pathPrincipal.toString();
+    }
     public Directorio(Path pathPrincipal, List<Path> pathsSinonimos){
         id = UUID.randomUUID().toString();
         pathsSinonimos.forEach(this::addPathAsSynonim);

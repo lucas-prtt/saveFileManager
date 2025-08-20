@@ -1,7 +1,9 @@
 package SubMenus;
 
+import ApiClients.CheckpointClient;
 import Juegos.Checkpoint;
 import Juegos.Partida;
+import ServerManagment.ServerManager;
 
 import java.util.Scanner;
 
@@ -19,7 +21,7 @@ public class SubMenuEliminarCheckpoint {
             System.out.println(i + ". " + checkpoint.getStringReferencia());
             i++;
         }
-        System.out.println("Elija la partida a eliminar, o presione 0 para cancelar");
+        System.out.println("Elija el checkpoint a eliminar, o presione 0 para cancelar");
         int indice = new Scanner(System.in).nextInt()-1;
         if(indice == -1){
             return;
@@ -27,6 +29,8 @@ public class SubMenuEliminarCheckpoint {
         else if (indice >=0 && indice<partida.getCheckpoints().size()){
             if (indice == 0)
                 return;
+            Checkpoint chk = partida.getCheckpoints().get(indice);
+            new CheckpointClient().eliminarCheckpoint(ServerManager.getInstance().getServidorLocal(), partida.getJuego().getTitulo(), partida.getTitulo(), chk.getId());
             partida.eliminarCheckpointByIndex(indice);
             return;
         }

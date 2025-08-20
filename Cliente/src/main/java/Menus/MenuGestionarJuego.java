@@ -1,6 +1,8 @@
 package Menus;
 
+import ApiClients.JuegoClient;
 import Juegos.Juego;
+import ServerManagment.ServerManager;
 import SubMenus.*;
 import Utils.SimularTachado;
 
@@ -64,6 +66,7 @@ public class MenuGestionarJuego extends Menu{
             case 8:
                 juego.setPartidaActual(null);
                 juego.vaciarArchivosDeGuardado();
+                new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
                 break;
             case 9:
                 return true;

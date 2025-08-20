@@ -29,6 +29,7 @@ public class CheckpointClient {
         return servidor.getWebClient().post().uri("/api/juegos/" + tituloJuego + "/partidas/" + tituloPartida + "/checkpoints").bodyValue(checkpoint).retrieve().bodyToMono(Checkpoint.class).block();
     }
 
+
     // DELETE
 
 

@@ -65,13 +65,17 @@ public class Juego {
         return partidas.stream().filter(partida -> {return Objects.equals(partida.getTitulo(), titulo);}).findFirst();
     }
     public JuegoPatchDTO toDTO(){
-        return new JuegoPatchDTO(titulo, saveFilePaths, partidaActual.getTitulo());
+        if(this.partidaActual != null)
+            return new JuegoPatchDTO(titulo, saveFilePaths, partidaActual.getTitulo());
+        return new JuegoPatchDTO(titulo, saveFilePaths, null);
     }
     public void patchWithDto(JuegoPatchDTO juegoDto){
         if(juegoDto.titulo != null)
             this.titulo = juegoDto.titulo;
-        if(juegoDto.saveFilePaths != null)
-            this.saveFilePaths =  juegoDto.saveFilePaths;
+        if(juegoDto.saveFilePaths != null){
+            this.saveFilePaths.clear();
+            this.saveFilePaths.addAll(juegoDto.saveFilePaths);
+        }
         try {
             if (juegoDto.partidaActual != null)
                 this.partidaActual = this.getPartidaByTitulo(juegoDto.partidaActual).orElseThrow();

@@ -1,6 +1,8 @@
 package SubMenus;
 
+import ApiClients.JuegoClient;
 import Juegos.Juego;
+import ServerManagment.ServerManager;
 
 import java.util.Scanner;
 
@@ -25,6 +27,7 @@ public class SubMenuEliminarPartida {
             System.out.println("Removida de partida actual");
         }
         juego.eliminarPartidaByIndex(indice);
+        new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
         return;
     }
 }

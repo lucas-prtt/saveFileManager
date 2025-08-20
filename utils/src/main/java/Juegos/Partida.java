@@ -13,11 +13,12 @@ import java.util.*;
 @Entity
 @NoArgsConstructor
 public class Partida {
+
     String titulo;
     @Id
             @Setter
     String id;
-    @OneToMany(mappedBy = "partida", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     List<Checkpoint> checkpoints = new ArrayList<>();
     @ManyToOne
     @JoinColumn
@@ -32,11 +33,14 @@ public class Partida {
     }
 
 
-    public void crearCheckpoint(){
-        crearCheckpoint(null);
+    public Checkpoint crearCheckpoint(){
+        return crearCheckpoint(null);
     };
-    public void crearCheckpoint(String nombre){
-        checkpoints.add(new Checkpoint(nombre, this ));
+    public Checkpoint crearCheckpoint(String nombre){
+        Checkpoint chk = new Checkpoint(nombre, this);
+        checkpoints.add(chk);
+        return chk;
+
         //TODO
     }
     public void cargarUltimoCheckpoint(){
@@ -74,7 +78,7 @@ public class Partida {
         checkpoints.removeIf(checkpoint -> Objects.equals(checkpoint.getId(), id));
     }
     public void patchWithDto(PartidaPatchDTO patch){
-        if (!titulo.isEmpty())
+        if (!patch.getTitulo().isEmpty())
             titulo = patch.getTitulo();
     }
 }

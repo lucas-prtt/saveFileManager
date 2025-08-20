@@ -1,7 +1,10 @@
 package SubMenus;
 
+import ApiClients.JuegoClient;
+import ApiClients.PartidaClient;
 import Juegos.Juego;
 import Juegos.Partida;
+import ServerManagment.ServerManager;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -18,12 +21,15 @@ public class SubMenuCrearPartida {
             System.out.println("Creacion cancelada. Se requiere ingresar un nombre");
             return;
         }
-        juego.agregarPartida(new Partida(name, juego));
+        Partida partida = new Partida(name, juego);
+        juego.agregarPartida(partida);
+        new PartidaClient().postearPartida(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), partida);
         System.out.println("Partida creada");
         if(juego.getPartidas().size() == 1){
             juego.setPartidaActual(juego.getPartidas().getFirst());
             System.out.println("Partida asignada como partida actual, por ser la unica disponible");
         }
+        new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
         return;
     }
 }

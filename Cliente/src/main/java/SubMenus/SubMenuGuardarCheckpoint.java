@@ -1,7 +1,13 @@
 package SubMenus;
 
+import ApiClients.CheckpointClient;
+import ApiClients.JuegoClient;
+import ApiClients.PartidaClient;
+import Juegos.Checkpoint;
 import Juegos.Juego;
 import Juegos.Partida;
+import ServerManagment.ServerConnection;
+import ServerManagment.ServerManager;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -16,14 +22,15 @@ public class SubMenuGuardarCheckpoint {
     }
 
     public void abrirMenu() throws Exception {
-
+        Checkpoint chk;
         if (partida == juego.getPartidaActual()) { // Si la partida es la actual
             System.out.println("Ingrese el nombre del checkpoint (opcional)");
             String nombre = new Scanner(System.in).nextLine();
             if(Objects.equals(nombre, ""))
-                partida.crearCheckpoint();
+                chk = partida.crearCheckpoint();
             else
-                partida.crearCheckpoint(nombre);
+                chk = partida.crearCheckpoint(nombre);
+            new CheckpointClient().postearCheckpoint(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), partida.getTitulo(), chk);
         }else{
             int r;
             if(juego.getPartidaActual() != null){// Si hay partida actual que no coincide, confirma sobreescritura
@@ -41,12 +48,15 @@ public class SubMenuGuardarCheckpoint {
                 System.out.println("Ingrese el nombre del checkpoint (opcional)");
                 String nombre = new Scanner(System.in).nextLine();
                 if(Objects.equals(nombre, ""))
-                    partida.crearCheckpoint();
+                    chk = partida.crearCheckpoint();
                 else
-                    partida.crearCheckpoint(nombre);
+                    chk = partida.crearCheckpoint(nombre);
                 juego.setPartidaActual(partida);
                 System.out.println("La partida actual se ha actualizado a la seleccionada ("+partida.getTitulo()+")");
+                new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toDTO());
+                new CheckpointClient().postearCheckpoint(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), partida.getTitulo(), chk);
             }
         }
+
     }
 }
