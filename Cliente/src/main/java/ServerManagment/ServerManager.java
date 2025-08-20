@@ -2,6 +2,7 @@ package ServerManagment;
 
 import Exceptions.ServerNotFoundException;
 import lombok.Getter;
+import lprtt.AppProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -10,16 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service
 public class ServerManager {
-    @Value("${server.port}")
-    private static Integer puertoDefault;
+    private Integer puertoDefault;
     private final List<ServerConnection> servidoresRegistrados = new ArrayList<>();
-    @Getter
-    private final static ServerManager instance = new ServerManager();
+    private static ServerManager instance;
     //Singleton
     private ServerManager(){
+        puertoDefault = AppProperties.getInstance().defaultPort();
         registrarLocalHost();
+    }
+    public static ServerManager getInstance(){
+        if(instance == null ){
+            instance = new ServerManager();
+        }
+        return instance;
     }
 
 

@@ -22,6 +22,7 @@ public class Servidor {
         app.setLogStartupInfo(false);
         app.setDefaultProperties(Collections.singletonMap("logging.level.root", "WARN"));
         app.run();
+
         try{
             System.out.println("Servidor iniciado");
             System.out.println("Presiona Enter para cerrar el servidor.");
