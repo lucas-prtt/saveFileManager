@@ -33,8 +33,8 @@ public class JuegoClient {
     // PATCH
 
 
-    public Juego patchearJuego(ServerConnection servidor, String tituloJuego, JuegoPatchDTO patchDTO) {
-        return servidor.getWebClient().patch().uri("/api/juegos/" + tituloJuego).bodyValue(patchDTO).retrieve().bodyToMono(Juego.class).block();
+    public JuegoDTO patchearJuego(ServerConnection servidor, String tituloJuego, JuegoDTO patchDTO) {
+        return servidor.getWebClient().patch().uri("/api/juegos/" + tituloJuego).bodyValue(patchDTO).retrieve().bodyToMono(JuegoDTO.class).block();
     }
 
 
