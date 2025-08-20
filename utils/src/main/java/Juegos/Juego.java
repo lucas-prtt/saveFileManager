@@ -26,7 +26,7 @@ public class Juego {
     @Setter
             @OneToOne
     Partida partidaActual;
-    @ElementCollection
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     List<Directorio> saveFilePaths;
 
     public Juego(String titulo){
