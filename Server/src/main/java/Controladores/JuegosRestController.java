@@ -90,7 +90,7 @@ public class JuegosRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Juego> postJuego(@RequestBody Juego juego){
+    public ResponseEntity<JuegoDTO> postJuego(@RequestBody JuegoDTO juego){
         System.out.println("Post Juego");
         try {
             juegoService.guardarNuevoJuego(juego);
@@ -101,7 +101,7 @@ public class JuegosRestController {
     }
 
     @PostMapping("/{juego}/partidas")
-    public ResponseEntity<Partida> postPartida(@PathVariable String juego, @RequestBody Partida partida){
+    public ResponseEntity<PartidaDTO> postPartida(@PathVariable String juego, @RequestBody PartidaDTO partida){
         System.out.println("Post Partida");
         try {
             partidaService.guardarPartida(juego, partida);
@@ -113,7 +113,7 @@ public class JuegosRestController {
         return ResponseEntity.ok(partida);
     }
     @PostMapping("/{juego}/partidas/{partida}/checkpoints")
-    public ResponseEntity<Checkpoint> postPartida(@PathVariable String juego, @PathVariable String partida,@RequestBody Checkpoint checkpoint){
+    public ResponseEntity<CheckpointDTO> postPartida(@PathVariable String juego, @PathVariable String partida,@RequestBody CheckpointDTO checkpoint){
         System.out.println("Post Checkpoint");
         try {
             checkpointService.guardarNuevoCheckpoint(juego, partida, checkpoint);

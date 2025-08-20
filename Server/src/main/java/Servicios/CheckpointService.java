@@ -5,6 +5,8 @@ import Exceptions.ResourceAlreadyExistsException;
 import Exceptions.ResourceNotFoundException;
 import Juegos.Checkpoint;
 import Juegos.Partida;
+import JuegosConverter.CheckpointConverter;
+import JuegosDtos.CheckpointDTO;
 import Repositorios.CheckpointRepository;
 import Repositorios.JuegoRepository;
 import Repositorios.PartidaRepository;
@@ -18,11 +20,13 @@ public class CheckpointService {
     private final CheckpointRepository checkpointRepository;
     private final JuegosService juegosService;
     private final PartidaService partidaService;
+    private final CheckpointConverter checkpointConverter;
 
-    public CheckpointService(CheckpointRepository checkpointRepository, JuegosService juegosService, PartidaService partidaService) {
+    public CheckpointService(CheckpointRepository checkpointRepository, JuegosService juegosService, PartidaService partidaService, CheckpointConverter checkpointConverter) {
         this.checkpointRepository = checkpointRepository;
         this.juegosService = juegosService;
         this.partidaService = partidaService;
+        this.checkpointConverter = checkpointConverter;
     }
 
     public Checkpoint obtenerCheckpointPorJuegoPartidaYUuid(String juegotitulo, String partidatitulo, String uuid) throws ResourceNotFoundException {
@@ -34,13 +38,13 @@ public class CheckpointService {
         else
             throw new ResourceNotFoundException("No se encontro el checkpoint");
     }
-    public void guardarNuevoCheckpoint(String juegoTitulo, String partidaTitulo, Checkpoint checkpoint) throws ResourceNotFoundException, ResourceAlreadyExistsException{
+    public void guardarNuevoCheckpoint(String juegoTitulo, String partidaTitulo, CheckpointDTO checkpointDto) throws ResourceNotFoundException, ResourceAlreadyExistsException{
         Partida partida = partidaService.obtenerPartidaDeJuegoPorTitulo(juegoTitulo, partidaTitulo);
-        if(checkpoint.getId() == null)
-            checkpoint.generateNewId();
-        else if(partida.getAllCheckpointsId().contains(checkpoint.getId()))
+        if(checkpointDto.getId() == null)
+            checkpointDto.generateNewId();
+        else if(partida.getAllCheckpointsId().contains(checkpointDto.getId()))
             throw new ResourceAlreadyExistsException("El checkpoint con el mismo ID ya existe");
-        partida.agregarCheckpoint(checkpoint);
+        partida.agregarCheckpoint(checkpointConverter.fromDto(checkpointDto));
         partidaService.actualizarPartida(partida);
     }
     public void eliminarCheckpoint(String juegoTitulo, String partidaTitulo, String uuidCheckpoint) throws ResourceNotFoundException{

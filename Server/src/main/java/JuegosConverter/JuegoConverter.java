@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JuegoConverter {
-    public static Juego fromDto(JuegoDTO dto){
+    public Juego fromDto(JuegoDTO dto){
         return new Juego(dto.getTitulo(), dto.getSaveFilePaths());
     }
 }

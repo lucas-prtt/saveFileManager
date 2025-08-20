@@ -5,6 +5,8 @@ import Exceptions.ResourceNotFoundException;
 import Juegos.Juego;
 import Juegos.Partida;
 import Juegos.PartidaPatchDTO;
+import JuegosConverter.PartidaConverter;
+import JuegosDtos.PartidaDTO;
 import Repositorios.PartidaRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +16,12 @@ public class PartidaService {
 
     private final PartidaRepository partidaRepository;
     private final JuegosService juegosService;
+    private final PartidaConverter partidaConverter;
 
-    public PartidaService(PartidaRepository partidaRepository, JuegosService juegosService) {
+    public PartidaService(PartidaRepository partidaRepository, JuegosService juegosService, PartidaConverter partidaConverter) {
         this.partidaRepository = partidaRepository;
         this.juegosService = juegosService;
+        this.partidaConverter = partidaConverter;
     }
     public Partida obtenerPartidaDeJuegoPorTitulo(String juegotitulo, String partida) throws ResourceNotFoundException {
         Juego juego;
@@ -29,12 +33,12 @@ public class PartidaService {
         else
             throw new ResourceNotFoundException("No se encontro la partida");
     }
-    public void guardarPartida(String juegotitulo, Partida partida) throws ResourceAlreadyExistsException, ResourceNotFoundException  {
+    public void guardarPartida(String juegotitulo, PartidaDTO partidaDTO) throws ResourceAlreadyExistsException, ResourceNotFoundException  {
         Juego juego = juegosService.obtenerJuegoPorTitulo(juegotitulo);
         if(juego.getTitulosPartidas().contains(juegotitulo)) {
             throw new ResourceAlreadyExistsException("Partida ya existe con el mismo titulo");
         }
-        juego.agregarPartida(partida);
+        juego.agregarPartida(partidaConverter.fromDto(partidaDTO));
         juegosService.actualizarJuego(juego);
     }
     public void actualizarPartida(Partida partida){
