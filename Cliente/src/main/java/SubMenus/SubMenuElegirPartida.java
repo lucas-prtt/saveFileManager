@@ -3,6 +3,7 @@ package SubMenus;
 import ApiClients.PartidaClient;
 import Juegos.Juego;
 import Juegos.Partida;
+import JuegosDtos.JuegoDTO;
 import Menus.MenuGestionarPartida;
 import ServerManagment.ServerManager;
 
@@ -10,8 +11,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class SubMenuElegirPartida {
-    Juego juego;
-    public SubMenuElegirPartida(Juego juego){
+    JuegoDTO juego;
+    public SubMenuElegirPartida(JuegoDTO juego){
         this.juego = juego;
     }
     public void abrirMenu(){
