@@ -1,18 +1,24 @@
 package Menus;
 
+import ApiHelper.ApiRequestManager;
 import Juegos.Checkpoint;
 import Juegos.Juego;
 import Juegos.Partida;
+import JuegosDtos.CheckpointDTO;
 import JuegosDtos.JuegoDTO;
 import JuegosDtos.PartidaDTO;
+import ServerManagment.ServerManager;
 import SubMenus.SubMenuCargarCheckpoint;
 import SubMenus.SubMenuCargarUltimoCheckpoint;
 import SubMenus.SubMenuGuardarCheckpoint;
 import SubMenus.SubMenuEliminarCheckpoint;
 
+import java.util.List;
+
 public class MenuGestionarPartida extends Menu{
     PartidaDTO partida;
     JuegoDTO juego;
+    private final ApiRequestManager api = new ApiRequestManager(ServerManager.getInstance().getServidorLocal());
     public MenuGestionarPartida(PartidaDTO partida, JuegoDTO juego){
         this.partida = partida;
         this.juego = juego;
@@ -20,7 +26,7 @@ public class MenuGestionarPartida extends Menu{
 
     @Override
     void mostrarTextoOpciones() {
-        System.out.println("Gestionando \n > Juego: " + juego.getTitulo() + "\n > Partida: " + partida.getTitulo());
+        System.out.println("Gestionando \n > Juego: " + juego.getTitulo() + "\n > Partida: " + partida.getTituloPartida());
         System.out.println("Elija una opcion:");
         System.out.println("1. Guardar checkpoint");
         System.out.println("2. Cargar ultimo checkpoint");
@@ -40,10 +46,11 @@ public class MenuGestionarPartida extends Menu{
                 new SubMenuCargarUltimoCheckpoint(partida, juego).abrirMenu();
                 break;
             case 3:
-                System.out.println("Partidas actuales: ");
+                System.out.println("Checkpoints actuales: ");
                 int i = 1;
-                for(Checkpoint checkpoint : partida.getCheckpoints()){
-                    System.out.println(i+". "+checkpoint.getStringReferencia());
+                List<CheckpointDTO> listaCheckpoints= api.obtenerCheckpointsDTO(partida.getTituloJuego(), partida.getTituloPartida());
+                for(CheckpointDTO checkpoint : listaCheckpoints){
+                    System.out.println(i+". "+checkpoint);
                     i++;
                 }
                 break;

@@ -11,6 +11,7 @@ import SubMenus.SubMenuEliminarPath;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MenuCargarJuego extends Menu{
@@ -21,6 +22,7 @@ public class MenuCargarJuego extends Menu{
     public MenuCargarJuego(){
         juego = new JuegoDTO();
         juego.setTitulo("Nombre del juego");
+        juego.setSaveFilePaths(new ArrayList<>());
     }
 
     @Override
@@ -28,12 +30,13 @@ public class MenuCargarJuego extends Menu{
         System.out.println("Titulo: " + juego.getTitulo());
 
         System.out.println("Paths de guardado: ");
-        for(Directorio path : juego.getSaveFilePaths()){
-            System.out.println("> " + path.getPathPrincipal());
-        }
         if(juego.getSaveFilePaths().isEmpty())
             System.out.println("Ningun filepath guardado");
-
+        else {
+            for (Directorio path : juego.getSaveFilePaths()) {
+                System.out.println("> " + path.getPathPrincipal());
+            }
+        }
         System.out.println("\n\nElija una opcion:");
         System.out.println("1. Establecer titulo");
         System.out.println("2. Agregar path de archivos de guardado");
@@ -74,7 +77,7 @@ public class MenuCargarJuego extends Menu{
                 juego.eliminarDirectorio(juego.getSaveFilePaths().get(i));
                 break;
             case 4:
-                JuegoClient.postearJuego(ServerManager.getInstance().getServidorLocal(), juego);
+                    JuegoClient.postearJuego(ServerManager.getInstance().getServidorLocal(), juego);
                 return true;
             case 5:
                 return true;
