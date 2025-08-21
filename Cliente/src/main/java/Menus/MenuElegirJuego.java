@@ -1,10 +1,7 @@
 package Menus;
 
-import ApiClients.ApiRequestManager;
-import ApiClients.JuegoClient;
-import Juegos.Juego;
+import ApiHelper.ApiRequestManager;
 import JuegosDtos.JuegoDTO;
-import ServerManagment.ServerConnection;
 import ServerManagment.ServerManager;
 
 import java.util.List;

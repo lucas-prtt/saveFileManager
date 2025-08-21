@@ -1,13 +1,13 @@
-package ApiClients;
+package ApiHelper;
 
+import ApiClients.CheckpointClient;
+import ApiClients.JuegoClient;
+import ApiClients.PartidaClient;
 import Archivos.Archivo;
-import Juegos.Partida;
 import JuegosDtos.CheckpointDTO;
 import JuegosDtos.JuegoDTO;
 import JuegosDtos.PartidaDTO;
 import ServerManagment.ServerConnection;
-import jakarta.servlet.http.Part;
-import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.List;
 
@@ -58,7 +58,7 @@ public class ApiRequestManager {
     }
 
     // POST PARTIDAS
-    public PartidaDTO postearPartida(String tituloJuego, Partida partida) {
+    public PartidaDTO postearPartida(String tituloJuego, PartidaDTO partida) {
         return  PartidaClient.postearPartida(connection, tituloJuego, partida);
     }
 

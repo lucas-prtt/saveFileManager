@@ -1,9 +1,7 @@
 package SubMenus;
 
-import ApiClients.ApiRequestManager;
-import ApiClients.JuegoClient;
+import ApiHelper.ApiRequestManager;
 import Archivos.Directorio;
-import Juegos.Juego;
 import JuegosDtos.JuegoDTO;
 import ServerManagment.ServerManager;
 

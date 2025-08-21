@@ -1,12 +1,7 @@
 package SubMenus;
 
-import ApiClients.ApiRequestManager;
-import ApiClients.CheckpointClient;
-import ApiClients.JuegoClient;
+import ApiHelper.ApiRequestManager;
 import FileManager.FileManager;
-import Juegos.Checkpoint;
-import Juegos.Juego;
-import Juegos.Partida;
 import JuegosDtos.CheckpointDTO;
 import JuegosDtos.JuegoDTO;
 import JuegosDtos.PartidaDTO;
@@ -54,6 +49,7 @@ public class SubMenuCargarUltimoCheckpoint {
             newChk.setFechaDeCreacion(LocalDateTime.now());
             newChk.generateNewId();
             api.postearCheckpoint(juego.getTitulo(), juego.getTituloPartidaActual(), newChk);
+            api.postearArchivos(juego.getTitulo(), partida.getTituloPartida(), newChk.getId(), FileManager.guardarArchivos(juego));
 
             FileManager.cargarArchivos(juego, api.obtenerArchivosCheckpoint(juego.getTitulo(), partida.getTituloPartida(), chkList.getLast().getId()));
             juego.setTituloPartidaActual(partida.getTituloPartida());

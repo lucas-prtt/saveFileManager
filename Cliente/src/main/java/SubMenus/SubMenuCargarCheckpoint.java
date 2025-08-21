@@ -1,18 +1,12 @@
 package SubMenus;
 
-import ApiClients.ApiRequestManager;
-import ApiClients.CheckpointClient;
-import ApiClients.JuegoClient;
+import ApiHelper.ApiRequestManager;
 import Archivos.Archivo;
 import FileManager.FileManager;
-import Juegos.Checkpoint;
-import Juegos.Juego;
-import Juegos.Partida;
 import JuegosDtos.CheckpointDTO;
 import JuegosDtos.JuegoDTO;
 import JuegosDtos.PartidaDTO;
 import ServerManagment.ServerManager;
-import jakarta.persistence.Lob;
 
 import java.time.LocalDateTime;
 import java.util.List;

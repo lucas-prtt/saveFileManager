@@ -27,7 +27,7 @@ public class PartidaClient {
     // POST
 
 
-    public static PartidaDTO postearPartida(ServerConnection servidor, String tituloJuego, Partida partida) {
+    public static PartidaDTO postearPartida(ServerConnection servidor, String tituloJuego, PartidaDTO partida) {
         return servidor.getWebClient().post().uri("/api/juegos/" + tituloJuego + "/partidas").bodyValue(partida).retrieve().bodyToMono(PartidaDTO.class).block();
     }
 

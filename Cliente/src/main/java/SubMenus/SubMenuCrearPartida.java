@@ -1,10 +1,9 @@
 package SubMenus;
 
-import ApiClients.JuegoClient;
-import ApiClients.PartidaClient;
-import Juegos.Juego;
-import Juegos.Partida;
+import ApiHelper.ApiRequestManager;
+import ApiHelper.ApiRequestHelper;
 import JuegosDtos.JuegoDTO;
+import JuegosDtos.PartidaDTO;
 import ServerManagment.ServerManager;
 
 import java.util.Objects;
@@ -12,6 +11,8 @@ import java.util.Scanner;
 
 public class SubMenuCrearPartida {
     JuegoDTO juego;
+    private final ApiRequestManager api = new ApiRequestManager(ServerManager.getInstance().getServidorLocal());
+
     public SubMenuCrearPartida(JuegoDTO juego){
         this.juego = juego;
     }
@@ -22,14 +23,11 @@ public class SubMenuCrearPartida {
             System.out.println("Creacion cancelada. Se requiere ingresar un nombre");
             return;
         }
-        Partida partida = new Partida(name, juego);
-        juego.agregarPartida(partida);
-        new PartidaClient().postearPartida(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), partida);
+        ApiRequestHelper.crearPartida(api, juego.getTitulo(), name);
         System.out.println("Partida creada");
-        if(new PartidaClient().obtenerTitulosPartidas(ServerManager.getInstance().getServidorLocal(), juego.getTitulo()).isEmpty()){
-            juego.setPartidaActual(juego.getPartidas().getFirst());
+        if(api.obtenerTitulosPartidas(juego.getTitulo()).isEmpty()){
+            ApiRequestHelper.cambiarPartidaActual(api, juego.getTitulo(), partida.getTituloPartida());
             System.out.println("Partida asignada como partida actual, por ser la unica disponible");
-            new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toPatchDTO());
         }
         return;
     }

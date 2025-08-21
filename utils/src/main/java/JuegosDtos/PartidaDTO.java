@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,4 +19,8 @@ public class PartidaDTO {
     String id;
     String tituloPartida;
     List<String> checkpointsIDs;
+    public void generateNewId(){
+        id = UUID.randomUUID().toString();
+    }
+
 }
