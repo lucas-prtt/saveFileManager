@@ -1,5 +1,6 @@
 package SubMenus;
 
+import ApiHelper.ApiHelper;
 import ApiHelper.ApiRequestManager;
 import FileManager.FileManager;
 import JuegosDtos.CheckpointDTO;
@@ -42,18 +43,11 @@ public class SubMenuCargarUltimoCheckpoint {
             String nombre = new Scanner(System.in).nextLine();
 
             if(Objects.equals(nombre, ""))
-                newChk.setDescripcion(null);
-            else {
-                newChk.setDescripcion(nombre);
-            }
-            newChk.setFechaDeCreacion(LocalDateTime.now());
-            newChk.generateNewId();
-            api.postearCheckpoint(juego.getTitulo(), juego.getTituloPartidaActual(), newChk);
-            api.postearArchivos(juego.getTitulo(), partida.getTituloPartida(), newChk.getId(), FileManager.guardarArchivos(juego));
+                nombre = null;
+            ApiHelper.crearCheckpoint(api, partida, nombre ,FileManager.guardarArchivos(juego));
 
             FileManager.cargarArchivos(juego, api.obtenerArchivosCheckpoint(juego.getTitulo(), partida.getTituloPartida(), chkList.getLast().getId()));
-            juego.setTituloPartidaActual(partida.getTituloPartida());
-            api.patchearJuego(juego.getTitulo(), juego);
+            ApiHelper.cambiarPartidaActual(api, juego, partida.getTituloPartida());
         }
     }
 }

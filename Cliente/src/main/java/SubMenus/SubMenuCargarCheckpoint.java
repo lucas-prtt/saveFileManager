@@ -1,5 +1,6 @@
 package SubMenus;
 
+import ApiHelper.ApiHelper;
 import ApiHelper.ApiRequestManager;
 import Archivos.Archivo;
 import FileManager.FileManager;
@@ -49,18 +50,9 @@ public class SubMenuCargarCheckpoint {
                 String nombre = new Scanner(System.in).nextLine();
 
                 if(Objects.equals(nombre, ""))
-                   newchk.setDescripcion(null);
-                else {
-                    newchk.setDescripcion(nombre);
-                }
-                newchk.setFechaDeCreacion(LocalDateTime.now());
-                newchk.generateNewId();
-                api.postearCheckpoint(juego.getTitulo(), juego.getTituloPartidaActual(), newchk);
-
-                // TODO: Postear archivos
-                JuegoDTO juegoPatch = new JuegoDTO();
-                juegoPatch.setTituloPartidaActual(partida.getTituloPartida());
-                api.patchearJuego(juego.getTitulo(), juegoPatch);
+                   nombre = null;
+                ApiHelper.crearCheckpoint(api, partida, nombre, FileManager.guardarArchivos(juego));
+                ApiHelper.cambiarPartidaActual(api, juego, partida.getTituloPartida());
             }
             List<Archivo> archivos = api.obtenerArchivosCheckpoint(juego.getTitulo(), partida.getTituloPartida(), chkList.get(indice).getId());
             FileManager.cargarArchivos(juego, archivos);

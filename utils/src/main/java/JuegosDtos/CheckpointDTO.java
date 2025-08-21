@@ -30,6 +30,6 @@ public class CheckpointDTO {
     }
     @Override
     public String toString(){
-        return fechaDeCreacion.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + " - " + fechaDeCreacion.toLocalTime().format(DateTimeFormatter.ISO_TIME) + " -  " + descripcion;
+        return fechaDeCreacion.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + " - " + fechaDeCreacion.toLocalTime().format(DateTimeFormatter.ISO_TIME) + " -  " + (descripcion != null ? descripcion : "");
     }
 }
