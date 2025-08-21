@@ -29,6 +29,9 @@ public class CheckpointClient {
     public static CheckpointDTO postearCheckpoint(ServerConnection servidor, String tituloJuego, String tituloPartida, CheckpointDTO checkpoint) {
         return servidor.getWebClient().post().uri("/api/juegos/" + tituloJuego + "/partidas/" + tituloPartida + "/checkpoints").bodyValue(checkpoint).retrieve().bodyToMono(CheckpointDTO.class).block();
     }
+    public static CheckpointDTO postearArchivos(ServerConnection servidor, String tituloJuego, String tituloPartida,String uuidCheckpoint , List<Archivo> archivos) {
+        return servidor.getWebClient().post().uri("/api/juegos/" + tituloJuego + "/partidas/" + tituloPartida + "/checkpoints/" + uuidCheckpoint + "/archivos").bodyValue(new ParameterizedTypeReference<List<Archivo>>() {}).retrieve().bodyToMono(CheckpointDTO.class).block();
+    }
 
 
     // DELETE
