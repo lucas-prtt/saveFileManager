@@ -1,5 +1,6 @@
 package Servicios;
 
+import Archivos.Archivo;
 import Exceptions.MalformedResourceException;
 import Exceptions.ResourceAlreadyExistsException;
 import Exceptions.ResourceNotFoundException;
@@ -13,6 +14,7 @@ import Repositorios.PartidaRepository;
 import ch.qos.logback.core.recovery.ResilientFileOutputStream;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 @Service
 public class CheckpointService {
@@ -53,6 +55,15 @@ public class CheckpointService {
             throw new ResourceNotFoundException("No se encontro el checkpoint");
         partida.eliminarCheckpointById(uuidCheckpoint);
         partidaService.actualizarPartida(partida);
+    }
+
+    public void postearArchivos(String juegoTitulo, String partidaTitulo, String uuidCheckpoint, List<Archivo> archivos) throws ResourceNotFoundException, ResourceAlreadyExistsException{
+        Checkpoint checkpoint = obtenerCheckpointPorJuegoPartidaYUuid(juegoTitulo, partidaTitulo, uuidCheckpoint);
+        if (checkpoint.getArchivos() != null){
+            throw new ResourceAlreadyExistsException("Los archivos ya estan definidos");
+        }
+        checkpoint.setArchivos(archivos);
+        checkpointRepository.save(checkpoint);
     }
 
 

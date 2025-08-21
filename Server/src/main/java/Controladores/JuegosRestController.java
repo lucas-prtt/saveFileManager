@@ -113,7 +113,7 @@ public class JuegosRestController {
         return ResponseEntity.ok(partida);
     }
     @PostMapping("/{juego}/partidas/{partida}/checkpoints")
-    public ResponseEntity<CheckpointDTO> postPartida(@PathVariable String juego, @PathVariable String partida,@RequestBody CheckpointDTO checkpoint){
+    public ResponseEntity<CheckpointDTO> postCheckpoint(@PathVariable String juego, @PathVariable String partida,@RequestBody CheckpointDTO checkpoint){
         System.out.println("Post Checkpoint");
         try {
             checkpointService.guardarNuevoCheckpoint(juego, partida, checkpoint);
@@ -123,6 +123,18 @@ public class JuegosRestController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         return ResponseEntity.ok(checkpoint);
+    }
+    @PostMapping("/{juego}/partidas/{partida}/checkpoints/{checkpoint}/archivos")
+    public ResponseEntity<Void> postArchivos(@PathVariable String juego, @PathVariable String partida,@PathVariable String checkpoint, @RequestBody List<Archivo> archivos){
+        System.out.println("Post Archivo");
+        try {
+            checkpointService.postearArchivos(juego, partida, checkpoint, archivos);
+        }catch (ResourceNotFoundException e){
+            return ResponseEntity.notFound().build();
+        }catch (ResourceAlreadyExistsException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        return ResponseEntity.ok(null);
     }
     @DeleteMapping("/{titulo}")
     public ResponseEntity<?> eliminarJuegoPorTitulo(@PathVariable String titulo){
