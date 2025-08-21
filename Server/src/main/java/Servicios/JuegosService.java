@@ -1,5 +1,6 @@
 package Servicios;
 
+import Archivos.Directorio;
 import Exceptions.ResourceAlreadyExistsException;
 import Exceptions.ResourceNotFoundException;
 import Juegos.Juego;
@@ -9,6 +10,8 @@ import Repositorios.JuegoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.nio.file.Files.delete;
@@ -20,6 +23,13 @@ public class JuegosService {
     public JuegosService(JuegoRepository juegoRepository, JuegoConverter juegoConverter) {
         this.juegoRepository = juegoRepository;
         this.juegoConverter = juegoConverter;
+    }
+    public Directorio obtenerDirectorioPorJuegoEId(String tituloJuego, String idDirectorio) throws NoSuchElementException, ResourceNotFoundException {
+        Optional<Juego> juego = juegoRepository.findById(tituloJuego);
+        if(juego.isEmpty()){
+            throw new ResourceNotFoundException("No se encontro el directorio");
+        }
+        return juego.get().getSaveFilePaths().stream().filter(dir -> Objects.equals(dir.getId(), idDirectorio)).findFirst().orElseThrow();
     }
 
     public List<String> titulosDeTodosLosJuegos(){

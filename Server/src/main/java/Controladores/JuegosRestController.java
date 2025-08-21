@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -129,7 +130,7 @@ public class JuegosRestController {
         System.out.println("Post Archivo");
         try {
             checkpointService.postearArchivos(juego, partida, checkpoint, archivos);
-        }catch (ResourceNotFoundException e){
+        }catch (ResourceNotFoundException | NoSuchElementException e){
             return ResponseEntity.notFound().build();
         }catch (ResourceAlreadyExistsException e){
             return ResponseEntity.status(HttpStatus.CONFLICT).build();

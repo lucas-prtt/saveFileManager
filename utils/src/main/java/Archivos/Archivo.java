@@ -1,6 +1,8 @@
 package Archivos;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -9,8 +11,14 @@ import java.util.concurrent.ExecutionException;
 public abstract class Archivo {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Getter
     protected String id; // Iria uuid?
     protected String nombre;
+    @Setter
+    @Getter
+    @ManyToOne
+    @JoinColumn(name = "directorio_id")
+    protected Directorio ubicacion;
     abstract void escribirEn(Path path);
     abstract void cargarArchivoDe(Path path) throws Exception;
     String tree(){

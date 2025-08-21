@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 @Service
 public class CheckpointService {
@@ -58,12 +59,13 @@ public class CheckpointService {
         partidaService.actualizarPartida(partida);
     }
 
-    public void postearArchivos(String juegoTitulo, String partidaTitulo, String uuidCheckpoint, List<Archivo> archivos) throws ResourceNotFoundException, ResourceAlreadyExistsException{
+    public void postearArchivos(String juegoTitulo, String partidaTitulo, String uuidCheckpoint, List<Archivo> archivos) throws ResourceNotFoundException, ResourceAlreadyExistsException, NoSuchElementException{
         Checkpoint checkpoint = obtenerCheckpointPorJuegoPartidaYUuid(juegoTitulo, partidaTitulo, uuidCheckpoint);
         if (checkpoint.getArchivos() == null || checkpoint.getArchivos().isEmpty()){
             if (checkpoint.getArchivos() == null){
                 checkpoint.setArchivos(new ArrayList<>());
             }
+            archivos.forEach(archivo -> archivo.setUbicacion(juegosService.obtenerDirectorioPorJuegoEId(juegoTitulo, archivo.getUbicacion().getId())));
             checkpoint.getArchivos().addAll(archivos);
             checkpointRepository.save(checkpoint);
             return;
