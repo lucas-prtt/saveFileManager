@@ -1,48 +1,63 @@
 package SubMenus;
 
+import ApiClients.ApiRequestManager;
 import ApiClients.CheckpointClient;
 import ApiClients.JuegoClient;
+import FileManager.FileManager;
 import Juegos.Checkpoint;
 import Juegos.Juego;
 import Juegos.Partida;
+import JuegosDtos.CheckpointDTO;
+import JuegosDtos.JuegoDTO;
+import JuegosDtos.PartidaDTO;
 import ServerManagment.ServerManager;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class SubMenuCargarUltimoCheckpoint {
-    Partida partida;
-    Juego juego;
+    PartidaDTO partida;
+    JuegoDTO juego;
+    private final ApiRequestManager api = new ApiRequestManager(ServerManager.getInstance().getServidorLocal());
 
-    public SubMenuCargarUltimoCheckpoint(Partida partida, Juego juego) {
+    public SubMenuCargarUltimoCheckpoint(PartidaDTO partida, JuegoDTO juego) {
         this.partida = partida;
         this.juego = juego;
     }
 
     public void abrirMenu() throws Exception {
-        Checkpoint chk;
-        System.out.println("Partidas actuales: ");
+        CheckpointDTO newChk = new CheckpointDTO();
+        List<CheckpointDTO> chkList = api.obtenerCheckpointsDTO(juego.getTitulo(), partida.getTituloPartida());
+        System.out.println("Checkpoints actuales: ");
         int i = 1;
-        for(Checkpoint checkpoint : partida.getCheckpoints()){
-            System.out.println(i+". "+checkpoint.getStringReferencia());
+        for(CheckpointDTO checkpoint : chkList){
+            System.out.println(i+". " + checkpoint);
             i++;
         }
 
-        if (partida == juego.getPartidaActual()) {
+        if (Objects.equals(partida.getTituloPartida(), juego.getTituloPartidaActual())) {
             System.out.println("Se ha cargado el ultimo checkpoint");
-            partida.cargarUltimoCheckpoint();
+
+            FileManager.cargarArchivos(juego, api.obtenerArchivosCheckpoint(juego.getTitulo(), partida.getTituloPartida(), chkList.getLast().getId()));
         } else {
-            System.out.println("La partida actual es <"+juego.getPartidaActual().getTitulo()+">. Usted está en <"+partida.getTitulo()+">. Se guardará un checkpoint en la partida actual antes de cargar la nueva");
+            System.out.println("La partida actual es <"+juego.getTituloPartidaActual()+">. Usted está en <"+partida.getTituloPartida()+">. Se guardará un checkpoint en la partida actual antes de cargar la nueva");
             System.out.println("Ingrese el nombre del checkpoint (opcional)");
             String nombre = new Scanner(System.in).nextLine();
+
             if(Objects.equals(nombre, ""))
-                chk = juego.getPartidaActual().crearCheckpoint();
-            else
-                chk = juego.getPartidaActual().crearCheckpoint(nombre);
-            partida.cargarUltimoCheckpoint();
-            new CheckpointClient().postearCheckpoint(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.getPartidaActual().getTitulo(), chk);
-            juego.setPartidaActual(partida);
-            new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toPatchDTO());
+                newChk.setDescripcion(null);
+            else {
+                newChk.setDescripcion(nombre);
+            }
+            newChk.setFechaDeCreacion(LocalDateTime.now());
+            newChk.generateNewId();
+            api.postearCheckpoint(juego.getTitulo(), juego.getTituloPartidaActual(), newChk);
+
+            FileManager.cargarArchivos(juego, api.obtenerArchivosCheckpoint(juego.getTitulo(), partida.getTituloPartida(), chkList.getLast().getId()));
+            juego.setTituloPartidaActual(partida.getTituloPartida());
+            api.patchearJuego(juego.getTitulo(), juego);
         }
     }
 }

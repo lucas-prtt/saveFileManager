@@ -3,15 +3,17 @@ package Menus;
 import Juegos.Checkpoint;
 import Juegos.Juego;
 import Juegos.Partida;
+import JuegosDtos.JuegoDTO;
+import JuegosDtos.PartidaDTO;
 import SubMenus.SubMenuCargarCheckpoint;
 import SubMenus.SubMenuCargarUltimoCheckpoint;
 import SubMenus.SubMenuGuardarCheckpoint;
 import SubMenus.SubMenuEliminarCheckpoint;
 
 public class MenuGestionarPartida extends Menu{
-    Partida partida;
-    Juego juego;
-    public MenuGestionarPartida(Partida partida, Juego juego){
+    PartidaDTO partida;
+    JuegoDTO juego;
+    public MenuGestionarPartida(PartidaDTO partida, JuegoDTO juego){
         this.partida = partida;
         this.juego = juego;
     }

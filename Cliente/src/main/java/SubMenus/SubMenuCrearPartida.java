@@ -4,14 +4,15 @@ import ApiClients.JuegoClient;
 import ApiClients.PartidaClient;
 import Juegos.Juego;
 import Juegos.Partida;
+import JuegosDtos.JuegoDTO;
 import ServerManagment.ServerManager;
 
 import java.util.Objects;
 import java.util.Scanner;
 
 public class SubMenuCrearPartida {
-    Juego juego;
-    public SubMenuCrearPartida(Juego juego){
+    JuegoDTO juego;
+    public SubMenuCrearPartida(JuegoDTO juego){
         this.juego = juego;
     }
     public void abrirMenu(){

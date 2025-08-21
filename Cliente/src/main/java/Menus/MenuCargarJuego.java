@@ -74,7 +74,7 @@ public class MenuCargarJuego extends Menu{
                 juego.eliminarDirectorio(juego.getSaveFilePaths().get(i));
                 break;
             case 4:
-                new JuegoClient().postearJuego(ServerManager.getInstance().getServidorLocal(), juego);
+                JuegoClient.postearJuego(ServerManager.getInstance().getServidorLocal(), juego);
                 return true;
             case 5:
                 return true;

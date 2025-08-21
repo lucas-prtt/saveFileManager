@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Check;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Getter
@@ -21,7 +22,14 @@ public class CheckpointDTO {
     LocalDateTime fechaDeCreacion;
     String tituloPartida;
     String tituloJuego;
+
+
+
     public void generateNewId(){
         id = UUID.randomUUID().toString();
+    }
+    @Override
+    public String toString(){
+        return fechaDeCreacion.toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE) + " - " + fechaDeCreacion.toLocalTime().format(DateTimeFormatter.ISO_TIME) + " -  " + descripcion;
     }
 }

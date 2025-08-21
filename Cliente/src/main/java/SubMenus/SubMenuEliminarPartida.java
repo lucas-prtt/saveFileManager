@@ -3,6 +3,7 @@ package SubMenus;
 import ApiClients.JuegoClient;
 import ApiClients.PartidaClient;
 import Juegos.Juego;
+import JuegosDtos.JuegoDTO;
 import ServerManagment.ServerManager;
 
 import java.util.List;
@@ -10,10 +11,10 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class SubMenuEliminarPartida {
-    Juego juego;
+    JuegoDTO juego;
     List<String> titulosPartidas;
     String partidaActual;
-    public SubMenuEliminarPartida(Juego juego){
+    public SubMenuEliminarPartida(JuegoDTO juego){
         this.juego = juego;
     }
     public void abrirMenu(){

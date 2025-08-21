@@ -1,20 +1,23 @@
 package Menus;
 
+import ApiClients.ApiRequestManager;
 import ApiClients.JuegoClient;
 import Juegos.Juego;
 import JuegosDtos.JuegoDTO;
+import ServerManagment.ServerConnection;
 import ServerManagment.ServerManager;
 
 import java.util.List;
 
 public class MenuElegirJuego extends Menu {
     private static List<String> titulosJuegos;
+    private final ApiRequestManager api = new ApiRequestManager(ServerManager.getInstance().getServidorLocal());
     @Override
     void mostrarTextoOpciones() {
         System.out.println("Ingrese 0 para volver al menu principal");
         System.out.println("Elija el juego a gestionar:");
         int i = 1;
-        titulosJuegos = new JuegoClient().obtenerTitulosJuegos(ServerManager.getInstance().getServidorLocal());
+        titulosJuegos = api.obtenerTitulosJuegos();
         for(String titulo: titulosJuegos){
             System.out.println(i + ". " + titulo);
             i++;
@@ -27,7 +30,7 @@ public class MenuElegirJuego extends Menu {
             return true;
         if(opcion > titulosJuegos.size() || opcion < 0)
             throw new Exception("Opcion invalida");
-        JuegoDTO juegoElegido = new JuegoClient().obtenerJuego(ServerManager.getInstance().getServidorLocal(), titulosJuegos.get(opcion-1));
+        JuegoDTO juegoElegido = api.obtenerJuego(titulosJuegos.get(opcion-1));
         System.out.println(juegoElegido.getTitulo());
         new MenuGestionarJuego(juegoElegido).abrirMenu();
         return false;

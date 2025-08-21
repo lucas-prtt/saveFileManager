@@ -1,5 +1,6 @@
 package Menus;
 
+import ApiClients.ApiRequestManager;
 import ApiClients.JuegoClient;
 import ApiClients.PartidaClient;
 import Juegos.Juego;
@@ -14,14 +15,15 @@ public class MenuGestionarJuego extends Menu{
     JuegoDTO juego;
     String partidaActual;
     List<String> titulosPartidas;
+    private final ApiRequestManager api = new ApiRequestManager(ServerManager.getInstance().getServidorLocal());
     public MenuGestionarJuego(JuegoDTO juego){
         this.juego = juego;
     }
 
     @Override
     void mostrarTextoOpciones() {
-        partidaActual = new PartidaClient().obtenerPartidaActual(ServerManager.getInstance().getServidorLocal(), juego.getTitulo());
-        titulosPartidas = new PartidaClient().obtenerTitulosPartidas(ServerManager.getInstance().getServidorLocal(), juego.getTitulo());
+        partidaActual = api.obtenerPartidaActual(juego.getTitulo());
+        titulosPartidas = api.obtenerTitulosPartidas(juego.getTitulo());
         System.out.println("Elija una opcion:");
         System.out.println("1. Ver información del juego");
         System.out.println("2. Añadir path para saveFiles");
@@ -61,7 +63,7 @@ public class MenuGestionarJuego extends Menu{
                 break;
             case 5:
                 if (partidaActual != null)
-                    new MenuGestionarPartida( new  PartidaClient().obtenerPartida(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), partidaActual), juego).abrirMenu();
+                    new MenuGestionarPartida(api.obtenerPartida(juego.getTitulo(), partidaActual), juego).abrirMenu();
                 else
                     System.out.println("Error: Opcion invalida, se debe asignar una partida actual primero. Puede hacer esto cargandola desde la opcion superior.");
                 break;
@@ -72,9 +74,9 @@ public class MenuGestionarJuego extends Menu{
                 new SubMenuCrearPartida(juego).abrirMenu();
                 break;
             case 8:
-                juego.setPartidaActual(null);
-                juego.vaciarArchivosDeGuardado();
-                new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toPatchDTO());
+                juego.setTituloPartidaActual(null);
+                //juego.vaciarArchivosDeGuardado();
+                api.patchearJuego(juego.getTitulo(), juego);
                 break;
             case 9:
                 return true;
