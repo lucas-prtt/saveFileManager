@@ -31,9 +31,9 @@ public class SubMenuEliminarPartida {
         if(indice == -1)
             return;
         System.out.println("Eliminando la partida <"+titulosPartidas.get(indice)+">");
-        ApiHelper.eliminarPartida(api, juego.getTitulo(), titulosPartidas.get(indice));
+        ApiHelper.eliminarPartida(api, juego, titulosPartidas.get(indice));
         if(Objects.equals(partidaActual, titulosPartidas.getFirst())){
-            ApiHelper.cambiarPartidaActual(api, juego.getTitulo(), null);
+            ApiHelper.cambiarPartidaActual(api, juego, null);
         }
         return;
     }

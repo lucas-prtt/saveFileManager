@@ -32,7 +32,7 @@ public class SubMenuGuardarCheckpoint {
             String nombre = new Scanner(System.in).nextLine();
             if(Objects.equals(nombre, ""))
                 nombre = null;
-            ApiHelper.crearCheckpoint(api, juego.getTitulo(), partida.getTituloPartida(), nombre, FileManager.guardarArchivos(juego));
+            ApiHelper.crearCheckpoint(api, partida, nombre, FileManager.guardarArchivos(juego));
         }else{
             int r;
             if(juego.getTituloPartidaActual() != null){// Si hay partida actual que no coincide, confirma sobreescritura
@@ -52,8 +52,8 @@ public class SubMenuGuardarCheckpoint {
                 if(Objects.equals(nombre, ""))
                     nombre = null;
                 System.out.println("La partida actual se ha actualizado a la seleccionada ("+partida.getTituloPartida()+")");
-                ApiHelper.crearCheckpoint(api, juego.getTitulo(), partida.getTituloPartida(), nombre, FileManager.guardarArchivos(juego));
-                ApiHelper.cambiarPartidaActual(api, juego.getTitulo(), partida.getTituloPartida());
+                ApiHelper.crearCheckpoint(api, partida, nombre, FileManager.guardarArchivos(juego));
+                ApiHelper.cambiarPartidaActual(api, juego, partida.getTituloPartida());
             }
         }
 

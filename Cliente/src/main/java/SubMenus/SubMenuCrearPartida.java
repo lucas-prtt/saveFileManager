@@ -22,10 +22,10 @@ public class SubMenuCrearPartida {
             System.out.println("Creacion cancelada. Se requiere ingresar un nombre");
             return;
         }
-        ApiHelper.crearPartida(api, juego.getTitulo(), name);
+        ApiHelper.crearPartida(api, juego, name);
         System.out.println("Partida creada");
         if(api.obtenerTitulosPartidas(juego.getTitulo()).isEmpty()){
-            ApiHelper.cambiarPartidaActual(api, juego.getTitulo(), name);
+            ApiHelper.cambiarPartidaActual(api, juego, name);
             System.out.println("Partida asignada como partida actual, por ser la unica disponible");
         }
         return;

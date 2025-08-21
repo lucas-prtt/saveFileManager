@@ -32,7 +32,7 @@ public class SubMenuEliminarCheckpoint {
         }
         else if (indice >=0 && indice<checkpoints.size()){
             CheckpointDTO chk = checkpoints.get(indice);
-            ApiHelper.eliminarCheckpoint(api, partida.getTituloJuego(), partida.getTituloJuego(), chk.getId());
+            ApiHelper.eliminarCheckpoint(api, partida, chk.getId());
             partida.getCheckpointsIDs().remove(chk.getId());
             return;
         }
