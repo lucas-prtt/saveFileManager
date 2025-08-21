@@ -1,11 +1,16 @@
 package ApiHelper;
 
+import Archivos.Archivo;
 import Archivos.Directorio;
 import Juegos.Juego;
+import JuegosDtos.CheckpointDTO;
 import JuegosDtos.JuegoDTO;
 import JuegosDtos.PartidaDTO;
+import org.hibernate.annotations.Check;
 
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class ApiHelper {
 
@@ -20,6 +25,19 @@ public class ApiHelper {
         partida.generateNewId();
         partida.setTituloJuego(tituloJuego);
         api.postearPartida(tituloJuego, partida);
+    }
+    public static void crearCheckpoint(ApiRequestManager api, String tituloJuego, String nombrePartida, CheckpointDTO checkpoint, List<Archivo> archivos){
+        api.postearCheckpoint(tituloJuego, nombrePartida, checkpoint);
+        api.postearArchivos(tituloJuego, nombrePartida, checkpoint.getId(), archivos);
+    }
+    public static void crearCheckpoint(ApiRequestManager api, String tituloJuego, String nombrePartida, String nombreCheckpoint, List<Archivo> archivos){
+        CheckpointDTO checkpoint = new CheckpointDTO();
+        checkpoint.generateNewId();
+        checkpoint.setDescripcion(nombreCheckpoint);
+        checkpoint.setTituloPartida(nombrePartida);
+        checkpoint.setTituloJuego(tituloJuego);
+        checkpoint.setFechaDeCreacion(LocalDateTime.now());
+        crearCheckpoint(api, tituloJuego, nombrePartida, checkpoint, archivos);
     }
     public static void eliminarCheckpoint(ApiRequestManager api, String tituloJuego, String tituloPartida, String uuidCheckpoint){
         api.eliminarCheckpoint(tituloJuego, tituloPartida, uuidCheckpoint);

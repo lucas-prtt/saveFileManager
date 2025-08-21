@@ -2,6 +2,9 @@ package SubMenus;
 
 import ApiClients.CheckpointClient;
 import ApiClients.JuegoClient;
+import ApiHelper.ApiHelper;
+import ApiHelper.ApiRequestManager;
+import FileManager.FileManager;
 import Juegos.Checkpoint;
 import Juegos.Juego;
 import Juegos.Partida;
@@ -15,6 +18,7 @@ import java.util.Scanner;
 public class SubMenuGuardarCheckpoint {
     PartidaDTO partida;
     JuegoDTO juego;
+    private final ApiRequestManager api = new ApiRequestManager(ServerManager.getInstance().getServidorLocal());
 
     public SubMenuGuardarCheckpoint(PartidaDTO partida, JuegoDTO juego) {
         this.partida = partida;
@@ -27,14 +31,12 @@ public class SubMenuGuardarCheckpoint {
             System.out.println("Ingrese el nombre del checkpoint (opcional)");
             String nombre = new Scanner(System.in).nextLine();
             if(Objects.equals(nombre, ""))
-                chk = partida.crearCheckpoint();
-            else
-                chk = partida.crearCheckpoint(nombre);
-            new CheckpointClient().postearCheckpoint(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), partida.getTitulo(), chk);
+                nombre = null;
+            ApiHelper.crearCheckpoint(api, juego.getTitulo(), partida.getTituloPartida(), nombre, FileManager.guardarArchivos(juego));
         }else{
             int r;
-            if(juego.getPartidaActual() != null){// Si hay partida actual que no coincide, confirma sobreescritura
-                System.out.println("Atención! La partida seleccionada es <"+partida.getTitulo()+">, la partida actualmente cargada es <"+juego.getPartidaActual().getTitulo()+">\nEsta seguro que desea guardar la partida actual aquí?" );
+            if(juego.getTituloPartidaActual() != null){// Si hay partida actual que no coincide, confirma sobreescritura
+                System.out.println("Atención! La partida seleccionada es <"+partida.getTituloPartida()+">, la partida actualmente cargada es <"+juego.getTituloPartidaActual() + ">\nEsta seguro que desea guardar la partida actual aquí?" );
                 System.out.println("1. Si\n2. No");
                 r = 0;
                 while (r != 1 && r != 2) {
@@ -48,13 +50,10 @@ public class SubMenuGuardarCheckpoint {
                 System.out.println("Ingrese el nombre del checkpoint (opcional)");
                 String nombre = new Scanner(System.in).nextLine();
                 if(Objects.equals(nombre, ""))
-                    chk = partida.crearCheckpoint();
-                else
-                    chk = partida.crearCheckpoint(nombre);
-                juego.setPartidaActual(partida);
-                System.out.println("La partida actual se ha actualizado a la seleccionada ("+partida.getTitulo()+")");
-                new JuegoClient().patchearJuego(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), juego.toPatchDTO());
-                new CheckpointClient().postearCheckpoint(ServerManager.getInstance().getServidorLocal(), juego.getTitulo(), partida.getTitulo(), chk);
+                    nombre = null;
+                System.out.println("La partida actual se ha actualizado a la seleccionada ("+partida.getTituloPartida()+")");
+                ApiHelper.crearCheckpoint(api, juego.getTitulo(), partida.getTituloPartida(), nombre, FileManager.guardarArchivos(juego));
+                ApiHelper.cambiarPartidaActual(api, juego.getTitulo(), partida.getTituloPartida());
             }
         }
 
