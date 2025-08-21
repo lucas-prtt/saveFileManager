@@ -53,9 +53,6 @@ public class ApiRequestManager {
     public PartidaDTO obtenerPartida( String tituloJuego, String tituloPartida){
         return PartidaClient.obtenerPartida(connection, tituloJuego, tituloPartida);
     }
-    public String obtenerPartidaActual(String tituloJuego){
-        return PartidaClient.obtenerPartidaActual(connection, tituloJuego);
-    }
 
     // POST PARTIDAS
     public PartidaDTO postearPartida(String tituloJuego, PartidaDTO partida) {

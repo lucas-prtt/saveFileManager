@@ -10,7 +10,6 @@ import java.util.List;
 
 public class MenuGestionarJuego extends Menu{
     JuegoDTO juego;
-    String partidaActual;
     List<String> titulosPartidas;
     private final ApiRequestManager api = new ApiRequestManager(ServerManager.getInstance().getServidorLocal());
     public MenuGestionarJuego(JuegoDTO juego){
@@ -19,7 +18,6 @@ public class MenuGestionarJuego extends Menu{
 
     @Override
     void mostrarTextoOpciones() {
-        partidaActual = api.obtenerPartidaActual(juego.getTitulo());
         titulosPartidas = api.obtenerTitulosPartidas(juego.getTitulo());
         System.out.println("Elija una opcion:");
         System.out.println("1. Ver información del juego");
@@ -29,8 +27,8 @@ public class MenuGestionarJuego extends Menu{
             System.out.println(SimularTachado.tachar("4. Elegir partida"));
         else
             System.out.println("4. Elegir Partida");
-        if(partidaActual != null)
-            System.out.println("5. Elegir partida actual ("+ partidaActual +")");
+        if(juego.getTituloPartidaActual() != null)
+            System.out.println("5. Elegir partida actual ("+ juego.getTituloPartidaActual() +")");
         else
             System.out.println(SimularTachado.tachar("5. Elegir partida actual"));
         System.out.println("6. Eliminar Partida");
@@ -59,8 +57,8 @@ public class MenuGestionarJuego extends Menu{
                     new SubMenuElegirPartida(juego).abrirMenu();
                 break;
             case 5:
-                if (partidaActual != null)
-                    new MenuGestionarPartida(api.obtenerPartida(juego.getTitulo(), partidaActual), juego).abrirMenu();
+                if (juego.getTituloPartidaActual() != null)
+                    new MenuGestionarPartida(api.obtenerPartida(juego.getTitulo(), juego.getTituloPartidaActual()), juego).abrirMenu();
                 else
                     System.out.println("Error: Opcion invalida, se debe asignar una partida actual primero. Puede hacer esto cargandola desde la opcion superior.");
                 break;
