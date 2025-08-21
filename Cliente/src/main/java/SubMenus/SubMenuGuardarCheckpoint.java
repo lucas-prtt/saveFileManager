@@ -53,7 +53,9 @@ public class SubMenuGuardarCheckpoint {
                     nombre = null;
                 System.out.println("La partida actual se ha actualizado a la seleccionada ("+partida.getTituloPartida()+")");
                 ApiHelper.crearCheckpoint(api, partida, nombre, FileManager.guardarArchivos(juego));
+                System.out.println("Checkpoint creado");
                 ApiHelper.cambiarPartidaActual(api, juego, partida.getTituloPartida());
+                System.out.println("Partida actual actualizada");
             }
         }
 
