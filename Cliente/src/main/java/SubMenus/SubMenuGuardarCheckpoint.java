@@ -5,23 +5,25 @@ import ApiClients.JuegoClient;
 import Juegos.Checkpoint;
 import Juegos.Juego;
 import Juegos.Partida;
+import JuegosDtos.JuegoDTO;
+import JuegosDtos.PartidaDTO;
 import ServerManagment.ServerManager;
 
 import java.util.Objects;
 import java.util.Scanner;
 
 public class SubMenuGuardarCheckpoint {
-    Partida partida;
-    Juego juego;
+    PartidaDTO partida;
+    JuegoDTO juego;
 
-    public SubMenuGuardarCheckpoint(Partida partida, Juego juego) {
+    public SubMenuGuardarCheckpoint(PartidaDTO partida, JuegoDTO juego) {
         this.partida = partida;
         this.juego = juego;
     }
 
     public void abrirMenu() throws Exception {
         Checkpoint chk;
-        if (partida == juego.getPartidaActual()) { // Si la partida es la actual
+        if (Objects.equals(partida.getTituloPartida(), juego.getTituloPartidaActual())) { // Si la partida es la actual
             System.out.println("Ingrese el nombre del checkpoint (opcional)");
             String nombre = new Scanner(System.in).nextLine();
             if(Objects.equals(nombre, ""))

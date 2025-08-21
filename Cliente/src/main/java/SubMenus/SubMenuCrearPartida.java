@@ -1,9 +1,8 @@
 package SubMenus;
 
 import ApiHelper.ApiRequestManager;
-import ApiHelper.ApiRequestHelper;
+import ApiHelper.ApiHelper;
 import JuegosDtos.JuegoDTO;
-import JuegosDtos.PartidaDTO;
 import ServerManagment.ServerManager;
 
 import java.util.Objects;
@@ -23,10 +22,10 @@ public class SubMenuCrearPartida {
             System.out.println("Creacion cancelada. Se requiere ingresar un nombre");
             return;
         }
-        ApiRequestHelper.crearPartida(api, juego.getTitulo(), name);
+        ApiHelper.crearPartida(api, juego.getTitulo(), name);
         System.out.println("Partida creada");
         if(api.obtenerTitulosPartidas(juego.getTitulo()).isEmpty()){
-            ApiRequestHelper.cambiarPartidaActual(api, juego.getTitulo(), partida.getTituloPartida());
+            ApiHelper.cambiarPartidaActual(api, juego.getTitulo(), name);
             System.out.println("Partida asignada como partida actual, por ser la unica disponible");
         }
         return;
