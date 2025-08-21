@@ -17,7 +17,10 @@ public class CheckpointConverter {
     PartidaService partidaService;
 
     public Checkpoint fromDto(CheckpointDTO dto){
-        return new Checkpoint(dto.getDescripcion(), partidaService.obtenerPartidaDeJuegoPorTitulo(dto.getTituloJuego(), dto.getTituloPartida()));
+        if (dto.getId() == null)
+            return new Checkpoint(dto.getDescripcion(), partidaService.obtenerPartidaDeJuegoPorTitulo(dto.getTituloJuego(), dto.getTituloPartida()));
+        else
+            return new Checkpoint(dto.getDescripcion(), partidaService.obtenerPartidaDeJuegoPorTitulo(dto.getTituloJuego(), dto.getTituloPartida()), dto.getId());
     }
 }
 

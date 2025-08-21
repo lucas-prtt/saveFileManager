@@ -41,6 +41,13 @@ public class Checkpoint {
         this.partida = partida;
         generateNewId();
     }
+    public Checkpoint(String descripcion, Partida partida, String id){
+        this.descripcion = descripcion;
+        this.fechaDeCreacion = LocalDateTime.now();
+        this.partida = partida;
+        this.id = id;
+    }
+
 
     public String getStringReferencia(){
         if(descripcion == null)
