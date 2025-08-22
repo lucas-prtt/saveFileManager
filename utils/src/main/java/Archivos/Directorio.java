@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -95,13 +96,13 @@ public class Directorio {
             return AlgoritmoPredictivoPaths.predecir(pathsSinonimos);
         }
     }
-    public Path findBestMatchingPath() throws Exception{
+    public Path findBestMatchingPath() throws FileNotFoundException{
         if (pathExiste(pathPrincipal)){
             return pathPrincipal;
         }
         Optional<Path> path = pathsSinonimos.stream().filter(this::pathExiste).findFirst();
         if(path.isEmpty())
-            throw new Exception("No hay path valido");
+            throw new FileNotFoundException("No hay path valido");
         return path.get();
     }
     public boolean pathExiste(Path path){

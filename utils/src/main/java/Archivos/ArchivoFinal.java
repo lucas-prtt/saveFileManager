@@ -1,12 +1,13 @@
 package Archivos;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.SneakyThrows;
+import lombok.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +19,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class ArchivoFinal extends Archivo{
     @Lob
@@ -27,6 +29,7 @@ public class ArchivoFinal extends Archivo{
     public ArchivoFinal(String nombre){
         this.nombre = nombre;
     }
+
     @Override
     public void escribirEn(Path path) {
         if(datos == null){
@@ -41,12 +44,12 @@ public class ArchivoFinal extends Archivo{
     }
 
     @Override
-    void cargarArchivoDe(Path path) {
+    public void cargarArchivoDe(Path path) throws FileNotFoundException {
         try {
             Path archivo = path.resolve(nombre);
             datos = Files.readAllBytes(archivo);
         } catch (IOException e) {
-            throw new RuntimeException("No se pudo leer el archivo: " + path.resolve(nombre), e);
+            throw new FileNotFoundException("No se pudo leer el archivo: " + path.resolve(nombre));
         }
     }
 
@@ -85,6 +88,8 @@ public class ArchivoFinal extends Archivo{
 
         return sb.toString();
     }
-
+    public String toString(){
+        return "Archivo: " + nombre + "\tUbicacion: " + ubicacion.getPathPrincipal();
+    }
 
 }

@@ -1,10 +1,13 @@
 package ApiClients;
 
-import Archivos.Archivo;
+import Archivos.*;
 import Juegos.*;
 import JuegosDtos.CheckpointDTO;
 import ServerManagment.ServerConnection;
 import ServerManagment.ServerManager;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +33,24 @@ import java.util.List;
 
         public static CheckpointDTO postearCheckpoint(ServerConnection servidor, String tituloJuego, String tituloPartida, CheckpointDTO checkpoint) {
             return servidor.getWebClient().post().uri("/api/juegos/" + tituloJuego + "/partidas/" + tituloPartida + "/checkpoints").bodyValue(checkpoint).retrieve().bodyToMono(CheckpointDTO.class).block();
-        }
-        public static CheckpointDTO postearArchivos(ServerConnection servidor, String tituloJuego, String tituloPartida,String uuidCheckpoint , List<Archivo> archivos) {
-            return servidor.getWebClient().post().uri("/api/juegos/" + tituloJuego + "/partidas/" + tituloPartida + "/checkpoints/" + uuidCheckpoint + "/archivos").bodyValue(archivos).retrieve().bodyToMono(CheckpointDTO.class).block();
+        }public static CheckpointDTO postearArchivos(ServerConnection servidor, String tituloJuego, String tituloPartida, String uuidCheckpoint, List<Archivo> archivos) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(SerializationFeature.INDENT_OUTPUT); // más legible
+                String json = mapper.writeValueAsString(archivos);
+                System.out.println("JSON que se va a enviar:");
+                System.out.println(json);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return servidor.getWebClient()
+                    .post()
+                    .uri("/api/juegos/" + tituloJuego + "/partidas/" + tituloPartida + "/checkpoints/" + uuidCheckpoint + "/archivos")
+                    .bodyValue(archivos)
+                    .retrieve()
+                    .bodyToMono(CheckpointDTO.class)
+                    .block();
         }
 
 

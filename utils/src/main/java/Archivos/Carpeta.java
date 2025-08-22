@@ -1,5 +1,8 @@
 package Archivos;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -40,7 +43,7 @@ public class Carpeta extends Archivo{
     }
 
     @Override
-    void cargarArchivoDe(Path path) throws Exception {
+    public void cargarArchivoDe(Path path) throws FileNotFoundException {
         Path directorio = path.resolve(nombre);
         File[] subArchivos = directorio.toFile().listFiles();
         if (subArchivos == null)
@@ -90,5 +93,8 @@ public class Carpeta extends Archivo{
             throw new RuntimeException("No se pudo eliminar: " + path.toAbsolutePath());
         }
     }
-
+    @Override
+    public String toString(){
+        return "Carpeta: " + nombre + "\tUbicacion: " + ubicacion.getPathPrincipal();
+    }
 }

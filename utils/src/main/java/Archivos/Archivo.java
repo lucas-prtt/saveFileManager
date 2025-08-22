@@ -1,26 +1,39 @@
 package Archivos;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "tipo"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Carpeta.class, name = "carpeta"),
+        @JsonSubTypes.Type(value = ArchivoFinal.class, name = "archivofinal")
+})
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class Archivo {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Getter
     protected String id; // Iria uuid?
     protected String nombre;
-    @Setter
-    @Getter
     @ManyToOne
     @JoinColumn(name = "directorio_id")
     protected Directorio ubicacion;
-    abstract void escribirEn(Path path);
-    abstract void cargarArchivoDe(Path path) throws Exception;
+    public abstract void escribirEn(Path path);
+    public abstract void cargarArchivoDe(Path path) throws FileNotFoundException;
     String tree(){
         return treeAux(0);
     };

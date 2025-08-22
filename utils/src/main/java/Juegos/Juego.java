@@ -105,6 +105,9 @@ public class Juego {
         }
     }
     public JuegoDTO toJuegoDTO(){
+        if(partidaActual == null){
+            return new JuegoDTO(titulo, null, getTitulosPartidas(), saveFilePaths);
+        }
         return new JuegoDTO(titulo, partidaActual.getTitulo(), getTitulosPartidas(), saveFilePaths);
     }
 
