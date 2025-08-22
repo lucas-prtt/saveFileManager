@@ -1,5 +1,7 @@
 package ServerManagment;
+import com.fasterxml.jackson.core.type.TypeReference;
 
+import Archivos.Archivo;
 import Archivos.ArchivoFinal;
 import Archivos.Carpeta;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,13 +10,10 @@ import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
-import org.springframework.http.codec.json.Jackson2SmileDecoder;
+import org.springframework.util.MimeType;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
 import java.util.List;
 import java.util.Objects;
 
