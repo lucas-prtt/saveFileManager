@@ -8,6 +8,8 @@ import ServerManagment.ServerManager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +35,17 @@ import java.util.List;
 
         public static CheckpointDTO postearCheckpoint(ServerConnection servidor, String tituloJuego, String tituloPartida, CheckpointDTO checkpoint) {
             return servidor.getWebClient().post().uri("/api/juegos/" + tituloJuego + "/partidas/" + tituloPartida + "/checkpoints").bodyValue(checkpoint).retrieve().bodyToMono(CheckpointDTO.class).block();
-        }public static CheckpointDTO postearArchivos(ServerConnection servidor, String tituloJuego, String tituloPartida, String uuidCheckpoint, List<Archivo> archivos) {
+        }
+
+
+        public static List<Archivo> postearArchivos(ServerConnection servidor, String tituloJuego, String tituloPartida, String uuidCheckpoint, List<Archivo> archivos) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
+                mapper.registerSubtypes(
+                        new NamedType(Carpeta.class, "carpeta"),
+                        new NamedType(ArchivoFinal.class, "archivofinal")
+                );
+                mapper.activateDefaultTypingAsProperty(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, "tipo");
                 mapper.enable(SerializationFeature.INDENT_OUTPUT); // más legible
                 String json = mapper.writeValueAsString(archivos);
                 System.out.println("JSON que se va a enviar:");
@@ -49,7 +59,7 @@ import java.util.List;
                     .uri("/api/juegos/" + tituloJuego + "/partidas/" + tituloPartida + "/checkpoints/" + uuidCheckpoint + "/archivos")
                     .bodyValue(archivos)
                     .retrieve()
-                    .bodyToMono(CheckpointDTO.class)
+                    .bodyToMono(new ParameterizedTypeReference<List<Archivo>>() {})
                     .block();
         }
 
