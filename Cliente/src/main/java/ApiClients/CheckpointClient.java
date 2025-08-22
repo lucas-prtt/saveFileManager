@@ -1,19 +1,15 @@
 package ApiClients;
 
 import Archivos.*;
-import Juegos.*;
 import JuegosDtos.CheckpointDTO;
 import ServerManagment.ServerConnection;
-import ServerManagment.ServerManager;
 
+import Utils.SerializaConTipoForzado;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
-import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -40,28 +36,16 @@ import java.util.List;
         }
 
 
-        public static List<Archivo> postearArchivos(ServerConnection servidor, String tituloJuego, String tituloPartida, String uuidCheckpoint, List<Archivo> archivos) {
-            try {
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.registerSubtypes(
-                        new NamedType(Carpeta.class, "carpeta"),
-                        new NamedType(ArchivoFinal.class, "archivofinal")
-                );
-                //mapper.activateDefaultTypingAsProperty(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, "tipo");
-                mapper.enable(SerializationFeature.INDENT_OUTPUT); // más legible
-                String json = mapper.writerFor(new TypeReference<List<Archivo>>() {}).writeValueAsString(archivos);
-                System.out.println("JSON que se va a enviar:");
-                System.out.println(json);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        public static Void postearArchivos(ServerConnection servidor, String tituloJuego, String tituloPartida, String uuidCheckpoint, List<Archivo> archivos) {
+            //System.out.println(SerializaConTipoForzado.serializaAListaDeArchivos(archivos));
 
             return servidor.getWebClient()
                     .post()
                     .uri("/api/juegos/" + tituloJuego + "/partidas/" + tituloPartida + "/checkpoints/" + uuidCheckpoint + "/archivos")
-                    .bodyValue(archivos)
+                    .bodyValue(SerializaConTipoForzado.serializaAListaDeArchivos(archivos))
+                    .header("Content-Type", "application/json")
                     .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<List<Archivo>>() {})
+                    .bodyToMono(Void.class)
                     .block();
         }
 

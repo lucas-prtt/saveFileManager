@@ -86,7 +86,7 @@ public class ApiRequestManager {
     public CheckpointDTO postearCheckpoint(String tituloJuego, String tituloPartida, CheckpointDTO checkpoint) {
         return CheckpointClient.postearCheckpoint(connection, tituloJuego, tituloPartida, checkpoint);
     }
-    public List<Archivo> postearArchivos(String tituloJuego, String tituloPartida, String uuidCheckpoint , List<Archivo> archivos) {
+    public Void postearArchivos(String tituloJuego, String tituloPartida, String uuidCheckpoint , List<Archivo> archivos) {
         return CheckpointClient.postearArchivos(connection, tituloJuego, tituloPartida, uuidCheckpoint, archivos);
     }
 

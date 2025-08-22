@@ -15,7 +15,12 @@ import java.util.List;
 public class SerializaConTipoForzado {
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static byte[] serializa(Object object, JavaType tipo) throws JsonProcessingException {
-        return mapper.writerFor(tipo).writeValueAsBytes(object);
+    public static String serializaAListaDeArchivos(List<Archivo> object) {
+        try {
+            return mapper.writerFor(new com.fasterxml.jackson.core.type.TypeReference<List<Archivo>>() {
+            }).writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
