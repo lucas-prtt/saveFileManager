@@ -10,17 +10,41 @@ import lombok.ToString;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.nio.file.Path;
+import java.util.*;
 
 public class FileManager {
 
     public static void cargarArchivos(JuegoDTO juego, List<Archivo> archivos){
-        System.out.println("Se escribirian los archivos en:");
-        archivos.forEach(System.out::println);
-        //TODO
+        System.out.println("Se cargan los archivos en:");
+        List<AbstractMap.SimpleEntry<Path, Archivo>> caminosEncontrados = new ArrayList<>();
+
+        for (Archivo f : archivos){
+            try {
+                Path pathEncontrado = f.getUbicacion().findMostLikelyPath();
+                System.out.println(f.getNombre() + " se cargara en " + pathEncontrado.toString());
+                caminosEncontrados.add(new AbstractMap.SimpleEntry<>(pathEncontrado, f));
+            }catch (Exception e){
+                System.out.println(f.getUbicacion().getPathPrincipal() + "no fue ubicado. No se puede cargar el archivo " + f.getNombre());
+            }
+        }
+
+        System.out.print("¿Deseás continuar? \n 1. Si\n2. No\n ");
+        while (true) {
+            try {
+                int respuesta = new Scanner(System.in).nextInt();
+                if (respuesta == 2) {
+                    System.out.println("Carga de archivos cancelada");
+                    return;
+                } else if (respuesta == 1) {
+                    System.out.println("Continuando");
+                    break;
+                }
+            }catch (Exception _){}
+        }
+
+        for(AbstractMap.SimpleEntry<Path, Archivo> dupla : caminosEncontrados){
+        dupla.getValue().escribirEn(dupla.getKey());}
         return;
     }
 
