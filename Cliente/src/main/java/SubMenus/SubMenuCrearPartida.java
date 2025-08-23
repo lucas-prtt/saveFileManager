@@ -24,7 +24,7 @@ public class SubMenuCrearPartida {
         }
         ApiHelper.crearPartida(api, juego, name);
         System.out.println("Partida creada");
-        if(api.obtenerTitulosPartidas(juego.getTitulo()).isEmpty()){
+        if(api.obtenerTitulosPartidas(juego.getTitulo()).size() == 1){
             ApiHelper.cambiarPartidaActual(api, juego, name);
             System.out.println("Partida asignada como partida actual, por ser la unica disponible");
         }
