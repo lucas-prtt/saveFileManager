@@ -4,11 +4,6 @@ import Archivos.*;
 import JuegosDtos.CheckpointDTO;
 import ServerManagment.ServerConnection;
 
-import Utils.SerializaConTipoForzado;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.List;
@@ -36,16 +31,14 @@ import java.util.List;
         }
 
 
-        public static Void postearArchivos(ServerConnection servidor, String tituloJuego, String tituloPartida, String uuidCheckpoint, List<Archivo> archivos) {
-            //System.out.println(SerializaConTipoForzado.serializaAListaDeArchivos(archivos));
+        public static List<Archivo> postearArchivos(ServerConnection servidor, String tituloJuego, String tituloPartida, String uuidCheckpoint, List<Archivo> archivos) {
 
             return servidor.getWebClient()
                     .post()
                     .uri("/api/juegos/" + tituloJuego + "/partidas/" + tituloPartida + "/checkpoints/" + uuidCheckpoint + "/archivos")
-                    .bodyValue(SerializaConTipoForzado.serializaAListaDeArchivos(archivos))
-                    .header("Content-Type", "application/json")
+                    .bodyValue(archivos, new ParameterizedTypeReference<List<Archivo>>(){})
                     .retrieve()
-                    .bodyToMono(Void.class)
+                    .bodyToMono(new ParameterizedTypeReference<List<Archivo>>(){})
                     .block();
         }
 
