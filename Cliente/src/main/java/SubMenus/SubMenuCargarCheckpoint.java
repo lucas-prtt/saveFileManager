@@ -56,6 +56,7 @@ public class SubMenuCargarCheckpoint {
             }
             List<Archivo> archivos = api.obtenerArchivosCheckpoint(juego.getTitulo(), partida.getTituloPartida(), chkList.get(indice).getId());
             FileManager.cargarArchivos(juego, archivos);
+            System.out.println("Se ha cargado el checkpoint elegido (" + chkList.get(indice).getFechaDeCreacion() + (chkList.get(indice).getDescripcion() == null ? " - " + chkList.get(indice).getDescripcion() : "") + ")");
             return;
         }
         else throw new Exception("Opcion invalida para eliminar checkpoint");

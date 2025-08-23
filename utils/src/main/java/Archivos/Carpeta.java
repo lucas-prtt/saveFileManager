@@ -77,6 +77,11 @@ public class Carpeta extends Archivo{
         borrarRecursivo(carpeta);
     }
 
+    @Override
+    public String subTypeAsString() {
+        return "Carpeta";
+    }
+
     private void borrarRecursivo(Path path) {
         File archivo = path.toFile();
 

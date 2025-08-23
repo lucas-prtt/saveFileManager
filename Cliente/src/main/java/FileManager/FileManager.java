@@ -7,6 +7,7 @@ import Archivos.Directorio;
 import JuegosDtos.CheckpointDTO;
 import JuegosDtos.JuegoDTO;
 import lombok.ToString;
+import org.fusesource.jansi.Ansi;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,16 +17,17 @@ import java.util.*;
 public class FileManager {
 
     public static void cargarArchivos(JuegoDTO juego, List<Archivo> archivos){
-        System.out.println("Se cargan los archivos en:");
+        System.out.println("Se cargaran los archivos en:");
         List<AbstractMap.SimpleEntry<Path, Archivo>> caminosEncontrados = new ArrayList<>();
 
         for (Archivo f : archivos){
             try {
-                Path pathEncontrado = f.getUbicacion().findMostLikelyPath();
-                System.out.println(f.getNombre() + " se cargara en " + pathEncontrado.toString());
+                //TODO: Lograr que FindMostLikelyPath no trabe todo
+                Path pathEncontrado = f.getUbicacion().findBestMatchingPath();
+                System.out.printf("%-15s %-30s -> %s%n", f.subTypeAsString(), f.getNombre(), pathEncontrado.toString());
                 caminosEncontrados.add(new AbstractMap.SimpleEntry<>(pathEncontrado, f));
             }catch (Exception e){
-                System.out.println(f.getUbicacion().getPathPrincipal() + "no fue ubicado. No se puede cargar el archivo " + f.getNombre());
+                System.out.println(Ansi.ansi().fg(Ansi.Color.RED).bold().a(String.format("%-15s %-30s -> %s", f.subTypeAsString(), f.getNombre(), "No fue ubicado. No se copiará")).reset());
             }
         }
 

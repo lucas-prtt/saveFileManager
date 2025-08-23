@@ -48,4 +48,5 @@ public abstract class Archivo {
         }
     }
     abstract void borrar(Path path) throws Exception;
+    public abstract String subTypeAsString();
 }

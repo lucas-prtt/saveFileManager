@@ -69,6 +69,11 @@ public class ArchivoFinal extends Archivo{
         }
     }
 
+    @Override
+    public String subTypeAsString() {
+        return "Archivo";
+    }
+
     public String getSHA512() {
         if(datos == null){
             throw new RuntimeException("Se quiso calcular el checksum de un archivo (" + nombre + ") sin cargar los datos");
@@ -91,5 +96,6 @@ public class ArchivoFinal extends Archivo{
     public String toString(){
         return "Archivo: " + nombre + "\tUbicacion: " + ubicacion.getPathPrincipal();
     }
+
 
 }

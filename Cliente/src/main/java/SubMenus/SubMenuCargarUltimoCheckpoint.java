@@ -34,9 +34,8 @@ public class SubMenuCargarUltimoCheckpoint {
         }
 
         if (Objects.equals(partida.getTituloPartida(), juego.getTituloPartidaActual())) {
-            System.out.println("Se ha cargado el ultimo checkpoint");
-
             FileManager.cargarArchivos(juego, api.obtenerArchivosCheckpoint(juego.getTitulo(), partida.getTituloPartida(), chkList.getLast().getId()));
+            System.out.println("Se ha cargado el ultimo checkpoint");
         } else {
             System.out.println("La partida actual es <"+juego.getTituloPartidaActual()+">. Usted está en <"+partida.getTituloPartida()+">. Se guardará un checkpoint en la partida actual antes de cargar la nueva");
             System.out.println("Ingrese el nombre del checkpoint (opcional)");
@@ -45,8 +44,8 @@ public class SubMenuCargarUltimoCheckpoint {
             if(Objects.equals(nombre, ""))
                 nombre = null;
             ApiHelper.crearCheckpoint(api, partida, nombre ,FileManager.guardarArchivos(juego));
-
             FileManager.cargarArchivos(juego, api.obtenerArchivosCheckpoint(juego.getTitulo(), partida.getTituloPartida(), chkList.getLast().getId()));
+            System.out.println("Se ha cargado el ultimo checkpoint (" + chkList.getLast().getFechaDeCreacion() + (chkList.getLast().getDescripcion() == null ? " - " + chkList.getLast().getDescripcion() : "") + ")");
             ApiHelper.cambiarPartidaActual(api, juego, partida.getTituloPartida());
         }
     }
