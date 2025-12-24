@@ -4,7 +4,7 @@ import ApiHelper.ApiRequestManager;
 import JuegosDtos.JuegoDTO;
 import ServerManagment.ServerManager;
 import SubMenus.*;
-import Utils.SimularTachado;
+import utils.SimularTachado;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package Utils;
+package utils;
 
 public class SimularTachado {
     public static String tachar(String texto) {

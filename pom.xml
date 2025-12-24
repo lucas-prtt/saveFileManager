@@ -9,9 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>utils</module>
         <module>Cliente</module>
-        <module>Server</module>
         <module>Aplicacion</module>
     </modules>
 
