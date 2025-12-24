@@ -4,11 +4,7 @@ import ApiClients.JuegoClient;
 import Archivos.Directorio;
 import Juegos.Juego;
 import JuegosDtos.JuegoDTO;
-import ServerManagment.ServerConnection;
 import ServerManagment.ServerManager;
-import SubMenus.SubMenuAgregarPath;
-import SubMenus.SubMenuEliminarPath;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.file.Path;
 import java.util.ArrayList;

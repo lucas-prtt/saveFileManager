@@ -1,8 +1,6 @@
 package ApiClients;
 
 import Archivos.Archivo;
-import Juegos.*;
-import JuegosDtos.CheckpointDTO;
 import JuegosDtos.JuegoDTO;
 import ServerManagment.ServerConnection;
 import org.springframework.core.ParameterizedTypeReference;

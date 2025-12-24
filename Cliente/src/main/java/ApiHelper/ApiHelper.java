@@ -6,7 +6,6 @@ import Juegos.Juego;
 import JuegosDtos.CheckpointDTO;
 import JuegosDtos.JuegoDTO;
 import JuegosDtos.PartidaDTO;
-import org.hibernate.annotations.Check;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;

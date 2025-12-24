@@ -1,12 +1,9 @@
 package ApiClients;
 
 import Archivos.Archivo;
-import Juegos.*;
 import JuegosDtos.PartidaDTO;
 import ServerManagment.ServerConnection;
-import ServerManagment.ServerManager;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 public class PartidaClient {

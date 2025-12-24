@@ -1,5 +1,4 @@
 package ServerManagment;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import Archivos.Archivo;
 import Archivos.ArchivoFinal;
@@ -12,9 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
-import org.springframework.util.MimeType;
 import org.springframework.web.reactive.function.client.WebClient;
-import java.util.List;
+
 import java.util.Objects;
 
 @Getter

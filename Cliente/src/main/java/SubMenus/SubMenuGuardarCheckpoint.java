@@ -1,7 +1,5 @@
 package SubMenus;
 
-import ApiClients.CheckpointClient;
-import ApiClients.JuegoClient;
 import ApiHelper.ApiHelper;
 import ApiHelper.ApiRequestManager;
 import FileManager.FileManager;
