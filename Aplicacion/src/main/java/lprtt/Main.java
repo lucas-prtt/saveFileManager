@@ -14,6 +14,7 @@ import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import ui.MainController;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"controladores", "Servicios", "dto/JuegosConverter"})
@@ -44,18 +45,7 @@ public class Main {
 
         @Override
         public void start(Stage stage) {
-            Label label = new Label("Hola! Este es un test de interfaz!");
-
-            Button button = new Button("Click aquí");
-            button.setOnAction(e -> label.setText("Click!"));
-
-            VBox layout = new VBox(10, label, button);
-            layout.setStyle("-fx-padding: 20; -fx-alignment: center;");
-
-            Scene scene = new Scene(layout, 400, 200);
-            stage.setTitle("SaveFileManager");
-            stage.setScene(scene);
-            stage.show();
+            MainController controller = new MainController(stage);
         }
 
         @Override
