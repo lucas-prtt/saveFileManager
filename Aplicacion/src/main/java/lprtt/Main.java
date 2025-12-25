@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.Getter;
 import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,13 +18,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ui.MainController;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"controladores", "Servicios", "dto/JuegosConverter"})
+@ComponentScan(basePackages = {"controladores", "Servicios", "dto/JuegosConverter", "ui"})
 @EnableJpaRepositories(basePackages = "Repositorios")
 @EntityScan(basePackages = {"domain/Juegos", "domain/Archivos"})
 
 
 public class Main {
-
+    @Getter
     private static ConfigurableApplicationContext context;
 
     public static void main(String[] args) {
@@ -45,7 +46,8 @@ public class Main {
 
         @Override
         public void start(Stage stage) {
-            MainController controller = new MainController(stage);
+            MainController controller = context.getBean(MainController.class);
+            controller.setStage(stage);
         }
 
         @Override

@@ -1,47 +1,69 @@
 package ui;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
-import ui.tabs.TabCargarJuego;
-import ui.tabs.TabElegirJuego;
+import lprtt.Main;
+import org.springframework.stereotype.Component;
 import ui.tabs.TabInicial;
 import ui.tabs.VistaTab;
 
-import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-
+@Component
 public class MainController {
 
     private Stage stage;
+
     @Getter
     private TabPane tabPane;
 
-    public MainController(Stage stage) {
+    public void setStage(Stage stage) {
         this.stage = stage;
+        initUI();
+    }
 
-        // Crear encabezado con tabs
+    private void initUI() {
         tabPane = new TabPane();
-        Tab tab1 = new Tab("Inicio");
-        Tab tab2 = new Tab("Gestionar Juego");
-        Tab tab3 = new Tab("Cargar Juego");
-        tab1.setContent(new TabInicial(this).getContent());
-        tab2.setContent(new TabElegirJuego(this).getContent());
-        tab3.setContent(new TabCargarJuego(this).getContent());
-        tabPane.getTabs().addAll(tab1, tab2, tab3);
+
+        TabInicial tabInicial = Main.getContext().getBean(TabInicial.class);
+        addOrUpdateTab("Inicio", tabInicial.getContent());
+
         tabPane.getTabs().forEach(t -> t.setClosable(false));
 
-        // Escena
         stage.setScene(new Scene(tabPane, 600, 400));
         stage.setTitle("Save Files Manager");
         stage.show();
     }
 
-    public void seleccionarTab(int index) {
-        tabPane.getSelectionModel().select(index);
+    public void seleccionarTab(String tab) {
+        tabPane.getSelectionModel().select(findTab(tab).orElseThrow(() -> new RuntimeException("No se encontro el tab")));
+    }
+
+    public void seleccionarOCrearTab(String tabTitulo, Class<? extends VistaTab> clazz) {
+        VistaTab tabBean = Main.getContext().getBean(clazz);
+        VBox content = tabBean.getContent();
+        Tab tab = addOrUpdateTab(tabTitulo, content);
+        tabPane.getSelectionModel().select(tab);
+    }
+
+    public Tab addOrUpdateTab(String titulo, VBox content) {
+        Optional<Tab> existente = findTab(titulo);
+        if (existente.isPresent()) {
+            existente.get().setContent(content);
+            return existente.get();
+        }
+        Tab tab = new Tab(titulo);
+        tab.setContent(content);
+        tabPane.getTabs().add(tab);
+        return tab;
+    }
+
+    public Optional<Tab> findTab(String titulo) {
+        return tabPane.getTabs().stream().filter(tab -> Objects.equals(tab.getText(), titulo)).findFirst();
     }
 }
