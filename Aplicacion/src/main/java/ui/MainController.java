@@ -7,18 +7,23 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lprtt.Main;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ui.tabs.TabFactory;
 import ui.tabs.TabInicial;
 import ui.tabs.VistaTab;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Component
 public class MainController {
 
     private Stage stage;
 
+    @Autowired
+    TabFactory tabFactory;
     @Getter
     private TabPane tabPane;
 
@@ -47,11 +52,22 @@ public class MainController {
         tabPane.getSelectionModel().select(findTab(tab).orElseThrow(() -> new RuntimeException("No se encontro el tab")));
     }
 
-    public void seleccionarOCrearTab(String tabTitulo, Class<? extends VistaTab> clazz) {
-        VistaTab tabBean = Main.getContext().getBean(clazz);
+
+    public <T extends VistaTab> T seleccionarOCrearTab(Class<T> tabClazz, Consumer<T> accion) {
+        T tabBean = Main.getContext().getBean(tabClazz);
+        if(accion!=null)
+            accion.accept(tabBean);
+        seleccionarOCrearTab(tabBean);
+        return tabBean;
+    }
+    public <T extends VistaTab> T seleccionarOCrearTab(Class<T> tabClazz) {
+        return seleccionarOCrearTab(tabClazz, null);
+    }
+    public VistaTab seleccionarOCrearTab(VistaTab tabBean) {
         VBox content = tabBean.getContent();
-        Tab tab = addOrUpdateTab(tabTitulo, content);
+        Tab tab = addOrUpdateTab(tabBean.getName(), content);
         tabPane.getSelectionModel().select(tab);
+        return tabBean;
     }
 
     public Tab addOrUpdateTab(String titulo, VBox content) {
@@ -67,6 +83,16 @@ public class MainController {
     }
 
     public Optional<Tab> findTab(String titulo) {
+        if(titulo == null){return Optional.empty();}
         return tabPane.getTabs().stream().filter(tab -> Objects.equals(tab.getText(), titulo)).findFirst();
+    }
+    public void cerrarTab(String titulo) {
+        Optional<Tab> tab = tabPane.getTabs().stream().filter(t -> Objects.equals(t.getText(), titulo)).findFirst();
+        tab.ifPresent(value -> tabPane.getTabs().remove(value));
+    }
+    public void refresh(Class<? extends VistaTab> tabClazz){
+        VistaTab vistaTab = Main.getContext().getBean(tabClazz);
+        findTab(vistaTab.getName()).ifPresent(tab1 -> tab1.setContent(vistaTab.getContent()));
+
     }
 }

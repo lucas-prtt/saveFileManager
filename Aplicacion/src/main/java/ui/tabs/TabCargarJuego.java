@@ -30,6 +30,10 @@ public class TabCargarJuego implements VistaTab{
     @Autowired
     private MainController controller;
 
+    public String getName(){
+        return "Cargar Juego";
+    }
+
     @Override
     public VBox getContent() {
 
@@ -129,6 +133,7 @@ public class TabCargarJuego implements VistaTab{
         btnConfirmar.setOnAction(e -> {
             try {
                 juegosService.guardarNuevoJuego(juego);
+                controller.refresh(TabElegirJuego.class);
                 controller.seleccionarTab("Inicio");
             } catch (Exception ex) {
                 ex.printStackTrace();

@@ -16,6 +16,10 @@ public class TabInicial implements VistaTab {
         this.controller = controller;
     }
 
+    public String getName(){
+        return "Inicio";
+    }
+
     @Override
     public VBox getContent() {
         VBox content = new VBox(10);
@@ -24,10 +28,10 @@ public class TabInicial implements VistaTab {
         Label label = new Label("Pantalla: Inicio");
 
         Button btnCargar = new Button("Ir a Cargar Juego");
-        btnCargar.setOnAction(e -> controller.seleccionarOCrearTab("Cargar Juego", TabCargarJuego.class));
+        btnCargar.setOnAction(e -> controller.seleccionarOCrearTab(TabCargarJuego.class));
 
         Button btnGestionar = new Button("Ir a Elegir Juego");
-        btnGestionar.setOnAction(e -> controller.seleccionarOCrearTab("Elegir Juego", TabElegirJuego.class));
+        btnGestionar.setOnAction(e -> controller.seleccionarOCrearTab(TabElegirJuego.class));
 
         content.getChildren().addAll(label, btnCargar, btnGestionar);
         return content;
