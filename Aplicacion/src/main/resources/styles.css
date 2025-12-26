@@ -1,0 +1,37 @@
+/* ListView sin lineas de senda peatonal */
+.list-view .list-cell {
+    -fx-background-color: white;
+}
+
+.list-view .list-cell:filled:selected,
+.list-view .list-cell:filled:selected:hover {
+    -fx-background-color: #99ccff;
+    -fx-text-fill: #333333;
+}
+
+/* Botón eliminar (x) */
+.delete-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cc0000;
+    -fx-font-size: 14px;
+}
+
+.delete-button:hover {
+    -fx-background-color: #ffe6e6;
+    -fx-text-fill: red;
+}
+
+/* Botones interactivos con iconos */
+.icon-button {
+    -fx-cursor: hand;
+}
+
+/* HBox fila listview */
+.path-row {
+    -fx-alignment: center-left;
+}
+
+/* Layout general */
+.root-padding {
+    -fx-padding: 20;
+}

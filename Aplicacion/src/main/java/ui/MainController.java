@@ -34,8 +34,11 @@ public class MainController {
         addOrUpdateTab("Inicio", tabInicial.getContent());
 
         tabPane.getTabs().forEach(t -> t.setClosable(false));
-
-        stage.setScene(new Scene(tabPane, 600, 400));
+        Scene scene = new Scene(tabPane, 600, 400);
+        scene.getStylesheets().add(
+                getClass().getResource("/styles.css").toExternalForm()
+        );
+        stage.setScene(scene);
         stage.setTitle("Save Files Manager");
         stage.show();
     }
