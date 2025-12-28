@@ -32,5 +32,4 @@ public class CheckpointService {
     public void eliminarCheckpoint(Checkpoint checkpoint) throws ResourceNotFoundException{
         checkpointRepository.deleteById(checkpoint.getId());
     }
-
 }

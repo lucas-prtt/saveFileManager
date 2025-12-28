@@ -37,7 +37,6 @@ public class Checkpoint {
         this.descripcion = descripcion;
         this.fechaDeCreacion = LocalDateTime.now();
         this.partida = partida;
-        generateNewId();
     }
     public Checkpoint(String descripcion, Partida partida, String id){
         this.descripcion = descripcion;
@@ -55,5 +54,9 @@ public class Checkpoint {
     }
     public void generateNewId(){
         id = UUID.randomUUID().toString();
+    }
+
+    public String toString(){
+        return String.format(" (Checkpoint) { fechaDeCreacion:%s, id: %s } ", fechaDeCreacion, id);
     }
 }

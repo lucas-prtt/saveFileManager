@@ -20,14 +20,12 @@ public class Partida {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     List<Checkpoint> checkpoints = new ArrayList<>();
     @ManyToOne
-    @JoinColumn(name="juego_titulo")
-            @Setter
+    @JoinColumn(name="juego_id")
+    @Setter
     Juego juego;
 
-    public Partida(String titulo, Juego juego) {
+    public Partida(String titulo) {
         this.titulo = titulo;
-        generateNewId();
-        this.juego = juego;
     }
 
 

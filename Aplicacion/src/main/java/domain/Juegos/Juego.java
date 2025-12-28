@@ -25,7 +25,7 @@ public class Juego {
     String id;
     @Setter
     String titulo;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="juego", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     List<Partida> partidas;
     @Setter
@@ -79,8 +79,8 @@ public class Juego {
 
     }
     public void agregarPartida(Partida partida){
-        partida.setJuego(this);
         partidas.add(partida);
+        partida.setJuego(this);
     }
     public void vaciarArchivosDeGuardado(){
         //TODO
