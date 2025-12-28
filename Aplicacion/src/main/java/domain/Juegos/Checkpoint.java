@@ -2,7 +2,6 @@ package domain.Juegos;
 
 import domain.Archivos.Archivo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dto.CheckpointDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +22,7 @@ public class Checkpoint {
     Partida partida;
     @Id
     @Getter
+    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
     @Getter
     String descripcion;
@@ -55,8 +55,5 @@ public class Checkpoint {
     }
     public void generateNewId(){
         id = UUID.randomUUID().toString();
-    }
-    public CheckpointDTO toCheckpointDTO(){
-        return new CheckpointDTO(id, descripcion, fechaDeCreacion, partida.getTitulo(), partida.getJuego().getTitulo());
     }
 }

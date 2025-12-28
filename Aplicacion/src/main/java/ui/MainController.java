@@ -1,31 +1,35 @@
 package ui;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lprtt.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ui.tabs.TabFactory;
-import ui.tabs.TabInicial;
-import ui.tabs.VistaTab;
+import servicios.CheckpointService;
+import servicios.JuegosService;
+import servicios.PartidaService;
+import ui.tabWrapper.TabInicial;
+import ui.tabWrapper.TabWrapper;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-
+import java.util.function.Function;
+@Getter
 @Component
 public class MainController {
 
     private Stage stage;
-
-    @Autowired
-    TabFactory tabFactory;
-    @Getter
     private TabPane tabPane;
+    private List<TabWrapper> tabs = new ArrayList<>();
+    @Autowired
+    JuegosService juegosService;
+    @Autowired
+    PartidaService partidaService;
+    @Autowired
+    CheckpointService checkpointService;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -35,8 +39,8 @@ public class MainController {
     private void initUI() {
         tabPane = new TabPane();
 
-        TabInicial tabInicial = Main.getContext().getBean(TabInicial.class);
-        addOrUpdateTab("Inicio", tabInicial.getContent());
+        TabInicial tabInicial = new TabInicial();
+        createTab(tabInicial);
 
         tabPane.getTabs().forEach(t -> t.setClosable(false));
         Scene scene = new Scene(tabPane, 600, 400);
@@ -48,51 +52,35 @@ public class MainController {
         stage.show();
     }
 
-    public void seleccionarTab(String tab) {
-        tabPane.getSelectionModel().select(findTab(tab).orElseThrow(() -> new RuntimeException("No se encontro el tab")));
+    public void createAndSelectTab(TabWrapper tabWrapper) {
+        createTab(tabWrapper);
+        selectTab(tabWrapper);
     }
 
-
-    public <T extends VistaTab> T seleccionarOCrearTab(Class<T> tabClazz, Consumer<T> accion) {
-        T tabBean = Main.getContext().getBean(tabClazz);
-        if(accion!=null)
-            accion.accept(tabBean);
-        seleccionarOCrearTab(tabBean);
-        return tabBean;
-    }
-    public <T extends VistaTab> T seleccionarOCrearTab(Class<T> tabClazz) {
-        return seleccionarOCrearTab(tabClazz, null);
-    }
-    public VistaTab seleccionarOCrearTab(VistaTab tabBean) {
-        VBox content = tabBean.getContent();
-        Tab tab = addOrUpdateTab(tabBean.getName(), content);
-        tabPane.getSelectionModel().select(tab);
-        return tabBean;
+    public void selectTab(TabWrapper tabWrapper) {
+        tabPane.getSelectionModel().select(tabWrapper.getTab());
     }
 
-    public Tab addOrUpdateTab(String titulo, VBox content) {
-        Optional<Tab> existente = findTab(titulo);
-        if (existente.isPresent()) {
-            existente.get().setContent(content);
-            return existente.get();
-        }
-        Tab tab = new Tab(titulo);
-        tab.setContent(content);
-        tabPane.getTabs().add(tab);
-        return tab;
+    public void createTab(TabWrapper tabWrapper){
+        tabWrapper.init(this);
+        tabWrapper.update();
+        tabs.add(tabWrapper);
+        tabPane.getTabs().add(tabWrapper.getTab());
     }
 
-    public Optional<Tab> findTab(String titulo) {
-        if(titulo == null){return Optional.empty();}
-        return tabPane.getTabs().stream().filter(tab -> Objects.equals(tab.getText(), titulo)).findFirst();
+    public Optional<TabWrapper> findTab(Function<TabWrapper, Boolean> condition) {
+        return tabs.stream().filter(condition::apply).findFirst();
     }
-    public void cerrarTab(String titulo) {
-        Optional<Tab> tab = tabPane.getTabs().stream().filter(t -> Objects.equals(t.getText(), titulo)).findFirst();
-        tab.ifPresent(value -> tabPane.getTabs().remove(value));
+    /**
+     *  @return El primer {@link TabWrapper} de la clase
+     * */
+    public Optional<TabWrapper> findTab(Class<? extends TabWrapper> tabClass) {
+        return findTab(tabClass::isInstance);
     }
-    public void refresh(Class<? extends VistaTab> tabClazz){
-        VistaTab vistaTab = Main.getContext().getBean(tabClazz);
-        findTab(vistaTab.getName()).ifPresent(tab1 -> tab1.setContent(vistaTab.getContent()));
-
+    public Optional<TabWrapper> findTab(Class<? extends TabWrapper> tabClass, Function<TabWrapper, Boolean> condition) {
+        return findTab(t->tabClass.isInstance(t) && condition.apply(t));
+    }
+    public void closeTab(TabWrapper tabWrapper) {
+        tabPane.getTabs().remove(tabWrapper.getTab());
     }
 }

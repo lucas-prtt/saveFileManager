@@ -1,4 +1,4 @@
-package ui.tabs;
+package ui.tabWrapper;
 
 import domain.Juegos.Juego;
 import javafx.scene.control.Button;
@@ -11,20 +11,23 @@ import org.springframework.stereotype.Component;
 import servicios.JuegosService;
 import ui.MainController;
 
-@Component
-@Scope("prototype")
-public class TabGestionarJuego implements VistaTab {
-    @Setter
+public class TabGestionarJuego extends TabWrapper {
     private Juego juego;
-
-    @Autowired
     private JuegosService juegosService;
-
-    @Autowired
-    private MainController controller;
 
     public String getName(){
         return juego.getTitulo();
+    }
+
+    public TabGestionarJuego(Juego juego){
+        super();
+        this.juego = juego;
+    }
+
+    @Override
+    public void init(MainController mainController) {
+        super.init(mainController);
+        juegosService = mainController.getJuegosService();
     }
 
     @Override
@@ -38,16 +41,13 @@ public class TabGestionarJuego implements VistaTab {
 
         Button btnEliminar = new Button("Eliminar juego");
         btnEliminar.setOnAction(e -> {
-            juegosService.eliminarJuego(juego.getTitulo());
-            controller.cerrarTab(juego.getTitulo());
-            controller.refresh(TabElegirJuego.class);
+            juegosService.eliminarJuego(juego);
+            close();
+            controller.findTab(TabElegirJuego.class).ifPresent(TabWrapper::update);
         });
 
         root.getChildren().addAll(lblTitulo, lblNombre, btnEliminar);
         return root;
     }
 
-    public String getTabTitle() {
-        return juego.getTitulo();
-    }
 }

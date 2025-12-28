@@ -1,20 +1,10 @@
-package ui.tabs;
+package ui.tabWrapper;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ui.MainController;
 
-@Component
-public class TabInicial implements VistaTab {
-
-    private final MainController controller;
-    @Autowired
-    public TabInicial(MainController controller) {
-        this.controller = controller;
-    }
+public class TabInicial extends TabWrapper {
 
     public String getName(){
         return "Inicio";
@@ -28,10 +18,10 @@ public class TabInicial implements VistaTab {
         Label label = new Label("Pantalla: Inicio");
 
         Button btnCargar = new Button("Ir a Cargar Juego");
-        btnCargar.setOnAction(e -> controller.seleccionarOCrearTab(TabCargarJuego.class));
+        btnCargar.setOnAction(e -> controller.createAndSelectTab(new TabCargarJuego()));
 
         Button btnGestionar = new Button("Ir a Elegir Juego");
-        btnGestionar.setOnAction(e -> controller.seleccionarOCrearTab(TabElegirJuego.class));
+        btnGestionar.setOnAction(e -> controller.createAndSelectTab(new TabElegirJuego()));
 
         content.getChildren().addAll(label, btnCargar, btnGestionar);
         return content;

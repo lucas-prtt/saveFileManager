@@ -1,11 +1,8 @@
 package servicios;
 
 import domain.Archivos.Directorio;
-import domain.Exceptions.ResourceAlreadyExistsException;
 import domain.Exceptions.ResourceNotFoundException;
 import domain.Juegos.Juego;
-import dto.JuegosConverter.JuegoConverter;
-import dto.JuegoDTO;
 import repositorios.JuegoRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,24 +14,19 @@ import java.util.Optional;
 @Service
 public class JuegosService {
     private final JuegoRepository juegoRepository;
-    private final JuegoConverter juegoConverter;
-    public JuegosService(JuegoRepository juegoRepository, JuegoConverter juegoConverter) {
+    public JuegosService(JuegoRepository juegoRepository) {
         this.juegoRepository = juegoRepository;
-        this.juegoConverter = juegoConverter;
     }
-    public Directorio obtenerDirectorioPorJuegoEId(String tituloJuego, String idDirectorio) throws NoSuchElementException, ResourceNotFoundException {
-        Optional<Juego> juego = juegoRepository.findById(tituloJuego);
+    public Directorio obtenerDirectorioPorJuegoEId(String idJuego, String idDirectorio) throws NoSuchElementException, ResourceNotFoundException {
+        Optional<Juego> juego = juegoRepository.findById(idJuego);
         if(juego.isEmpty()){
             throw new ResourceNotFoundException("No se encontro el directorio");
         }
         return juego.get().getSaveFilePaths().stream().filter(dir -> Objects.equals(dir.getId(), idDirectorio)).findFirst().orElseThrow();
     }
 
-    public List<String> titulosDeTodosLosJuegos(){
-        return juegoRepository.findAll().stream().map(Juego::getTitulo).toList();
-    }
-    public Juego obtenerJuegoPorTitulo(String titulo) throws ResourceNotFoundException {
-        Optional<Juego> juego =  juegoRepository.findById(titulo);
+    public Juego obtenerJuegoPorId(String uuid) throws ResourceNotFoundException {
+        Optional<Juego> juego =  juegoRepository.findById(uuid);
         if(juego.isPresent()) {
             return juego.get();
         }
@@ -42,26 +34,21 @@ public class JuegosService {
             throw new ResourceNotFoundException("Juego no encontrado");
         }
     }
-    public void guardarNuevoJuego(JuegoDTO juegoDTO) throws ResourceAlreadyExistsException{
-        if(juegoRepository.findById(juegoDTO.getTitulo()).isPresent())
-            throw new ResourceAlreadyExistsException("Juego ya existe con el mismo titulo");
-        Juego juego = juegoConverter.fromDto(juegoDTO);
+    //TODO: Implementar paginacion
+    public List<Juego> getJuegos () throws ResourceNotFoundException {
+        return juegoRepository.findAll();
+    }
+
+    public void guardarJuego(Juego juego){
         juegoRepository.save(juego);
     }
 
-    public void actualizarJuego(Juego juego){
-        juegoRepository.save(juego);
+    public void eliminarJuego(String juegoId) throws ResourceNotFoundException{
+        obtenerJuegoPorId(juegoId);
+        juegoRepository.deleteById(juegoId);
     }
-
-    public void eliminarJuego(String juego) throws ResourceNotFoundException{
-        obtenerJuegoPorTitulo(juego);
-        juegoRepository.deleteById(juego);
-    }
-
-    public void patchJuegoWithDTO(String juegoTitulo, JuegoDTO patch) throws ResourceNotFoundException{
-        Juego juego = obtenerJuegoPorTitulo(juegoTitulo);
-        juego.patchWithDto(patch);
-        actualizarJuego(juego);
+    public void eliminarJuego(Juego juego) throws ResourceNotFoundException{
+        juegoRepository.deleteById(juego.getId());
     }
 
 }

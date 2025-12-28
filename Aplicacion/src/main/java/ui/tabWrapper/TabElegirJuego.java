@@ -1,32 +1,29 @@
-package ui.tabs;
+package ui.tabWrapper;
 
-import domain.Archivos.Directorio;
 import domain.Juegos.Juego;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import servicios.JuegosService;
 import ui.MainController;
 
+import java.util.Collection;
 import java.util.List;
 
-@Component
-public class TabElegirJuego implements VistaTab{
-    @Autowired
+public class TabElegirJuego extends TabWrapper{
     private JuegosService juegosService;
-    @Autowired
-    private MainController controller;
-    @Autowired
-    private TabFactory tabFactory;
 
     public String getName(){
         return "Elegir Juego";
+    }
+
+    @Override
+    public void init(MainController mainController) {
+        super.init(mainController);
+        this.juegosService = mainController.getJuegosService();
     }
 
     public VBox getContent() {
@@ -34,13 +31,11 @@ public class TabElegirJuego implements VistaTab{
         content.setStyle("-fx-padding: 20; -fx-alignment: center;");
         Label label = new Label("Elegir Juego");
 
-        List<String> juegos = juegosService.titulosDeTodosLosJuegos();
-        ObservableList<String> juegosObservable = FXCollections.observableArrayList(juegosService.titulosDeTodosLosJuegos());
-        ListView<String> listJuegos = new ListView<>();
-        listJuegos.setItems(juegosObservable);
+        List<Juego> juegos = juegosService.getJuegos();
+        ListView<Juego> listJuegos = new ListView<>(FXCollections.observableArrayList(juegos));
 
 
-        listJuegos.setCellFactory(lv -> new ListCell<>() {
+        listJuegos.setCellFactory(lv -> new ListCell<Juego>() {
 
             private final Label labelJuego = new Label();
             private final HBox content = new HBox(10);
@@ -50,29 +45,29 @@ public class TabElegirJuego implements VistaTab{
                 content.getStyleClass().add("path-row");
             }
             @Override
-            protected void updateItem(String item, boolean empty) {
+            protected void updateItem(Juego item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (empty || item == null) {
                     setGraphic(null);
                 } else {
-                    labelJuego.setText(item);
+                    labelJuego.setText(item.getTitulo());
                     setGraphic(content);
                 }
             }
         });
         listJuegos.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2) {
-                String seleccionado = listJuegos.getSelectionModel().getSelectedItem();
+                Juego seleccionado = listJuegos.getSelectionModel().getSelectedItem();
                 if (seleccionado != null) {
-                    controller.seleccionarOCrearTab(TabGestionarJuego.class,
-                            (tab -> tab.setJuego(juegosService.obtenerJuegoPorTitulo(seleccionado)))
-                    );
+                    TabGestionarJuego tabGestionarJuego = new TabGestionarJuego(seleccionado);
+                    controller.createTab(tabGestionarJuego);
+                    tabGestionarJuego.focus();
                 }
             }
         });
         Button btnIrInicio = new Button("Volver al Inicio");
-        btnIrInicio.setOnAction(e -> controller.seleccionarTab("Inicio"));
+        btnIrInicio.setOnAction(e -> controller.findTab(TabInicial.class).ifPresent(TabWrapper::focus));
 
         content.getChildren().addAll(label, listJuegos, btnIrInicio);
         return content;

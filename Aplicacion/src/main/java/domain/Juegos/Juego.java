@@ -4,7 +4,6 @@ package domain.Juegos;
 import domain.Archivos.Directorio;
 import domain.Exceptions.ResourceNotFoundException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dto.JuegoDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +20,9 @@ import java.util.Optional;
 @AllArgsConstructor
 public class Juego {
     @Id
+    @Setter
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
     @Setter
     String titulo;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -89,27 +91,13 @@ public class Juego {
     public Optional<Partida> getPartidaByTitulo(String titulo){
         return partidas.stream().filter(partida -> {return Objects.equals(partida.getTitulo(), titulo);}).findFirst();
     }
-    public void patchWithDto(JuegoDTO juegoDto){
-        if(juegoDto.getTitulo() != null)
-            this.titulo = juegoDto.getTitulo();
-        if(juegoDto.getSaveFilePaths() != null){
-            this.saveFilePaths.clear();
-            this.saveFilePaths.addAll(juegoDto.getSaveFilePaths());
-        }
-        try {
-            if (juegoDto.getTituloPartidaActual() != null)
-                this.partidaActual = this.getPartidaByTitulo(juegoDto.getTituloPartidaActual()).orElseThrow();
-        }
-        catch (Exception e){
-            System.out.println("Partida no encontrada");
-        }
-    }
-    public JuegoDTO toJuegoDTO(){
-        if(partidaActual == null){
-            return new JuegoDTO(titulo, null, getTitulosPartidas(), saveFilePaths);
-        }
-        return new JuegoDTO(titulo, partidaActual.getTitulo(), getTitulosPartidas(), saveFilePaths);
+
+    public void eliminarDirectorio(Directorio directorio){
+        saveFilePaths.remove(directorio);
     }
 
+    public void agregarDirectorio(Directorio directorio){
+        saveFilePaths.add(directorio);
+    }
 
 }

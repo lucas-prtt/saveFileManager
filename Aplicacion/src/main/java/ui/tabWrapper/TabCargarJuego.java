@@ -1,8 +1,7 @@
-package ui.tabs;
+package ui.tabWrapper;
 
 import domain.Archivos.Directorio;
-import dto.JuegoDTO;
-import javafx.scene.Cursor;
+import domain.Juegos.Juego;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -10,8 +9,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import servicios.JuegosService;
 import ui.MainController;
 
@@ -19,25 +16,25 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-@Component
-public class TabCargarJuego implements VistaTab{
+public class TabCargarJuego extends TabWrapper {
 
-    private JuegoDTO juego;
+    private Juego juego;
 
-    @Autowired
     private JuegosService juegosService;
-
-    @Autowired
-    private MainController controller;
 
     public String getName(){
         return "Cargar Juego";
+    }
+    @Override
+    public void init(MainController controller){
+        super.init(controller);
+        juegosService = controller.getJuegosService();
     }
 
     @Override
     public VBox getContent() {
 
-        juego = new JuegoDTO();
+        juego = new Juego();
         juego.setTitulo("Nombre del juego");
         juego.setSaveFilePaths(new ArrayList<>());
 
@@ -132,16 +129,17 @@ public class TabCargarJuego implements VistaTab{
         Button btnConfirmar = new Button("Confirmar");
         btnConfirmar.setOnAction(e -> {
             try {
-                juegosService.guardarNuevoJuego(juego);
-                controller.refresh(TabElegirJuego.class);
-                controller.seleccionarTab("Inicio");
+                juegosService.guardarJuego(juego);
+                controller.findTab(TabElegirJuego.class).ifPresent(TabWrapper::update);
+                controller.selectTab(controller.findTab(TabInicial.class).orElseThrow());
+                close();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
 
         Button btnCancelar = new Button("Cancelar");
-        btnCancelar.setOnAction(e -> controller.seleccionarTab("Inicio"));
+        btnCancelar.setOnAction(e -> controller.findTab(TabInicial.class).ifPresent(TabWrapper::focus));
 
         HBox botones = new HBox(10, btnConfirmar, btnCancelar);
 
