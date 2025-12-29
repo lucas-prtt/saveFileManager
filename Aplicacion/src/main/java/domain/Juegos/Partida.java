@@ -36,14 +36,8 @@ public class Partida {
         Checkpoint chk = new Checkpoint(nombre, this);
         checkpoints.add(chk);
         return chk;
-
-        //TODO
-    }
-    public void cargarUltimoCheckpoint(){
-        cargarCheckpoint(checkpoints.getLast());
     }
     public void cargarCheckpoint(Checkpoint checkpoint){
-        //TODO
     }
 
     public void eliminarCheckpointByIndex(int index){
