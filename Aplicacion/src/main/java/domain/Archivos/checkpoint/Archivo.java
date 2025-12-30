@@ -20,6 +20,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Archivo {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

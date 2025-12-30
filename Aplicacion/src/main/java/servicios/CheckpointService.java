@@ -1,5 +1,6 @@
 package servicios;
 
+import domain.Archivos.checkpoint.GrupoDeDatos;
 import domain.Exceptions.ResourceAlreadyExistsException;
 import domain.Exceptions.ResourceNotFoundException;
 import domain.Juegos.Checkpoint;
@@ -8,17 +9,23 @@ import org.springframework.transaction.annotation.Transactional;
 import repositorios.CheckpointRepository;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class CheckpointService {
 
     private final CheckpointRepository checkpointRepository;
     private final JuegosService juegosService;
     private final PartidaService partidaService;
+    private final FileManager fileManager;
 
-    public CheckpointService(CheckpointRepository checkpointRepository, JuegosService juegosService, PartidaService partidaService) {
+    public CheckpointService(CheckpointRepository checkpointRepository, JuegosService juegosService, PartidaService partidaService, FileManager fileManager) {
         this.checkpointRepository = checkpointRepository;
         this.juegosService = juegosService;
         this.partidaService = partidaService;
+        this.fileManager = fileManager;
     }
     @Transactional
     public void guardarCheckpoint(Partida partida, String nombre, String descripcion) throws ResourceNotFoundException, ResourceAlreadyExistsException{
@@ -26,7 +33,8 @@ public class CheckpointService {
         Checkpoint checkpoint = partidaBD.crearCheckpoint(nombre);
         checkpoint.setDescripcion(descripcion);
         partidaBD.getJuego().setPartidaActual(partidaBD);
-        //TODO: Guardar info archivos
+        List<GrupoDeDatos> nuevosDatos = fileManager.guardarArchivos(partidaBD.getJuego());
+        checkpoint.setArchivos(nuevosDatos);
     }
     @Transactional
     public void eliminarCheckpoint(Checkpoint checkpoint) throws ResourceNotFoundException{
@@ -39,8 +47,11 @@ public class CheckpointService {
         Checkpoint checkpointBd = checkpointRepository.findById(checkpoint.getId()).orElseThrow();
         Partida partidaBd = partidaService.obtenerPartida(checkpointBd.getPartida().getId()).orElseThrow();
         partidaBd.cargarCheckpoint(checkpointBd);
-        System.out.println("Se cargo el checkpoint "+checkpoint.getId() + " - " + checkpoint.getDescripcion()+"! Wow!");
+        System.out.println("Se cargo el checkpoint "+checkpoint.getId() + " - " + checkpoint.getDescripcion());
+        Map<GrupoDeDatos, Path> archivosACargar = fileManager.hallarPaths(checkpointBd.getArchivos());
+        fileManager.cargarArchivos(archivosACargar);
         partidaBd.getJuego().setPartidaActual(partidaBd);
+        System.out.println();
     }
     @Transactional
     public void guardarCheckpointUltimaPartida(Partida partida){

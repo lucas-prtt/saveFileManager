@@ -18,7 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ui.MainController;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"controladores", "Servicios", "dto/JuegosConverter", "ui"})
+@ComponentScan(basePackages = {"controladores", "Servicios", "dto/JuegosConverter", "ui", "domain/Archivos"})
 @EnableJpaRepositories(basePackages = "Repositorios")
 @EntityScan(basePackages = {"domain/Juegos", "domain/Archivos"})
 

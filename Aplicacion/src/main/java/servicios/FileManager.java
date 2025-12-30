@@ -1,10 +1,11 @@
-package domain.Archivos;
-import domain.Archivos.checkpoint.Archivo;
-import domain.Archivos.checkpoint.ArchivoFinal;
-import domain.Archivos.checkpoint.Carpeta;
-import domain.Archivos.checkpoint.GrupoDeDatos;
+package servicios;
+import domain.Archivos.DirectorySecurity;
+import domain.Archivos.ObjectStore;
+import domain.Archivos.checkpoint.*;
 import domain.Juegos.Juego;
 import org.fusesource.jansi.Ansi;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,49 +16,89 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+@Service
 public class FileManager {
-
-    private static ObjectStore objectStore =
+    @Autowired
+    DirectorySecurity directorySecurity;
+    private  final ObjectStore objectStore =
             new ObjectStore(Paths.get("data/objects"));
 
 
-    public static Map<GrupoDeDatos, Path> hallarPaths(List<GrupoDeDatos> grupoDeDatosList){
+    public  Map<GrupoDeDatos, Path> hallarPaths(List<GrupoDeDatos> grupoDeDatosList){
         System.out.println("Se cargaran los archivos en:");
         Map<GrupoDeDatos, Path> caminosEncontrados = new HashMap<>();
 
         for (GrupoDeDatos grupoDeDatos : grupoDeDatosList){
             try {
                 Path path = grupoDeDatos.getDirectorio().getPathPrincipal(); // TODO: Predecir path de manera inteligente, lidiar con sinonimos
-                System.out.println(Ansi.ansi().fg(Ansi.Color.GREEN).bold().a(String.format("%-30s -> %s", grupoDeDatos.getDirectorio().getPathPrincipal(), path.toString())).reset());
+                System.out.println(Ansi.ansi().fg(Ansi.Color.WHITE).bold().a(String.format("%-30s -> %s", grupoDeDatos.getDirectorio().getPathPrincipal(), path.toString())).reset());
                 caminosEncontrados.put(grupoDeDatos, path);
             }catch (Exception e){
                 System.out.println(Ansi.ansi().fg(Ansi.Color.RED).bold().a(String.format("%-30s -> %s", grupoDeDatos.getDirectorio().getPathPrincipal(), " No fue ubicado.")).reset());
             }
         }
+        System.out.println("----------------------------------");
         return caminosEncontrados;
     }
 
-    public static void cargarArchivos(Map<GrupoDeDatos, Path> archivosACargar){
+    public  void cargarArchivos(Map<GrupoDeDatos, Path> archivosACargar){
         archivosACargar.forEach((datos, path) -> {
+            directorySecurity.validarRuta(path);
+            purgar(path, datos.getArchivos());
             datos.getArchivos().forEach(archivo -> cargarArchivo(archivo, path));
         });
     }
 
-    public static void cargarArchivo(Archivo archivo, Path path){
-
+    public  void cargarArchivo(Archivo archivo, Path path){
+        directorySecurity.validarRuta(path);
         if(archivo instanceof Carpeta carpeta){
+            purgar(path.resolve(carpeta.getNombre()), carpeta.getArchivos());
+            if(!Files.exists(path.resolve(carpeta.getNombre()))){
+                try {
+                    Files.createDirectories(path.resolve(carpeta.getNombre()));
+                    System.out.println(Ansi.ansi().fg(Ansi.Color.GREEN).bold().a("Se crea " + path.resolve(archivo.getNombre()).toAbsolutePath().normalize()).reset());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             carpeta.getArchivos().forEach( archivoInterno -> cargarArchivo(archivoInterno, path.resolve(carpeta.getNombre())));
         }else if (archivo instanceof ArchivoFinal archivoFinal){
             try {
-                objectStore.loadArchivoFinal(archivoFinal, path);
+                if(!ObjectStore.esArchivoIgual(path.resolve(archivo.getNombre()).toFile(), archivo)){
+                    objectStore.loadArchivoFinal(archivoFinal, path);
+                    System.out.println(Ansi.ansi().fg(Ansi.Color.GREEN).bold().a("Se crea " + path.resolve(archivo.getNombre()).toAbsolutePath().normalize()).reset());
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    public static List<GrupoDeDatos> guardarArchivos(Juego juego) {
+    public void purgar(Path carpeta, List<Archivo> archivos) {
 
+        directorySecurity.validarRuta(carpeta);
+        if(Files.isDirectory(carpeta)){
+            try {
+                Files.list(carpeta).map(Path::toFile).toList().forEach(file ->
+                    {
+                        if(archivos.stream().noneMatch(archivo -> ObjectStore.esArchivoIgual(file, archivo))){
+                            directorySecurity.validarRuta(Path.of(file.getAbsolutePath()));
+                            if(!file.delete()) {
+                                throw new RuntimeException("No se pudo borrar " + file.toString());
+                            }
+                            System.out.println(Ansi.ansi().fg(Ansi.Color.RED).bold().a("Se borra " + file.toString()).reset());
+                        }
+
+                    }
+                );
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+
+    public  List<GrupoDeDatos> guardarArchivos(Juego juego) {
         System.out.println("Leyendo archivos de:");
         juego.getSaveFilePaths()
                 .forEach(d -> System.out.println(d.getPathPrincipal()));
@@ -73,8 +114,9 @@ public class FileManager {
                 .toList();
     }
 
-    private static List<Archivo> crearArchivos(Path path)
+    private  List<Archivo> crearArchivos(Path path)
             throws FileNotFoundException {
+        directorySecurity.validarRuta(path);
 
         File[] files = path.toFile().listFiles();
         if (files == null) return List.of();

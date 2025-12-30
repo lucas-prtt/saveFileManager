@@ -1,10 +1,7 @@
 package domain.Archivos.juego;
 
 import domain.Archivos.PathConverter;
-import jakarta.persistence.Convert;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +16,7 @@ import java.util.List;
 @Entity
 public class Directorio {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
     @Convert(converter = PathConverter.class)
     Path pathPrincipal;

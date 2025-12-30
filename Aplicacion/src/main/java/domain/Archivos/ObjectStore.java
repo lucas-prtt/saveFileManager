@@ -1,14 +1,18 @@
 package domain.Archivos;
 
 import com.github.luben.zstd.Zstd;
+import domain.Archivos.checkpoint.Archivo;
 import domain.Archivos.checkpoint.ArchivoFinal;
+import domain.Archivos.checkpoint.Carpeta;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
+import java.util.Objects;
 
 public class ObjectStore {
     // Lugar donde se guardan los binarios
@@ -78,5 +82,24 @@ public class ObjectStore {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    public static boolean esArchivoIgual(File file, Archivo archivo){
+        if(archivo instanceof Carpeta carpeta){
+            return carpeta.getNombre().equals(file.getName());
+        }
+        if(archivo instanceof ArchivoFinal archivoFinal)
+            try {
+                if (!file.getName().equals(archivoFinal.getNombre())) {
+                    return false;
+                }
+                if (file.length() != archivoFinal.getSize()) {
+                    return false;
+                }
+                byte[] data = Files.readAllBytes(file.toPath());
+                return Objects.equals(archivoFinal.getHash(), sha256(data));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        return true;
     }
 }
