@@ -1,5 +1,6 @@
 package ui;
 
+import domain.Juegos.Partida;
 import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
@@ -10,13 +11,15 @@ import org.springframework.stereotype.Component;
 import servicios.CheckpointService;
 import servicios.JuegosService;
 import servicios.PartidaService;
-import ui.tabWrapper.TabInicial;
-import ui.tabWrapper.TabWrapper;
+import ui.tabWrapper.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
+
 @Getter
 @Component
 public class MainController {
@@ -53,6 +56,13 @@ public class MainController {
     }
 
     public void createAndSelectTab(TabWrapper tabWrapper) {
+        if(tabWrapper instanceof TabElegirJuego || tabWrapper instanceof TabCargarJuego){
+            Optional<TabWrapper> tab = (Optional<TabWrapper>) findTab(tabWrapper.getClass());
+            if(tab.isPresent()){
+                selectTab(tab.get());
+                return;
+            }
+        }
         createTab(tabWrapper);
         selectTab(tabWrapper);
     }
@@ -71,16 +81,32 @@ public class MainController {
     public Optional<TabWrapper> findTab(Function<TabWrapper, Boolean> condition) {
         return tabs.stream().filter(condition::apply).findFirst();
     }
+
     /**
      *  @return El primer {@link TabWrapper} de la clase
      * */
-    public Optional<TabWrapper> findTab(Class<? extends TabWrapper> tabClass) {
-        return findTab(tabClass::isInstance);
+    public <T extends TabWrapper> Optional<T> findTab(Class<T> tabClass) {
+        return findTab(t -> t.getClass().equals(tabClass))
+                .map(tabClass::cast);
     }
-    public Optional<TabWrapper> findTab(Class<? extends TabWrapper> tabClass, Function<TabWrapper, Boolean> condition) {
-        return findTab(t->tabClass.isInstance(t) && condition.apply(t));
+    public <T extends TabWrapper> Optional<T> findTab(Class<T> tabClass, Function<T, Boolean> condition) {
+        return findTab(t -> t.getClass().equals(tabClass) && condition.apply(tabClass.cast(t)))
+                .map(tabClass::cast);
     }
     public void closeTab(TabWrapper tabWrapper) {
         tabPane.getTabs().remove(tabWrapper.getTab());
+    }
+
+    public <T extends TabWrapper> T createOrSelectIf(Class<T> tabClass, Function<T, Boolean> existsCondition, Supplier<T> crearTab) {
+        Optional<T> optionalT = findTab(tabClass, existsCondition);
+        T tab;
+        if (optionalT.isPresent()) {
+            tab = optionalT.get();
+        } else {
+            tab = crearTab.get();
+            createTab(tab);
+        }
+        tab.focus();
+        return tab;
     }
 }

@@ -7,6 +7,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import lombok.Getter;
 import servicios.CheckpointService;
 import servicios.PartidaService;
 import ui.MainController;
@@ -17,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TabGestionarPartida extends TabWrapper{
     private CheckpointService checkpointService;
     private PartidaService partidaService;
+    @Getter
     private Partida partida;
     private ListView<Checkpoint> checkpointList;
 

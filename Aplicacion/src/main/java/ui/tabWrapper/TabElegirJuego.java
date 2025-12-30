@@ -1,6 +1,7 @@
 package ui.tabWrapper;
 
 import domain.Juegos.Juego;
+import domain.Juegos.Partida;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -12,6 +13,8 @@ import ui.MainController;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class TabElegirJuego extends TabWrapper{
     private JuegosService juegosService;
@@ -60,9 +63,11 @@ public class TabElegirJuego extends TabWrapper{
             if (e.getClickCount() == 2) {
                 Juego seleccionado = listJuegos.getSelectionModel().getSelectedItem();
                 if (seleccionado != null) {
-                    TabGestionarJuego tabGestionarJuego = new TabGestionarJuego(seleccionado);
-                    controller.createTab(tabGestionarJuego);
-                    tabGestionarJuego.focus();
+                    controller.createOrSelectIf(
+                            TabGestionarJuego.class,
+                            (tabGestionarJuego -> tabGestionarJuego.getJuego().equals(seleccionado)),
+                            () -> new TabGestionarJuego(seleccionado)
+                    );
                 }
             }
         });

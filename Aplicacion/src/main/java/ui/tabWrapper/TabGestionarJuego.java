@@ -7,14 +7,18 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import lombok.Getter;
 import org.springframework.transaction.annotation.Transactional;
 import servicios.JuegosService;
 import servicios.PartidaService;
 import ui.MainController;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class TabGestionarJuego extends TabWrapper {
+    @Getter
     private Juego juego;
     private JuegosService juegosService;
     private PartidaService partidaService;
@@ -79,9 +83,11 @@ public class TabGestionarJuego extends TabWrapper {
             if (e.getClickCount() == 2) {
                 Partida seleccionada = partidaListView.getSelectionModel().getSelectedItem();
                 if (seleccionada != null) {
-                    TabGestionarPartida tabGestionarPartida = new TabGestionarPartida(seleccionada);
-                    controller.createTab(tabGestionarPartida);
-                    tabGestionarPartida.focus();
+                    controller.createOrSelectIf(
+                            TabGestionarPartida.class,
+                            tGP -> tGP.getPartida().equals(seleccionada),
+                            () -> new TabGestionarPartida(seleccionada)
+                    );
                 }
             }
         });
