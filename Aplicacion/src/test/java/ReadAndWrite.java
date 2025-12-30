@@ -1,5 +1,5 @@
-import domain.Archivos.Archivo;
-import domain.Archivos.Carpeta;
+import domain.Archivos.checkpoint.Archivo;
+import domain.Archivos.checkpoint.Carpeta;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

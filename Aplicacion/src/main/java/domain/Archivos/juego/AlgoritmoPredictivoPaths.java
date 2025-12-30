@@ -1,4 +1,4 @@
-package domain.Archivos;
+package domain.Archivos.juego;
 
 import java.io.IOException;
 import java.nio.file.*;

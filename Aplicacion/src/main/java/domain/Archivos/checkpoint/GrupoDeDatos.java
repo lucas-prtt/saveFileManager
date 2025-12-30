@@ -1,0 +1,27 @@
+package domain.Archivos.checkpoint;
+
+import domain.Archivos.juego.Directorio;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+@Getter
+@Setter
+@Entity
+public class GrupoDeDatos {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+    @OneToMany(fetch = FetchType.EAGER) // Si se carga la lista de grupos de datos lazy del checkpoint tambien se cargan los archivos
+    @JoinTable
+    private List<Archivo> archivos;
+    @ManyToOne
+    @JoinColumn(name = "directorio_id")
+    private Directorio directorio;
+    public GrupoDeDatos(List<Archivo> archivos, Directorio directorio){
+        this.archivos = archivos;
+        this.directorio = directorio;
+    }
+
+}

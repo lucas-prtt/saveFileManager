@@ -1,12 +1,11 @@
 package domain.Juegos;
 
-import ch.qos.logback.core.pattern.SpacePadder;
-import domain.Archivos.Archivo;
+import domain.Archivos.checkpoint.Archivo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import domain.Archivos.checkpoint.GrupoDeDatos;
 import jakarta.persistence.*;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -16,10 +15,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 public class Checkpoint {
@@ -45,7 +42,7 @@ public class Checkpoint {
     String nombre;
     @Getter @Setter @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Archivo> archivos = new ArrayList<>();
+    List<GrupoDeDatos> archivos = new ArrayList<>();
 
     public Checkpoint(){
         this.fechaDeCreacion = LocalDateTime.now();

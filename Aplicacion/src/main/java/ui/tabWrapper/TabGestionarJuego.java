@@ -1,6 +1,5 @@
 package ui.tabWrapper;
 
-import domain.Archivos.Directorio;
 import domain.Juegos.Juego;
 import domain.Juegos.Partida;
 import javafx.collections.FXCollections;
@@ -8,16 +7,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import servicios.JuegosService;
 import servicios.PartidaService;
 import ui.MainController;
 
-import java.nio.file.Path;
 import java.util.List;
 
 public class TabGestionarJuego extends TabWrapper {

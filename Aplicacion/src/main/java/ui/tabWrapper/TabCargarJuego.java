@@ -1,6 +1,6 @@
 package ui.tabWrapper;
 
-import domain.Archivos.Directorio;
+import domain.Archivos.juego.Directorio;
 import domain.Juegos.Juego;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;

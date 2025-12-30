@@ -1,6 +1,6 @@
 package servicios;
 
-import domain.Archivos.Directorio;
+import domain.Archivos.juego.Directorio;
 import domain.Exceptions.ResourceNotFoundException;
 import domain.Juegos.Juego;
 import domain.Juegos.Partida;

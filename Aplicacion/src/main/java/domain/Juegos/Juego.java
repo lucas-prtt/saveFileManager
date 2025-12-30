@@ -1,7 +1,7 @@
 package domain.Juegos;
 
 
-import domain.Archivos.Directorio;
+import domain.Archivos.juego.Directorio;
 import domain.Exceptions.ResourceNotFoundException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

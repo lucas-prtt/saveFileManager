@@ -1,4 +1,4 @@
-import domain.Archivos.AlgoritmoPredictivoPaths;
+import domain.Archivos.juego.AlgoritmoPredictivoPaths;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

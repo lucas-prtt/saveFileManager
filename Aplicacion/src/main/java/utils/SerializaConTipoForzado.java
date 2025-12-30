@@ -2,7 +2,7 @@ package utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import domain.Archivos.Archivo;
+import domain.Archivos.checkpoint.Archivo;
 
 import java.util.List;
 
