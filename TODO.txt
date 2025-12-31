@@ -1,11 +1,10 @@
 
 Cosas para hacer:
 
-- Agregar menu de configuracion de DirectorySecurity
 - Borrar archivos binarios que ya no se usan al borrar checkpoints
 - Completar sistema de sinonimos de paths y paths "inteligentes"
 - Permitir Transmitir checkpoints por red
-- Mejorar la interfaz para que sea mas comoda y moderna
+- Mejorar la UX
 
 
 
