@@ -4,6 +4,7 @@ import domain.Archivos.DirectorySecurity;
 import domain.Juegos.Partida;
 import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lprtt.Main;
@@ -56,6 +57,13 @@ public class MainController {
 
         stage.setScene(scene);
         stage.setTitle("Save Files Manager");
+        scene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case F11 -> stage.setFullScreen(!stage.isFullScreen());
+            }
+        });
+        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+
         stage.show();
     }
 
