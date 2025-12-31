@@ -1,9 +1,12 @@
 package ui.tabWrapper;
 
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import lombok.Getter;
-import lombok.Setter;
 import ui.MainController;
 
 @Getter
@@ -32,7 +35,32 @@ public abstract class TabWrapper {
     public void init(MainController mainController){
         //  Visitor?
         tab.setText(getName());
+        tab.setClosable(false);
+        tab.setOnCloseRequest(event -> {
+            controller.getTabs().remove(this);
+        });
+
+        HBox tabBox = new HBox(new Label(tab.getText()));
+        if(isTabCloseable()){
+            Label closeLabel = new Label("✖");
+            closeLabel.getStyleClass().add("custom-tab-close");
+            closeLabel.setOnMouseClicked(e -> controller.closeTab(this));
+            tabBox.getChildren().add(closeLabel);
+
+        }
+        tabBox.setSpacing(8);
+        tabBox.setAlignment(Pos.CENTER);
+
+        tabBox.setSpacing(8);
+        tab.setGraphic(tabBox);
+        tab.setText("");
+
         controller = mainController;
         // Se puede Overridear para setear otros services / inyectar depenencias desde el controller
     }
+
+    protected boolean isTabCloseable(){
+        return true;
+    }
+
 }

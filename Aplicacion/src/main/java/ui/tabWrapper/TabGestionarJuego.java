@@ -3,6 +3,7 @@ package ui.tabWrapper;
 import domain.Juegos.Juego;
 import domain.Juegos.Partida;
 import javafx.collections.FXCollections;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -13,6 +14,7 @@ import servicios.JuegosService;
 import servicios.PartidaService;
 import ui.MainController;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,10 +44,13 @@ public class TabGestionarJuego extends TabWrapper {
     @Transactional
     public VBox getContent() {
         VBox root = new VBox(10);
+        root.setAlignment(Pos.CENTER);
         root.getStyleClass().add("root-padding");
 
-        Label lblTitulo = new Label("Gestionar juego:");
-        Label lblNombre = new Label(juego.getTitulo());
+        Label lblTitulo = new Label("Gestionar juego");
+        lblTitulo.getStyleClass().add("inicio-title");
+
+        Label lblNombre = new Label("Juego: " + juego.getTitulo());
         lblNombre.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
         Button btnEliminar = new Button("Eliminar juego");
@@ -92,8 +97,13 @@ public class TabGestionarJuego extends TabWrapper {
             }
         });
         Label labelNuevaPartida = new Label("Crear una nueva partida");
+        labelNuevaPartida.setAlignment(Pos.CENTER);
+        labelNuevaPartida.getStyleClass().add("inicio-subtitle");
+        labelNuevaPartida.setStyle("-fx-padding: 5 0 0 0;");
         TextField txtNuevaPartida = new TextField();
         txtNuevaPartida.setPromptText("Ingrese el nombre de la partida");
+        txtNuevaPartida.setStyle("-fx-padding: 2 2 4 2;");
+        txtNuevaPartida.getStyleClass().add("inicio-subtitle");
         txtNuevaPartida.setPrefWidth(400);
 
         Button btnAgregarPartida = new Button("Agregar");
@@ -106,7 +116,7 @@ public class TabGestionarJuego extends TabWrapper {
             }
         });
         HBox agregarPartidaBox = new HBox(8, txtNuevaPartida, btnAgregarPartida);
-        agregarPartidaBox.setStyle("-fx-alignment: center-left;");
+        agregarPartidaBox.setStyle("-fx-alignment: center;");
 
         root.getChildren().addAll(lblTitulo, lblNombre, btnEliminar, partidaListView, labelNuevaPartida, agregarPartidaBox);
         return root;

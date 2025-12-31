@@ -1,6 +1,7 @@
 /* ListView sin lineas de senda peatonal */
 .list-view .list-cell {
     -fx-background-color: white;
+    -fx-font-size: 18px;
 }
 
 .list-view .list-cell:filled:selected,
@@ -9,22 +10,12 @@
     -fx-text-fill: #333333;
 }
 
-/* Botón eliminar (x) */
-.delete-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #cc0000;
-    -fx-font-size: 14px;
+
+/* Texto */
+.label {
+    -fx-text-fill: white;
 }
 
-.delete-button:hover {
-    -fx-background-color: #ffe6e6;
-    -fx-text-fill: red;
-}
-
-/* Botones interactivos con iconos */
-.icon-button {
-    -fx-cursor: hand;
-}
 
 /* HBox fila listview */
 .path-row {
@@ -34,4 +25,205 @@
 /* Layout general */
 .root-padding {
     -fx-padding: 20;
+}
+
+
+/* Pantalla Inicio */
+
+.inicio-root {
+    -fx-alignment: center;
+    -fx-background-color: linear-gradient(to bottom right, #1e1e2f, #2b2b40);
+}
+
+.inicio-card {
+    -fx-padding: 40;
+    -fx-spacing: 15;
+    -fx-alignment: center;
+    -fx-background-color: #2f2f46;
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0.3, 0, 5);
+    -fx-min-width: 350;
+}
+
+.inicio-title {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.inicio-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: #b0b0c3;
+    -fx-padding: 0 0 20 0;
+}
+
+.menu-button {
+    -fx-min-width: 260;
+    -fx-min-height: 45;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+
+    -fx-background-color: #4a6cff;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: #6786ff;
+}
+
+.menu-button:pressed {
+    -fx-background-color: #3a56cc;
+}
+
+
+
+/* Barra de pestañas */
+
+.tab-pane {
+    -fx-background-color: #1e1e2f;
+    -fx-tab-min-height: 20px;
+}
+.tab-pane > .tab-header-area > .tab-header-background {
+    -fx-background-color: #1a1a28;
+}
+.tab-pane > .tab-header-area > .headers-region {
+    -fx-background-color: transparent;
+}
+.tab-pane:top > .tab-header-area {
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.tab {
+    -fx-background-color: transparent;
+    -fx-padding: 8 20 8 20;
+}
+
+.tab-label {
+    -fx-text-fill: #b0b0c3;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.tab:hover .tab-label {
+    -fx-text-fill: white;
+}
+
+.tab:selected {
+    -fx-background-color: #2f2f46;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.tab:selected .tab-label {
+    -fx-text-fill: white;
+}
+
+.tab:selected {
+    -fx-border-color: #4a6cff;
+    -fx-border-width: 0 0 3 0;
+}
+.tab:!selected {
+    -fx-background-color: transparent;
+}
+
+.tab-content-area {
+    -fx-background-color: #1e1e2f;
+    -fx-padding: 20;
+}
+
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: transparent;
+}
+.tab-label {
+    -fx-transition: all 0.2s;
+}
+.tab {
+    -fx-padding: 12 30;
+}
+.custom-tab-close {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+    -fx-cursor: hand;
+
+    -fx-border-color: #666666;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 0;
+
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+    -fx-alignment: center;
+}
+
+.custom-tab-close:hover {
+    -fx-text-fill: #cc0000;
+    -fx-border-color: #cc0000;
+}
+
+/* Mas textos*/
+.text-field {
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #9da0c4;
+    -fx-background-color: #2f2f46;
+    -fx-background-radius: 6;
+    -fx-border-color: transparent;
+}
+/* Lista */
+.list-view .label {
+    -fx-text-fill: inherit;
+}
+
+.list-view .text {
+    -fx-fill: inherit;
+}
+
+/* Botones */
+.button {
+    -fx-background-color: #4a6cff;
+    -fx-background-radius: 6;
+}
+
+.button:hover {
+    -fx-background-color: #6786ff;
+}
+
+.button {
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-font-size: 15px
+}
+
+.check-box {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.check-box {
+    -fx-font-size: 15px;
+}
+
+/* Botón eliminar (X) */
+.delete-button {
+    -fx-background-color: white;
+    -fx-text-fill: #555555;
+    -fx-border-color: #cc0000;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-font-size: 14px;
+    -fx-padding: 4 8;
+}
+
+/* Hover */
+.delete-button:hover {
+    -fx-background-color: #ffe6e6;
+    -fx-text-fill: #cc0000;
+}
+/* Botones interactivos con iconos */
+.icon-button {
+    -fx-cursor: hand;
 }

@@ -1,5 +1,6 @@
 package ui;
 
+import domain.Archivos.DirectorySecurity;
 import domain.Juegos.Partida;
 import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
@@ -33,6 +34,8 @@ public class MainController {
     PartidaService partidaService;
     @Autowired
     CheckpointService checkpointService;
+    @Autowired
+    DirectorySecurity directorySecurity;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -46,17 +49,18 @@ public class MainController {
         createTab(tabInicial);
 
         tabPane.getTabs().forEach(t -> t.setClosable(false));
-        Scene scene = new Scene(tabPane, 600, 400);
+        Scene scene = new Scene(tabPane, 1200, 800);
         scene.getStylesheets().add(
                 getClass().getResource("/styles.css").toExternalForm()
         );
+
         stage.setScene(scene);
         stage.setTitle("Save Files Manager");
         stage.show();
     }
 
     public void createAndSelectTab(TabWrapper tabWrapper) {
-        if(tabWrapper instanceof TabElegirJuego || tabWrapper instanceof TabCargarJuego){
+        if(tabWrapper instanceof TabElegirJuego || tabWrapper instanceof TabCargarJuego || tabWrapper instanceof TabSettings){
             Optional<TabWrapper> tab = (Optional<TabWrapper>) findTab(tabWrapper.getClass());
             if(tab.isPresent()){
                 selectTab(tab.get());
@@ -95,6 +99,7 @@ public class MainController {
     }
     public void closeTab(TabWrapper tabWrapper) {
         tabPane.getTabs().remove(tabWrapper.getTab());
+        tabs.remove(tabWrapper);
     }
 
     public <T extends TabWrapper> T createOrSelectIf(Class<T> tabClass, Function<T, Boolean> existsCondition, Supplier<T> crearTab) {

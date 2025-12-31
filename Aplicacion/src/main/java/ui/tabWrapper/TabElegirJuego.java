@@ -33,6 +33,8 @@ public class TabElegirJuego extends TabWrapper{
         VBox content = new VBox(10);
         content.setStyle("-fx-padding: 20; -fx-alignment: center;");
         Label label = new Label("Elegir Juego");
+        label.getStyleClass().add("inicio-title");
+
 
         List<Juego> juegos = juegosService.getJuegos();
         ListView<Juego> listJuegos = new ListView<>(FXCollections.observableArrayList(juegos));

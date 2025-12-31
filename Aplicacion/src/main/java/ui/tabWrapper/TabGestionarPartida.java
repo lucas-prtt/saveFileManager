@@ -2,11 +2,14 @@ package ui.tabWrapper;
 
 import domain.Juegos.Checkpoint;
 import domain.Juegos.Partida;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import lombok.Getter;
 import servicios.CheckpointService;
 import servicios.PartidaService;
@@ -36,10 +39,19 @@ public class TabGestionarPartida extends TabWrapper{
 
     @Override
     public VBox getContent() {
+        Label superTitulo = new Label("Gestionar partida");
+        superTitulo.getStyleClass().add("inicio-title");
+
         Label titulo = new Label(
                 "Juego: " + partida.getJuego().getTitulo() +
-                        " | Partida: " + partida.getTitulo()
+                        " \n Partida: " + partida.getTitulo()
         );
+        titulo.getStyleClass().add("inicio-subtitle");
+        titulo.setTextAlignment(TextAlignment.CENTER);
+        titulo.setAlignment(Pos.CENTER);
+        titulo.setWrapText(true);
+
+
 
         checkpointList = new ListView<>();
         checkpointList.setCellFactory(lv -> new ListCell<>(){
@@ -75,7 +87,10 @@ public class TabGestionarPartida extends TabWrapper{
 
         HBox acciones = new HBox(10, guardarBtn, cargarUltimoBtn, cargarBtn, eliminarBtn);
 
-        return new VBox(10, titulo, checkpointList, acciones);
+        VBox content = new VBox(10,superTitulo, titulo, checkpointList, acciones);
+        content.setPadding(new Insets(10));
+        content.setAlignment(Pos.CENTER);
+        return content;
     }
     private void refrescarCheckpoints() {
         checkpointList.getItems().setAll(

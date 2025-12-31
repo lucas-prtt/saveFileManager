@@ -9,21 +9,45 @@ public class TabInicial extends TabWrapper {
     public String getName(){
         return "Inicio";
     }
-
     @Override
     public VBox getContent() {
-        VBox content = new VBox(10);
-        content.setStyle("-fx-padding: 20; -fx-alignment: center;");
+        VBox root = new VBox();
+        root.getStyleClass().add("inicio-root");
 
-        Label label = new Label("Pantalla: Inicio");
+        VBox card = new VBox(20);
+        card.getStyleClass().add("inicio-card");
 
-        Button btnCargar = new Button("Ir a Cargar Juego");
+        Label title = new Label("Save Files Manager");
+        title.getStyleClass().add("inicio-title");
+
+        Label subtitle = new Label("Menú principal");
+        subtitle.getStyleClass().add("inicio-subtitle");
+
+        Button btnCargar = new Button("📂  Cargar Juego");
+        btnCargar.getStyleClass().add("menu-button");
         btnCargar.setOnAction(e -> controller.createAndSelectTab(new TabCargarJuego()));
 
-        Button btnGestionar = new Button("Ir a Elegir Juego");
+        Button btnGestionar = new Button("🎮  Elegir Juego");
+        btnGestionar.getStyleClass().add("menu-button");
         btnGestionar.setOnAction(e -> controller.createAndSelectTab(new TabElegirJuego()));
 
-        content.getChildren().addAll(label, btnCargar, btnGestionar);
-        return content;
+        Button btnSettings = new Button("⚙ Opciones");
+        btnSettings.getStyleClass().add("menu-button");
+        btnSettings.setOnAction(e -> controller.createAndSelectTab(new TabSettings()));
+
+        card.getChildren().addAll(
+                title,
+                subtitle,
+                btnCargar,
+                btnGestionar,
+                btnSettings
+        );
+
+        root.getChildren().add(card);
+        return root;
+    }
+    @Override
+    protected boolean isTabCloseable(){
+        return false;
     }
 }

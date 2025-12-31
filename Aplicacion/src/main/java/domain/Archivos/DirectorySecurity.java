@@ -1,6 +1,8 @@
 package domain.Archivos;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -9,12 +11,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
-
+@Getter
+@Setter
 @Service
 public class DirectorySecurity {
     private final Path configFile = Paths.get("data/directorySecurity.json");
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     private final Set<Path> whitelist = new HashSet<>();
     private final Set<Path> blacklist = new HashSet<>();
     private boolean whitelistOverridesBlackList = true;
@@ -22,6 +24,10 @@ public class DirectorySecurity {
         loadConfig();
     }
 
+    public void setWhitelistOverridesBlackList(boolean whitelistOverridesBlackList) {
+        this.whitelistOverridesBlackList = whitelistOverridesBlackList;
+        saveConfig();
+    }
 
     public boolean isValid(Path path) {
         Path absoluto = path.toAbsolutePath().normalize();
@@ -59,6 +65,17 @@ public class DirectorySecurity {
         blacklist.add(path.toAbsolutePath().normalize());
         saveConfig();
     }
+
+    public void removeFromWhitelist(Path path) {
+        whitelist.remove(path);
+        saveConfig();
+    }
+
+    public void removeFromBlacklist(Path path) {
+        blacklist.add(path);
+        saveConfig();
+    }
+
 
     public void validarRuta(Path ruta){
         if(Files.isSymbolicLink(ruta.toAbsolutePath().normalize())){
@@ -120,8 +137,6 @@ public class DirectorySecurity {
         }
     }
     private void configurarPorDefecto(){
-        whitelist.add(Paths.get("data"));
-
         String os = System.getProperty("os.name").toLowerCase();
         if(os.contains("win")) {
             blacklist.add(Paths.get("C:\\Windows"));
