@@ -48,7 +48,10 @@
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
             </plugin>
-
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -56,7 +59,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>lprtt.Cliente</mainClass>
+                            <mainClass>lprtt.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
