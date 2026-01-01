@@ -33,9 +33,9 @@ public class ApplicationContext {
     private static CheckpointRepository checkpointRepository;
 
     public static void init(){
-        checkpointRepository = new CheckpointRepository(JpaUtil.em());
-        partidaRepository = new PartidaRepository(JpaUtil.em());
-        juegoRepository= new JuegoRepository(JpaUtil.em());
+        checkpointRepository = new CheckpointRepository();
+        partidaRepository = new PartidaRepository();
+        juegoRepository= new JuegoRepository();
         directorySecurity = new DirectorySecurity();
         partidaService = new PartidaService(partidaRepository);
         juegosService = new JuegosService(juegoRepository, partidaService);

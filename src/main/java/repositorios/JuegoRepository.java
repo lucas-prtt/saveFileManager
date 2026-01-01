@@ -3,59 +3,50 @@ package repositorios;
 import domain.Juegos.Juego;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import utils.EntityManagerProvider;
 import utils.JpaUtil;
+import utils.Tx;
 
 import java.util.List;
 import java.util.Optional;
 
 public class JuegoRepository {
 
-    private final EntityManager em;
 
-    public JuegoRepository(EntityManager em) {
-        this.em = em;
+    public JuegoRepository() {}
+    private EntityManager em(){
+        return EntityManagerProvider.get();
     }
+
     public Optional<Juego> findById(String id) {
-        try {
-            return Optional.ofNullable(em.find(Juego.class, id));
-        } finally {
-            em.close();
-        }
+            return Optional.ofNullable(em().find(Juego.class, id));
     }
 
     public List<Juego> findAll() {
-        try {
-            return em.createQuery("FROM Juego", Juego.class).getResultList();
-        } finally {
-            em.close();
-        }
+            return em().createQuery("FROM Juego", Juego.class).getResultList();
     }
 
     public void save(Juego juego) {
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            em.merge(juego);
-            tx.commit();
-        } catch (Exception e) {
-            tx.rollback();
-            throw e;
-        } finally {
-            em.close();
-        }
+        Tx.runVoid(() -> {
+                try {
+                    em().merge(juego);
+                } catch (Exception e) {
+                    throw e;
+                }
+            }
+        );
     }
 
     public void deleteById(String id) {
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            Juego juego = em.find(Juego.class, id);
-            if (juego != null) {
-                em.remove(juego);
+        Tx.runVoid(() -> {
+            try {
+                Juego juego = em().find(Juego.class, id);
+                if (juego != null) {
+                    em().remove(juego);
+                }
+            }catch (Exception e){
+                throw e;
             }
-            tx.commit();
-        } finally {
-            em.close();
-        }
+        });
     }
 }

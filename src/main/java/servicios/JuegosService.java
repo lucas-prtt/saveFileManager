@@ -6,6 +6,7 @@ import domain.Juegos.Juego;
 import domain.Juegos.Partida;
 import org.hibernate.Hibernate;
 import repositorios.JuegoRepository;
+import utils.Tx;
 
 import java.util.*;
 
@@ -36,20 +37,37 @@ public class JuegosService {
     }
 
     public void eliminarJuego(String juegoId) throws ResourceNotFoundException{
-        obtenerJuegoPorId(juegoId);
-        juegoRepository.deleteById(juegoId);
+        Tx.runVoid( () ->
+                {
+                    obtenerJuegoPorId(juegoId);
+                    juegoRepository.deleteById(juegoId);
+                }
+        );
     }
     public void eliminarJuego(Juego juego) throws ResourceNotFoundException{
-        juegoRepository.deleteById(juego.getId());
+
+        Tx.runVoid( () ->
+                {
+                    juegoRepository.deleteById(juego.getId());
+                }
+        );
     }
     public List<Partida> getPartidas(Juego juego) {
-        List<Partida> partidas = juegoRepository.findById(juego.getId()).map(Juego::getPartidas).orElse(new ArrayList<>());
-        Hibernate.initialize(partidas);
-        return partidas;
+        return Tx.run( () ->
+            {
+                List<Partida> partidas = juegoRepository.findById(juego.getId()).map(Juego::getPartidas).orElse(new ArrayList<>());
+                Hibernate.initialize(partidas);
+                return partidas;
+            }
+        );
     }
     public void agregarPartida(Juego juego, Partida partida) {
-        Juego juegoBD = obtenerJuegoPorId(juego.getId());
-        juegoBD.agregarPartida(partida);
+        Tx.runVoid( () ->
+            {
+                Juego juegoBD = obtenerJuegoPorId(juego.getId());
+                juegoBD.agregarPartida(partida);
+            }
+        );
     }
 }
 

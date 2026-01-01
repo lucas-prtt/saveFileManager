@@ -2,34 +2,39 @@ package repositorios;
 
 import domain.Juegos.Checkpoint;
 import jakarta.persistence.EntityManager;
+import utils.EntityManagerProvider;
+import utils.Tx;
 
 import java.util.Optional;
 
 public class CheckpointRepository {
 
-    private final EntityManager em;
 
-    public CheckpointRepository(EntityManager em) {
-        this.em = em;
-    }
+    public CheckpointRepository() {}
 
     public Optional<Checkpoint> findById(String id) {
-        return Optional.ofNullable(em.find(Checkpoint.class, id));
+        return Optional.ofNullable(em().find(Checkpoint.class, id));
     }
-
+    private EntityManager em(){
+        return EntityManagerProvider.get();
+    }
     public void save(Checkpoint checkpoint) {
+        Tx.runVoid(()->{
         if (checkpoint.getId() == null) {
-            em.persist(checkpoint);
+            em().persist(checkpoint);
         } else {
-            em.merge(checkpoint);
+            em().merge(checkpoint);
         }
+        });
     }
 
     public void deleteById(String id) {
-        Checkpoint c = em.find(Checkpoint.class, id);
+        Tx.runVoid(()->{
+        Checkpoint c = em().find(Checkpoint.class, id);
         if (c != null) {
-            em.remove(c);
+            em().remove(c);
         }
+        });
     }
 }
 
