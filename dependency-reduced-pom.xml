@@ -10,20 +10,12 @@
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
       <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.4.2</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>lprtt.Main</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
+          <release>24</release>
+          <source>24</source>
+          <target>24</target>
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
           <annotationProcessorPaths>
@@ -37,7 +29,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>3.6.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -45,6 +37,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <skip>${skipShade}</skip>
               <transformers>
                 <transformer>
                   <mainClass>lprtt.Main</mainClass>
@@ -68,6 +61,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>24</maven.compiler.target>
     <java.version>24</java.version>
+    <skipShade>false</skipShade>
     <maven.compiler.source>24</maven.compiler.source>
   </properties>
 </project>
