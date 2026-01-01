@@ -1,10 +1,13 @@
 package repositorios;
 
+import domain.Archivos.checkpoint.ArchivoFinal;
+import domain.Archivos.checkpoint.GrupoDeDatos;
 import domain.Juegos.Checkpoint;
 import jakarta.persistence.EntityManager;
 import utils.EntityManagerProvider;
 import utils.Tx;
 
+import java.util.List;
 import java.util.Optional;
 
 public class CheckpointRepository {

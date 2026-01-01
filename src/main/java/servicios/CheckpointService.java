@@ -1,12 +1,14 @@
 package servicios;
 
+import domain.Archivos.checkpoint.Archivo;
+import domain.Archivos.checkpoint.ArchivoFinal;
 import domain.Archivos.checkpoint.GrupoDeDatos;
 import domain.Exceptions.ResourceAlreadyExistsException;
 import domain.Exceptions.ResourceNotFoundException;
 import domain.Juegos.Checkpoint;
-import domain.Juegos.Juego;
 import domain.Juegos.Partida;
 import repositorios.CheckpointRepository;
+import utils.EntityManagerProvider;
 import utils.Tx;
 
 import java.nio.file.Path;
@@ -18,13 +20,13 @@ public class CheckpointService {
     private final CheckpointRepository checkpointRepository;
     private final JuegosService juegosService;
     private final PartidaService partidaService;
-    private final FileManager fileManager;
+    private final ArchivoService archivoService;
 
-    public CheckpointService(CheckpointRepository checkpointRepository, JuegosService juegosService, PartidaService partidaService, FileManager fileManager) {
+    public CheckpointService(CheckpointRepository checkpointRepository, JuegosService juegosService, PartidaService partidaService, ArchivoService archivoService) {
         this.checkpointRepository = checkpointRepository;
         this.juegosService = juegosService;
         this.partidaService = partidaService;
-        this.fileManager = fileManager;
+        this.archivoService = archivoService;
     }
     public void guardarCheckpoint(Partida partida, String nombre, String descripcion) throws ResourceNotFoundException, ResourceAlreadyExistsException{
         Tx.runVoid( () ->
@@ -33,7 +35,7 @@ public class CheckpointService {
                     Checkpoint checkpoint = partidaBD.crearCheckpoint(nombre);
                     checkpoint.setDescripcion(descripcion);
                     partidaBD.getJuego().setPartidaActual(partidaBD);
-                    List<GrupoDeDatos> nuevosDatos = fileManager.guardarArchivos(partidaBD.getJuego());
+                    List<GrupoDeDatos> nuevosDatos = archivoService.guardarArchivos(partidaBD.getJuego());
                     checkpoint.setArchivos(nuevosDatos);
                 }
         );
@@ -44,9 +46,13 @@ public class CheckpointService {
                     Partida partidaBd = partidaService.obtenerPartida(checkpointRepository.findById(checkpoint.getId()).orElseThrow().getPartida().getId()).orElseThrow();
                     partidaBd.eliminarCheckpointById(checkpoint.getId());
                     partidaService.guardarPartida(partidaBd);
+                    EntityManagerProvider.get().flush();
+                    archivoService.eliminarArchivosHuerfanos();
                 }
         );
     }
+
+
     public void cargarCheckpoint(Checkpoint checkpoint) {
         Tx.runVoid( () ->
                 {
@@ -54,8 +60,8 @@ public class CheckpointService {
                     Partida partidaBd = partidaService.obtenerPartida(checkpointBd.getPartida().getId()).orElseThrow();
                     partidaBd.cargarCheckpoint(checkpointBd);
                     System.out.println("Se cargo el checkpoint "+checkpoint.getId() + " - " + checkpoint.getDescripcion());
-                    Map<GrupoDeDatos, Path> archivosACargar = fileManager.hallarPaths(checkpointBd.getArchivos());
-                    fileManager.cargarArchivos(archivosACargar);
+                    Map<GrupoDeDatos, Path> archivosACargar = archivoService.hallarPaths(checkpointBd.getArchivos());
+                    archivoService.cargarArchivos(archivosACargar);
                     partidaBd.getJuego().setPartidaActual(partidaBd);
                     System.out.println();
                 }

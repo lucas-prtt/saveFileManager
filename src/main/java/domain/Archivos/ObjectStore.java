@@ -4,7 +4,9 @@ import com.github.luben.zstd.Zstd;
 import domain.Archivos.checkpoint.Archivo;
 import domain.Archivos.checkpoint.ArchivoFinal;
 import domain.Archivos.checkpoint.Carpeta;
+import servicios.DirectorySecurity;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,14 +14,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ObjectStore {
     // Lugar donde se guardan los binarios
     private final Path objectRoot;
-
-    public ObjectStore(Path objectRoot) {
+    private final DirectorySecurity directorySecurity;
+    public ObjectStore(Path objectRoot, DirectorySecurity directorySecurity) {
         this.objectRoot = objectRoot;
+        this.directorySecurity = directorySecurity;
+    }
+
+    public void delete(String hash){
+        Path path = pathFromHash(hash);
+        path.toFile().delete();
     }
 
     public void storeArchivoFinal(ArchivoFinal archivo, Path path) throws IOException {
@@ -27,7 +40,7 @@ public class ObjectStore {
         byte[] raw = Files.readAllBytes(path);
 
         String hash = sha256(raw);
-
+        System.out.println("Se persistio " + path.resolve(archivo.getNombre()).toAbsolutePath().normalize());
         archivo.setHash(hash);
         archivo.setSize(raw.length);
 
@@ -42,6 +55,7 @@ public class ObjectStore {
         Files.createDirectories(objPath.getParent());
 
         Files.write(objPath, compressed, StandardOpenOption.CREATE_NEW);
+
     }
     /**
      *  Carga el archivo final en la ubicacion especificada
@@ -64,10 +78,11 @@ public class ObjectStore {
         Files.createDirectories(destinoFinal.getParent());
 
         Files.write(destinoFinal, raw, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
     }
 
     private Path pathFromHash(String hash) {
-        String dir = hash.substring(0, 2);
+        String dir = hash.substring(0, 1);
         return objectRoot.resolve(dir).resolve(hash + ".zst");
     }
     private static String sha256(byte[] data) {
@@ -83,7 +98,17 @@ public class ObjectStore {
             throw new RuntimeException(e);
         }
     }
+    public static String sha256(Path path) throws IOException {
+        byte[] raw = Files.readAllBytes(path);
+        return sha256(raw);
+    }
     public static boolean esArchivoIgual(File file, Archivo archivo){
+
+        /* try {
+            System.out.println("Comparando " + file.getName() + "( " +(file.isDirectory() ? "Carpeta" :  sha256(file.toPath())) + " ) vs " + archivo.getNombre() + " ( " + (archivo instanceof ArchivoFinal archivoFinal? archivoFinal.getHash() : "Carpeta") + " ) ");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }*/
         if(archivo instanceof Carpeta carpeta){
             return carpeta.getNombre().equals(file.getName());
         }
@@ -101,5 +126,22 @@ public class ObjectStore {
                 throw new RuntimeException(e);
             }
         return true;
+    }
+
+    public Set<String> obtenerHashesArchivosPersistidos() {
+        File carpetaObjetos = objectRoot.toFile();
+        File[] subCarpetas = carpetaObjetos.listFiles(File::isDirectory);
+        if (subCarpetas == null) {
+            return Set.of();
+        }
+
+        return Arrays.stream(subCarpetas).flatMap(subCarpeta ->
+                {File[] archivos = subCarpeta.listFiles(File::isFile);
+                    return archivos == null
+                            ? Stream.empty()
+                            : Arrays.stream(archivos);
+                })
+                .map(File::getName).map(fileName -> fileName.replaceFirst("\\.zst$", ""))
+                .collect(Collectors.toSet());
     }
 }

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
@@ -25,4 +27,5 @@ public abstract class Archivo {
     @GeneratedValue(strategy = GenerationType.UUID)
     protected String id;
     protected String nombre;
+    public abstract List<ArchivoFinal> obtenerArchivosRecursivo();
 }

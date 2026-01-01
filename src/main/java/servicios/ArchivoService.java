@@ -2,6 +2,8 @@ package servicios;
 import domain.Archivos.ObjectStore;
 import domain.Archivos.checkpoint.*;
 import domain.Juegos.Juego;
+import repositorios.ArchivoRepository;
+import utils.Tx;
 
 
 import java.io.File;
@@ -10,16 +12,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
-public class FileManager {
+public class ArchivoService {
     private final DirectorySecurity directorySecurity;
-    private  final ObjectStore objectStore =
-            new ObjectStore(Paths.get("data/objects"));
+    private final ObjectStore objectStore;
+    private final ArchivoRepository archivoRepository;
 
-    public FileManager(DirectorySecurity directorySecurity) {
+    public ArchivoService(DirectorySecurity directorySecurity, ObjectStore objectStore, ArchivoRepository archivoRepository) {
         this.directorySecurity = directorySecurity;
+        this.objectStore = objectStore;
+        this.archivoRepository = archivoRepository;
     }
 
 
@@ -30,6 +33,7 @@ public class FileManager {
         for (GrupoDeDatos grupoDeDatos : grupoDeDatosList){
             try {
                 Path path = grupoDeDatos.getDirectorio().getPathPrincipal(); // TODO: Predecir path de manera inteligente, lidiar con sinonimos
+                System.out.println(path);
                 caminosEncontrados.put(grupoDeDatos, path);
             }catch (Exception e){
             }
@@ -62,6 +66,7 @@ public class FileManager {
             try {
                 if(!ObjectStore.esArchivoIgual(path.resolve(archivo.getNombre()).toFile(), archivo)){
                     objectStore.loadArchivoFinal(archivoFinal, path);
+                    System.out.println(" + Se agrego el archivo " + path.resolve(archivo.getNombre()).toAbsolutePath().normalize().toAbsolutePath().normalize() );
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -81,8 +86,8 @@ public class FileManager {
                             if(!file.delete()) {
                                 throw new RuntimeException("No se pudo borrar " + file.toString());
                             }
+                            System.out.println(" - Se elimino el archivo " +   file.getAbsolutePath());
                         }
-
                     }
                 );
             } catch (IOException e) {
@@ -145,6 +150,21 @@ public class FileManager {
         }
 
         return resultado;
+    }
+
+    public void eliminarArchivosHuerfanos(){
+        Tx.runVoid(() -> {
+            Set<String> archivosUsados = archivoRepository.obtenerHashArchivosUsados();
+            System.out.println("Usados: ("+archivosUsados.size()+")");
+
+            Set<String> archivosPersistidos = objectStore.obtenerHashesArchivosPersistidos();
+            System.out.println("Persistidos: ("+archivosPersistidos.size()+")");
+            Set<String> hashesHuerfanos = new HashSet<>(archivosPersistidos);
+            hashesHuerfanos.removeAll(archivosUsados);
+            System.out.println("Huerfanos: ("+hashesHuerfanos.size()+")");
+
+            hashesHuerfanos.forEach(objectStore::delete);
+        });
     }
 
 }
