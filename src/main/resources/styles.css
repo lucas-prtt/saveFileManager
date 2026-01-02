@@ -166,9 +166,9 @@
 
 /* Mas textos*/
 .text-field {
-    -fx-text-fill: white;
+    -fx-text-fill: #000000;
     -fx-prompt-text-fill: #9da0c4;
-    -fx-background-color: #2f2f46;
+    -fx-background-color: #ffffff;
     -fx-background-radius: 6;
     -fx-border-color: transparent;
 }
@@ -226,4 +226,16 @@
 /* Botones interactivos con iconos */
 .icon-button {
     -fx-cursor: hand;
+}
+/* Toast */
+.toast {
+    -fx-background-color: rgba(30, 30, 30, 0.9);
+    -fx-text-fill: white;
+    -fx-padding: 12 20 12 20;
+    -fx-background-radius: 8;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, black, 10, 0.4, 0, 2);
+
+    -fx-alignment: center;
+    -fx-translate-y: 300;
 }

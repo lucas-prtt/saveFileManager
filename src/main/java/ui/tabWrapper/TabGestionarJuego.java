@@ -48,12 +48,7 @@ public class TabGestionarJuego extends TabWrapper {
         Label lblNombre = new Label("Juego: " + juego.getTitulo());
         lblNombre.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
-        Button btnEliminar = new Button("Eliminar juego");
-        btnEliminar.setOnAction(e -> {
-            juegosService.eliminarJuego(juego);
-            close();
-            controller.findTab(TabElegirJuego.class).ifPresent(TabWrapper::update);
-        });
+
 
 
         List<Partida> partidas = juegosService.getPartidas(juego);
@@ -100,7 +95,17 @@ public class TabGestionarJuego extends TabWrapper {
         txtNuevaPartida.setStyle("-fx-padding: 2 2 4 2;");
         txtNuevaPartida.getStyleClass().add("inicio-subtitle");
         txtNuevaPartida.setPrefWidth(400);
+        Button btnEliminarPartida = new Button("Eliminar Partida");
+        btnEliminarPartida.setOnAction(e -> {
+            if(partidaListView.getSelectionModel().getSelectedItem() == null)
+                throw new RuntimeException("No hay ninguna partida seleccionada");
 
+            if(confirmar("Esta seguro que desea eliminar la partida " + partidaListView.getSelectionModel().getSelectedItem().getTitulo() + "? "))
+            {   juegosService.eliminarPartida(partidaListView.getSelectionModel().getSelectedItem());
+                update();
+                System.out.println("Se borro la partida " + partidaListView.getSelectionModel().getSelectedItem().getTitulo() + " - " + partidaListView.getSelectionModel().getSelectedItem().getId());
+            }
+        });
         Button btnAgregarPartida = new Button("Agregar");
         btnAgregarPartida.setCursor(javafx.scene.Cursor.HAND);
         btnAgregarPartida.setOnAction(e -> {
@@ -110,11 +115,19 @@ public class TabGestionarJuego extends TabWrapper {
                 update();
             }
         });
-        HBox agregarPartidaBox = new HBox(8, txtNuevaPartida, btnAgregarPartida);
+        HBox agregarPartidaBox = new HBox(8, txtNuevaPartida, btnAgregarPartida, btnEliminarPartida);
         agregarPartidaBox.setStyle("-fx-alignment: center;");
 
-        root.getChildren().addAll(lblTitulo, lblNombre, btnEliminar, partidaListView, labelNuevaPartida, agregarPartidaBox);
+        root.getChildren().addAll(lblTitulo, lblNombre, partidaListView, labelNuevaPartida, agregarPartidaBox);
         return root;
+    }
+    private boolean confirmar(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(mensaje);
+
+        return alert.showAndWait()
+                .filter(r -> r == ButtonType.OK)
+                .isPresent();
     }
 
 }

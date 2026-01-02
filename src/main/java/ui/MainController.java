@@ -1,5 +1,10 @@
 package ui;
 
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
+import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import servicios.DirectorySecurity;
 import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
@@ -47,10 +52,13 @@ public class MainController {
         createTab(tabInicial);
 
         tabPane.getTabs().forEach(t -> t.setClosable(false));
-        Scene scene = new Scene(tabPane, 1200, 800);
+        StackPane root = new StackPane(tabPane);
+
+        Scene scene = new Scene(root, 1200, 800);
         scene.getStylesheets().add(
                 getClass().getResource("/styles.css").toExternalForm()
         );
+
 
         stage.setScene(scene);
         stage.setTitle("Save Files Manager");
@@ -118,5 +126,33 @@ public class MainController {
         }
         tab.focus();
         return tab;
+    }
+
+    public void showToast(String message) {
+        Platform.runLater(() -> {
+            Label toast = new Label(message);
+            toast.getStyleClass().add("toast");
+
+            StackPane root = (StackPane) stage.getScene().getRoot();
+            root.getChildren().add(toast);
+
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), toast);
+            fadeIn.setFromValue(0);
+            fadeIn.setToValue(1);
+
+            FadeTransition stay = new FadeTransition(Duration.seconds(5), toast);
+            stay.setFromValue(1);
+            stay.setToValue(1);
+
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(500), toast);
+            fadeOut.setFromValue(1);
+            fadeOut.setToValue(0);
+
+            fadeIn.setOnFinished(e -> stay.play());
+            stay.setOnFinished(e -> fadeOut.play());
+            fadeOut.setOnFinished(e -> root.getChildren().remove(toast));
+
+            fadeIn.play();
+        });
     }
 }

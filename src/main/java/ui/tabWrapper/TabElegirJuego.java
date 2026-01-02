@@ -2,6 +2,8 @@ package ui.tabWrapper;
 
 import domain.Juegos.Juego;
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -68,11 +70,33 @@ public class TabElegirJuego extends TabWrapper{
                 }
             }
         });
+        Button btnEliminar = new Button("Eliminar juego");
+        btnEliminar.setOnAction(e -> {
+            if(listJuegos.getSelectionModel().getSelectedItem() == null)
+                throw new RuntimeException("No hay ningun juego seleccionado");
+            if(confirmar("Esta seguro que desea eliminar " + listJuegos.getSelectionModel().getSelectedItem().getTitulo()+ "? ")) {
+                juegosService.eliminarJuego(listJuegos.getSelectionModel().getSelectedItem());
+                update();
+                System.out.println("Se borro el juego" + listJuegos.getSelectionModel().getSelectedItem().getTitulo() + " - " + listJuegos.getSelectionModel().getSelectedItem().getId());
+            }//TODO: Cerrar tabs de partidas y checkpoints del juego
+        });
+        HBox botones = new HBox(10);
+        botones.setPadding(new Insets(10));
+        botones.setAlignment(Pos.CENTER);
+
         Button btnIrInicio = new Button("Volver al Inicio");
         btnIrInicio.setOnAction(e -> controller.findTab(TabInicial.class).ifPresent(TabWrapper::focus));
-
-        content.getChildren().addAll(label, listJuegos, btnIrInicio);
+        botones.getChildren().addAll(  btnIrInicio, btnEliminar);
+        content.getChildren().addAll(label, listJuegos, botones);
         return content;
+    }
+    private boolean confirmar(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(mensaje);
+
+        return alert.showAndWait()
+                .filter(r -> r == ButtonType.OK)
+                .isPresent();
     }
 
 }

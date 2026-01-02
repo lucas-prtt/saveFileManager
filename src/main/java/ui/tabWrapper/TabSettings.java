@@ -90,6 +90,7 @@ public class TabSettings extends TabWrapper{
         txtNuevoPath.setPromptText("Ingrese un path");
         txtNuevoPath.setPrefWidth(400);
 
+        Button btnAgregarPath = new Button("Agregar");
         Button btnElegirCarpeta = new Button("📁");
         btnElegirCarpeta.setTooltip(new Tooltip("Elegir carpeta"));
         btnElegirCarpeta.setCursor(javafx.scene.Cursor.HAND);
@@ -102,9 +103,9 @@ public class TabSettings extends TabWrapper{
             File selectedDir = chooser.showDialog(window);
             if (selectedDir != null) {
                 txtNuevoPath.setText(selectedDir.getAbsolutePath());
+                btnAgregarPath.fire();
             }
         });
-        Button btnAgregarPath = new Button("Agregar");
         btnAgregarPath.setCursor(javafx.scene.Cursor.HAND);
         btnAgregarPath.setOnAction(e -> {
             if (!txtNuevoPath.getText().isBlank()) {
@@ -172,6 +173,7 @@ public class TabSettings extends TabWrapper{
         txtNuevoPath.setPromptText("Ingrese un path");
         txtNuevoPath.setPrefWidth(400);
 
+        Button btnAgregarPath = new Button("Agregar");
         Button btnElegirCarpeta = new Button("📁");
         btnElegirCarpeta.setTooltip(new Tooltip("Elegir carpeta"));
         btnElegirCarpeta.setCursor(javafx.scene.Cursor.HAND);
@@ -184,9 +186,9 @@ public class TabSettings extends TabWrapper{
             File selectedDir = chooser.showDialog(window);
             if (selectedDir != null) {
                 txtNuevoPath.setText(selectedDir.getAbsolutePath());
+                btnAgregarPath.fire();
             }
         });
-        Button btnAgregarPath = new Button("Agregar");
         btnAgregarPath.setCursor(javafx.scene.Cursor.HAND);
         btnAgregarPath.setOnAction(e -> {
             if (!txtNuevoPath.getText().isBlank()) {

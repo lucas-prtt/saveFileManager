@@ -2,13 +2,12 @@ package ui.tabWrapper;
 
 import domain.Juegos.Checkpoint;
 import domain.Juegos.Partida;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import lombok.Getter;
 import servicios.CheckpointService;
@@ -91,8 +90,9 @@ public class TabGestionarPartida extends TabWrapper{
     }
     private void refrescarCheckpoints() {
         checkpointList.getItems().setAll(
-                partidaService.obtenerCheckpoints(partida)
+                partidaService.obtenerCheckpoints(partida).reversed()
         );
+        checkpointList.requestLayout();
     }
 
     private void guardarCheckpoint() {
@@ -139,6 +139,8 @@ public class TabGestionarPartida extends TabWrapper{
 
                 checkpointService.guardarCheckpoint(partida, nombre, descripcion);
                 refrescarCheckpoints();
+                checkpointList.scrollTo(0);
+                checkpointList.getSelectionModel().select(0);
             }
             return null;
         });
@@ -148,7 +150,7 @@ public class TabGestionarPartida extends TabWrapper{
     private void cargarUltimoCheckpoint() {
         if(checkpointList.getItems().isEmpty())
             return;
-        Checkpoint checkpoint = checkpointList.getItems().getLast();
+        Checkpoint checkpoint = checkpointList.getItems().getFirst();
         cargarCheckpointConVerificaciones(checkpoint);
     }
     private void cargarCheckpointConVerificaciones(Checkpoint checkpoint){

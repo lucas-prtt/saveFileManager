@@ -13,9 +13,11 @@ import java.util.*;
 public class JuegosService {
     private final JuegoRepository juegoRepository;
     private final PartidaService partidaService;
-    public JuegosService(JuegoRepository juegoRepository, PartidaService partidaService) {
+    private final ArchivoService archivoService;
+    public JuegosService(JuegoRepository juegoRepository, PartidaService partidaService, ArchivoService archivoService) {
         this.juegoRepository = juegoRepository;
         this.partidaService = partidaService;
+        this.archivoService = archivoService;
     }
     public Directorio obtenerDirectorioPorJuegoEId(String idJuego, String idDirectorio) throws NoSuchElementException, ResourceNotFoundException {
         Optional<Juego> juego = juegoRepository.findById(idJuego);
@@ -49,6 +51,7 @@ public class JuegosService {
         Tx.runVoid( () ->
                 {
                     juegoRepository.deleteById(juego.getId());
+                    archivoService.eliminarArchivosHuerfanos();
                 }
         );
     }
@@ -67,6 +70,17 @@ public class JuegosService {
                 Juego juegoBD = obtenerJuegoPorId(juego.getId());
                 juegoBD.agregarPartida(partida);
             }
+        );
+    }
+
+    public void eliminarPartida(Partida selectedItem) {
+        Tx.runVoid( () ->
+                {
+                    Partida partidaBd = partidaService.obtenerPartida(selectedItem.getId()).orElseThrow();
+                    Juego juegoBD = obtenerJuegoPorId(selectedItem.getJuego().getId());
+                    juegoBD.eliminarPartida(partidaBd);
+                    archivoService.eliminarArchivosHuerfanos();
+                }
         );
     }
 }

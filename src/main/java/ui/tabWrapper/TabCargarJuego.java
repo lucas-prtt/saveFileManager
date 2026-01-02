@@ -98,6 +98,7 @@ public class TabCargarJuego extends TabWrapper {
         txtNuevoPath.setPrefWidth(400);
 
         Button btnElegirCarpeta = new Button("📁");
+        Button btnAgregarPath = new Button("Agregar");
         btnElegirCarpeta.setTooltip(new Tooltip("Elegir carpeta"));
         btnElegirCarpeta.setCursor(javafx.scene.Cursor.HAND);
         btnElegirCarpeta.setOnAction(e -> {
@@ -109,9 +110,9 @@ public class TabCargarJuego extends TabWrapper {
             File selectedDir = chooser.showDialog(window);
             if (selectedDir != null) {
                 txtNuevoPath.setText(selectedDir.getAbsolutePath());
+                btnAgregarPath.fire();
             }
         });
-        Button btnAgregarPath = new Button("Agregar");
         btnAgregarPath.setCursor(javafx.scene.Cursor.HAND);
         btnAgregarPath.setOnAction(e -> {
             if (!txtNuevoPath.getText().isBlank()) {

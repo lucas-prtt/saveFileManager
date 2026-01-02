@@ -48,12 +48,13 @@ public class ApplicationContext {
 
         directorySecurity = new DirectorySecurity();
         partidaService = new PartidaService(partidaRepository);
-        juegosService = new JuegosService(juegoRepository, partidaService);
         objectStore = new ObjectStore(Paths.get("data/objects"), directorySecurity);
         archivoService = new ArchivoService(directorySecurity, objectStore, archivoRepository);
+        juegosService = new JuegosService(juegoRepository, partidaService, archivoService);
         checkpointService = new CheckpointService(checkpointRepository, juegosService, partidaService, archivoService);
 
         mainController = new MainController(juegosService, partidaService, checkpointService, directorySecurity);
+        GlobalErrorHandler.init(mainController);
         JpaUtil.em();
     }
 
