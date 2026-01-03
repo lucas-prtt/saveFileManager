@@ -46,7 +46,7 @@ public final class Tx {
         });
     }
 
-    public static void optimisticLockTry(Integer veces, Runnable runnable){
+    public static void optimisticLockTry(Integer veces, Integer delayms, Runnable runnable){
         Integer intentos = 0;
         do {
             try {
@@ -54,6 +54,11 @@ public final class Tx {
             }catch (OptimisticLockException optimisticLockException){
                 System.out.println("Optimistic lock exception atrapada. Reintentando (" + veces + ")");
                 intentos++;
+                try {
+                    Thread.sleep(delayms);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }while (intentos<=veces);
     }

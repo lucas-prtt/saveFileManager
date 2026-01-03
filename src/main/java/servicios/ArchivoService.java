@@ -48,7 +48,7 @@ public class ArchivoService {
         archivosACargar.forEach((datos, path) -> {
             directorySecurity.validarRuta(path);
             purgar(path, datos.getArchivos());
-            datos.getArchivos().forEach(archivo -> cargarArchivo(archivo, path));
+            datos.getArchivos().forEach(archivo -> cargarArchivo(archivo, (archivo instanceof Carpeta ? path : path.getParent())));
         });
     }
 
@@ -118,24 +118,24 @@ public class ArchivoService {
     private  List<Archivo> crearArchivos(Path path)
             throws FileNotFoundException {
         directorySecurity.validarRuta(path);
-
-        File[] files = path.toFile().listFiles();
-        if (files == null) return List.of();
-        files = Arrays.stream(files) // Ignorar Accesos directos
-                .filter(file -> !Files.isSymbolicLink(file.toPath())).toArray(File[]::new);
-
+        File file = path.toFile();
         List<Archivo> resultado = new ArrayList<>();
 
-        for (File file : files) {
 
             if (Files.isDirectory(file.toPath(), LinkOption.NOFOLLOW_LINKS)){ // Ignorar Junctions
-                Carpeta carpeta = new Carpeta();
-                carpeta.setNombre(file.getName());
+                File[] files = path.toFile().listFiles();
+                if (files == null) return List.of();
+                files = Arrays.stream(files) // Ignorar Accesos directos
+                        .filter(file2 -> !Files.isSymbolicLink(file2.toPath())).toArray(File[]::new);
+                for (File file2 : files) {
+                    Carpeta carpeta = new Carpeta();
+                    carpeta.setNombre(file2.getName());
 
-                carpeta.setArchivos(crearArchivos(
-                        file.toPath()
-                ));
-                resultado.add(carpeta);
+                    carpeta.setArchivos(crearArchivos(
+                            file2.toPath()
+                    ));
+                    resultado.add(carpeta);
+                }
 
             } else {
 
@@ -158,7 +158,6 @@ public class ArchivoService {
 
                 resultado.add(archivoFinal);
             }
-        }
 
         return resultado;
     }

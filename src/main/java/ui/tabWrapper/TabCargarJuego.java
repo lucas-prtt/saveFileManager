@@ -8,6 +8,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import servicios.JuegosService;
 import ui.MainController;
@@ -116,6 +117,21 @@ public class TabCargarJuego extends TabWrapper {
                 btnAgregarPath.fire();
             }
         });
+        Button btnElegirArchivo = new Button("📄");
+        btnElegirArchivo.setTooltip(new Tooltip("Elegir archivo"));
+        btnElegirArchivo.setCursor(javafx.scene.Cursor.HAND);
+        btnElegirArchivo.setOnAction(e -> {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Seleccionar archivo de guardado");
+
+            Window window = txtNuevoPath.getScene().getWindow();
+
+            File selectedDir = chooser.showOpenDialog(window);
+            if (selectedDir != null) {
+                txtNuevoPath.setText(selectedDir.getAbsolutePath());
+                btnAgregarPath.fire();
+            }
+        });
         btnAgregarPath.setCursor(javafx.scene.Cursor.HAND);
         btnAgregarPath.setOnAction(e -> {
             if (!txtNuevoPath.getText().isBlank()) {
@@ -126,7 +142,7 @@ public class TabCargarJuego extends TabWrapper {
             }
         });
 
-        HBox agregarPathBox = new HBox(8, txtNuevoPath, btnElegirCarpeta, btnAgregarPath);
+        HBox agregarPathBox = new HBox(8, txtNuevoPath, btnElegirCarpeta, btnElegirArchivo, btnAgregarPath);
         agregarPathBox.setStyle("-fx-alignment: center-left;");
 
         /*      Confirmar/Cancelar       */

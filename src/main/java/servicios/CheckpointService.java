@@ -61,13 +61,15 @@ public class CheckpointService {
         archivoService.eliminarArchivosHuerfanos(); // Si alguno quedo sin asociar se elimina
     }
     public void eliminarCheckpoint(Checkpoint checkpoint) throws ResourceNotFoundException{
-        Tx.runVoid( () ->
+        Tx.optimisticLockTry(3, 200, () -> {
+            Tx.runVoid( () ->
                 {
                     Partida partidaBd = partidaService.obtenerPartida(checkpoint.getPartida().getId()).orElseThrow();
                     partidaBd.eliminarCheckpointById(checkpoint.getId());
                     partidaService.guardarPartida(partidaBd);
                 }
-        );
+            );
+        });
         archivoService.eliminarArchivosHuerfanos();
     }
 
