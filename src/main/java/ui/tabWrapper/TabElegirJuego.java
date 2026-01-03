@@ -5,11 +5,13 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import servicios.JuegosService;
 import ui.MainController;
+import utils.Dialogs;
 
 import java.util.List;
 
@@ -74,7 +76,7 @@ public class TabElegirJuego extends TabWrapper{
         btnEliminar.setOnAction(e -> {
             if(listJuegos.getSelectionModel().getSelectedItem() == null)
                 throw new RuntimeException("No hay ningun juego seleccionado");
-            if(confirmar("Esta seguro que desea eliminar " + listJuegos.getSelectionModel().getSelectedItem().getTitulo()+ "? ")) {
+            if(Dialogs.confirmarDoble("Esta seguro que desea eliminar " + listJuegos.getSelectionModel().getSelectedItem().getTitulo()+ "? ", listJuegos.getSelectionModel().getSelectedItem().getTitulo())) {
                 juegosService.eliminarJuego(listJuegos.getSelectionModel().getSelectedItem());
                 update();
                 System.out.println("Se borro el juego" + listJuegos.getSelectionModel().getSelectedItem().getTitulo() + " - " + listJuegos.getSelectionModel().getSelectedItem().getId());
@@ -89,14 +91,6 @@ public class TabElegirJuego extends TabWrapper{
         botones.getChildren().addAll(  btnIrInicio, btnEliminar);
         content.getChildren().addAll(label, listJuegos, botones);
         return content;
-    }
-    private boolean confirmar(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(mensaje);
-
-        return alert.showAndWait()
-                .filter(r -> r == ButtonType.OK)
-                .isPresent();
     }
 
 }

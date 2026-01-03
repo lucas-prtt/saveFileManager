@@ -13,6 +13,7 @@ import lombok.Getter;
 import servicios.CheckpointService;
 import servicios.PartidaService;
 import ui.MainController;
+import utils.Dialogs;
 
 public class TabGestionarPartida extends TabWrapper{
     private CheckpointService checkpointService;
@@ -96,7 +97,7 @@ public class TabGestionarPartida extends TabWrapper{
     }
 
     private void guardarCheckpoint() {
-        if(!partidaService.isPartidaActualCargada(partida) && !confirmar("Actualmente hay otra partida cargada ( " +partida.getJuego().getPartidaActual().getTitulo()+ " ) . Esta seguro que desea guardar aqui?"))
+        if(!partidaService.isPartidaActualCargada(partida) && !Dialogs.confirmar("Actualmente hay otra partida cargada ( " +partida.getJuego().getPartidaActual().getTitulo()+ " ) . Esta seguro que desea guardar aqui?"))
             return;
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Guardar checkpoint");
@@ -154,8 +155,8 @@ public class TabGestionarPartida extends TabWrapper{
         cargarCheckpointConVerificaciones(checkpoint);
     }
     private void cargarCheckpointConVerificaciones(Checkpoint checkpoint){
-        if(confirmar("Esta seguro que desea cargar este checkpoint ("+checkpoint.getStringReferencia()+") ?")){
-            if (!partidaService.isPartidaActualCargada(partida) && confirmar("Actualmente hay otra partida cargada en el sistema ( " + partida.getJuego().getPartidaActual().getTitulo() + " ). Quiere guardar su proceso allí antes de cargar esta?")) {
+        if(Dialogs.confirmar("Esta seguro que desea cargar este checkpoint ("+checkpoint.getStringReferencia()+") ?")){
+            if (!partidaService.isPartidaActualCargada(partida) && Dialogs.confirmar("Actualmente hay otra partida cargada en el sistema ( " + partida.getJuego().getPartidaActual().getTitulo() + " ). Quiere guardar su proceso allí antes de cargar esta?")) {
                 checkpointService.guardarCheckpointUltimaPartida(partida);
             }
             checkpointService.cargarCheckpoint(checkpoint);
@@ -170,18 +171,10 @@ public class TabGestionarPartida extends TabWrapper{
         Checkpoint seleccionado = checkpointList.getSelectionModel().getSelectedItem();
         if (seleccionado == null) return;
 
-        if (confirmar("¿Desea eliminar este checkpoint?")) {
+        if (Dialogs.confirmar("¿Desea eliminar este checkpoint?")) {
             checkpointService.eliminarCheckpoint(seleccionado);
             refrescarCheckpoints();
         }
-    }
-    private boolean confirmar(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(mensaje);
-
-        return alert.showAndWait()
-                .filter(r -> r == ButtonType.OK)
-                .isPresent();
     }
     @Override
     public String getName() {

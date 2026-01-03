@@ -11,6 +11,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 import servicios.JuegosService;
 import ui.MainController;
+import utils.Dialogs;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -21,6 +22,8 @@ public class TabCargarJuego extends TabWrapper {
     private Juego juego;
 
     private JuegosService juegosService;
+
+    private final String TITULODEFAULT = "Nombre del juego";
 
     public String getName(){
         return "Cargar Juego";
@@ -129,6 +132,10 @@ public class TabCargarJuego extends TabWrapper {
         /*      Confirmar/Cancelar       */
         Button btnConfirmar = new Button("Confirmar");
         btnConfirmar.setOnAction(e -> {
+            if(juego.getTitulo().equals(TITULODEFAULT) && !Dialogs.confirmar("Esta seguro que desea guardar el juego con el titulo " + TITULODEFAULT + "?"))
+                return;
+            if(juego.getSaveFilePaths().isEmpty() && !Dialogs.confirmar("Esta seguro que desea guardar un juego sin directorios de guardado?"))
+                return;
             try {
                 juegosService.guardarJuego(juego);
                 controller.findTab(TabElegirJuego.class).ifPresent(TabWrapper::update);

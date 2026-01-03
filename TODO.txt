@@ -1,15 +1,15 @@
 
 Cosas para hacer:
 
-- Borrar archivos binarios que ya no se usan al borrar checkpoints
+Complejas:
 - Completar sistema de sinonimos de paths y paths "inteligentes"
 - Permitir Transmitir checkpoints por red
-- Mejorar la UX
+- Modo de "Rotacion de checkpoints" donde los nuevos vayan sobreescribiendo a los viejos cada tanto
 
 
-
-Cosas Hechas:
-- Menu basico de crear juegos/partidas/checkpoints
-- Guardar/Cargar checkpoints persistiendo estructura en H2 e información en binarios
-- Hacer sistema "tipo GIT" que solo reescriba los archivos que no están presentes
-- Crear clase de configuracion para garantizar que no se borren archivos incorrectos accidentalmente
+Simples:
+- Permitir cambiar nombres de partidas y juegos
+- Crear un modo de rotacion de checkpoints (Solo quedan los X más recientes/otras reglas, los viejos se van eliminando).
+- Permitir exportar a directorio a eleccion
+- Arreglar UI listas (Elementos de tamaño variable y que parpadean)
+- Permitir asociar un archivo unico en lugar de solo una carpeta a un juego

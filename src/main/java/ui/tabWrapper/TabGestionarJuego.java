@@ -12,6 +12,7 @@ import lombok.Getter;
 import servicios.JuegosService;
 import servicios.PartidaService;
 import ui.MainController;
+import utils.Dialogs;
 
 import java.util.List;
 
@@ -100,7 +101,7 @@ public class TabGestionarJuego extends TabWrapper {
             if(partidaListView.getSelectionModel().getSelectedItem() == null)
                 throw new RuntimeException("No hay ninguna partida seleccionada");
 
-            if(confirmar("Esta seguro que desea eliminar la partida " + partidaListView.getSelectionModel().getSelectedItem().getTitulo() + "? "))
+            if(Dialogs.confirmarDoble("Esta seguro que desea eliminar la partida " + partidaListView.getSelectionModel().getSelectedItem().getTitulo() + "? ", partidaListView.getSelectionModel().getSelectedItem().getTitulo()))
             {   juegosService.eliminarPartida(partidaListView.getSelectionModel().getSelectedItem());
                 update();
                 System.out.println("Se borro la partida " + partidaListView.getSelectionModel().getSelectedItem().getTitulo() + " - " + partidaListView.getSelectionModel().getSelectedItem().getId());
@@ -120,14 +121,6 @@ public class TabGestionarJuego extends TabWrapper {
 
         root.getChildren().addAll(lblTitulo, lblNombre, partidaListView, labelNuevaPartida, agregarPartidaBox);
         return root;
-    }
-    private boolean confirmar(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(mensaje);
-
-        return alert.showAndWait()
-                .filter(r -> r == ButtonType.OK)
-                .isPresent();
     }
 
 }
