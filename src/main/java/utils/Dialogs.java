@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 public class Dialogs {
     public static boolean confirmar(String mensaje) {
@@ -45,5 +46,30 @@ public class Dialogs {
     }
     public static boolean confirmarDoble(String mensaje, String texto){
         return confirmar(mensaje) && confirmarEscribirTexto(texto);
+    }
+
+    public static Optional<String> inputText(String titulo, String mensaje) {
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle(titulo);
+        dialog.setHeaderText(mensaje);
+
+        TextField textField = new TextField();
+        textField.setPromptText("...");
+
+        VBox box = new VBox(10);
+        box.getChildren().add(textField);
+        box.setPadding(new Insets(10));
+        dialog.getDialogPane().setContent(box);
+
+        ButtonType aceptar = new ButtonType("Aceptar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType rechazar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(aceptar, rechazar);
+        dialog.setResultConverter((b) -> {
+            if(b.equals(aceptar)){
+                return textField.getText();
+            }
+            else return null;
+        });
+        return dialog.showAndWait();
     }
 }

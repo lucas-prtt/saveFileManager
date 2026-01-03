@@ -46,4 +46,12 @@ public class PartidaService {
                 }
         );
     }
+
+    public void modificarTituloPartida(Partida p, Optional<String> nuevoTitulo) {
+        Tx.runVoid(()->{
+        Partida partidaBD = partidaRepository.findById(p.getId()).orElseThrow();
+        String tituloAInsertar = nuevoTitulo.orElseThrow().isBlank()?"Sin titulo" : nuevoTitulo.get();
+        partidaBD.setTitulo(tituloAInsertar);
+        });
+    }
 }

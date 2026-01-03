@@ -15,6 +15,8 @@ import ui.MainController;
 import utils.Dialogs;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class TabGestionarJuego extends TabWrapper {
     @Getter
@@ -116,7 +118,23 @@ public class TabGestionarJuego extends TabWrapper {
                 update();
             }
         });
-        HBox agregarPartidaBox = new HBox(8, txtNuevaPartida, btnAgregarPartida, btnEliminarPartida);
+        Button btnEditarNombrePartida = new Button("Cambiar nombre");
+        btnEditarNombrePartida.setCursor(javafx.scene.Cursor.HAND);
+        btnEditarNombrePartida.setOnAction(e -> {
+            Partida p = partidaListView.getSelectionModel().getSelectedItem();
+            if(p == null){
+                controller.showToast("Seleccione una partida ya creada");
+                return;
+            }
+            Optional<String> nuevoTitulo = Dialogs.inputText("Partida " + p.getTitulo(), "Elija el nuevo nombre para la partida");
+            if(nuevoTitulo.isEmpty()){
+                return;
+            }
+            partidaService.modificarTituloPartida(p, nuevoTitulo);
+            update();
+            controller.findTab(TabGestionarPartida.class, (tabGestionarPartida)-> Objects.equals(tabGestionarPartida.getPartida().getId(), p.getId())).ifPresent(TabWrapper::update);
+        });
+        HBox agregarPartidaBox = new HBox(8, txtNuevaPartida, btnAgregarPartida, btnEliminarPartida, btnEditarNombrePartida);
         agregarPartidaBox.setStyle("-fx-alignment: center;");
 
         root.getChildren().addAll(lblTitulo, lblNombre, partidaListView, labelNuevaPartida, agregarPartidaBox);

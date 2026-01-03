@@ -107,6 +107,10 @@ public class TabElegirJuego extends TabWrapper{
         List<Directorio> directorios;
     }
     public void editarJuego(Juego juegoExistente) {
+        if(juegoExistente == null){
+            controller.showToast("Seleccione un juego ya registrado");
+            return;
+        }
         AtomicReference<Boolean> eliminaDirectorios = new AtomicReference<>(false);
         JuegoEditDTO juegoEditDTO = new JuegoEditDTO();
         juegoEditDTO.titulo = juegoExistente.getTitulo();
