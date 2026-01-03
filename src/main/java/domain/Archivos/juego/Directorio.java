@@ -27,4 +27,9 @@ public class Directorio {
     public Directorio(Path pathPrincipal){
         this.pathPrincipal = pathPrincipal;
     }
+
+    @Override
+    public String toString(){
+        return "(Directorio: " + id +" - " + pathPrincipal  + ") ";
+    }
 }

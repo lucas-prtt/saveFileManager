@@ -34,14 +34,18 @@ public class Juego {
     Partida partidaActual;
     @Setter
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "juego_titulo")
+    @JoinColumn(name = "juego_id")
     List<Directorio> saveFilePaths;
+
+
+
 
     public Juego(String titulo){
         this.titulo = titulo;
         this.partidas = new ArrayList<>();
         this.saveFilePaths = new ArrayList<>();
     }
+
     public Juego(String titulo, List<Directorio> directorios){
         this.titulo = titulo;
         this.partidas = new ArrayList<>();
@@ -87,6 +91,8 @@ public class Juego {
     }
     public void eliminarPartida(Partida partida){
         partidas.remove(partida);
+        if(partidaActual.getId().equals(partida.getId()))
+            partidaActual = null;
     }
     public Optional<Partida> getPartidaByTitulo(String titulo){
         return partidas.stream().filter(partida -> {return Objects.equals(partida.getTitulo(), titulo);}).findFirst();
@@ -98,6 +104,10 @@ public class Juego {
 
     public void agregarDirectorio(Directorio directorio){
         saveFilePaths.add(directorio);
+    }
+    @Override
+    public String toString(){
+        return "(Juego: " + id + " - " + titulo + " - " + saveFilePaths + ") ";
     }
 
 }

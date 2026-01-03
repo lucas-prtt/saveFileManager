@@ -51,8 +51,9 @@ public final class Tx {
         do {
             try {
                 runnable.run();
+                break;
             }catch (OptimisticLockException optimisticLockException){
-                System.out.println("Optimistic lock exception atrapada. Reintentando (" + veces + ")");
+                System.out.println("Optimistic lock exception atrapada. Reintentando (" + intentos + ") -> " + optimisticLockException.getMessage());
                 intentos++;
                 try {
                     Thread.sleep(delayms);

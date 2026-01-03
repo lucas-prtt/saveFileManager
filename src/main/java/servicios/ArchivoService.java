@@ -1,6 +1,7 @@
 package servicios;
 import domain.Archivos.ObjectStore;
 import domain.Archivos.checkpoint.*;
+import domain.Archivos.juego.Directorio;
 import domain.Exceptions.ArchivoYaExisteException;
 import domain.Juegos.Juego;
 import repositorios.ArchivoRepository;
@@ -182,5 +183,10 @@ public class ArchivoService {
 
     public Binario merge(Binario binario) {
         return archivoRepository.merge(binario);
+    }
+
+    public void eliminarDatosDeDirectorio(Directorio d) {
+        archivoRepository.eliminarDatosDeDirectorio(d);
+        eliminarArchivosHuerfanos();
     }
 }

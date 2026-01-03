@@ -83,5 +83,23 @@ public class JuegosService {
                 }
         );
     }
+
+    public void modificarJuego(String juegoId, List<Directorio> nuevosDirectorios, String nuevoTitulo) {
+        Tx.runVoid(() -> {
+            Juego juegoBD = juegoRepository.findById(juegoId).orElseThrow();
+            juegoBD.setTitulo(nuevoTitulo);
+            List<Directorio> directoriosEliminados = juegoBD.getSaveFilePaths().stream().filter(d -> nuevosDirectorios.stream().noneMatch(directorio -> d.getPathPrincipal().equals(directorio.getPathPrincipal()))).toList();
+            directoriosEliminados.forEach(archivoService::eliminarDatosDeDirectorio);
+            juegoBD.getSaveFilePaths().removeIf(
+                    d -> nuevosDirectorios.stream()
+                            .noneMatch(p -> p.equals(d.getPathPrincipal()))
+            );
+            nuevosDirectorios.stream()
+                    .filter(p -> juegoBD.getSaveFilePaths().stream()
+                            .noneMatch(d -> d.getPathPrincipal().equals(p)))
+                    .forEach(juegoBD::agregarDirectorio);
+        });
+
+    }
 }
 
