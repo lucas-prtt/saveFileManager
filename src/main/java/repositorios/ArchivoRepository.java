@@ -1,8 +1,10 @@
 package repositorios;
 
 import domain.Archivos.checkpoint.ArchivoFinal;
+import domain.Archivos.checkpoint.Binario;
 import domain.Archivos.checkpoint.GrupoDeDatos;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import utils.EntityManagerProvider;
 import utils.Tx;
 
@@ -17,24 +19,32 @@ public class ArchivoRepository {
     private EntityManager em(){
         return EntityManagerProvider.get();
     }
-    public Optional<ArchivoFinal> findByHash(String hash){
-        return Tx.run(() -> {
-            var resultados = em().createQuery("SELECT a FROM ArchivoFinal a WHERE a.hash = :hash", ArchivoFinal.class)
-                    .setParameter("hash", hash)
-                    .getResultList();
-            return resultados.isEmpty() ? Optional.empty(): Optional.of(resultados.getFirst());
+    public Binario save(Binario binario){
+        return em().merge(binario);
+    }
+    public Optional<Binario> findByHash(String hash){
+        return Tx.run(
+                ()->{
+                    return Optional.ofNullable(em().find(Binario.class, hash));
+                }
+        );
+    }
+    public void remove(Binario binario){
+        Tx.runVoid(()->{
+            Binario binarioBD = em().merge(binario);
+            em().remove(binarioBD);});
+    }
+    public List <Binario> obtenerHuerfanos(){
+        return Tx.run(()->{
+            return em().createQuery("SELECT b FROM Binario b WHERE usos = 0", Binario.class).getResultList();
         });
     }
-    public Set<String> obtenerHashArchivosUsados() {
-        return Tx.run(() -> {
-            // Archivos finales existentes
-            List<ArchivoFinal> todosLosArchivos = em().createQuery(
-                    "SELECT a FROM ArchivoFinal a", ArchivoFinal.class
-            ).getResultList();
-            System.out.println(todosLosArchivos.size() + " - Todos los archivos");
 
-            return todosLosArchivos.stream().map(ArchivoFinal::getHash).collect(Collectors.toSet());
-        });
+    public GrupoDeDatos merge(GrupoDeDatos grupoDeDatos) {
+        return em().merge(grupoDeDatos);
     }
 
+    public Binario merge(Binario binario) {
+        return em().merge(binario);
+    }
 }

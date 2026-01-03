@@ -3,6 +3,7 @@ package utils;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.OptimisticLockException;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -43,5 +44,17 @@ public final class Tx {
             work.accept(em);
             return null;
         });
+    }
+
+    public static void optimisticLockTry(Integer veces, Runnable runnable){
+        Integer intentos = 0;
+        do {
+            try {
+                runnable.run();
+            }catch (OptimisticLockException optimisticLockException){
+                System.out.println("Optimistic lock exception atrapada. Reintentando (" + veces + ")");
+                intentos++;
+            }
+        }while (intentos<=veces);
     }
 }

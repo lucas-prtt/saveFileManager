@@ -12,6 +12,7 @@
         <class>domain.Juegos.Partida</class>
         <class>domain.Juegos.Checkpoint</class>
         <class>domain.Archivos.checkpoint.Archivo</class>
+        <class>domain.Archivos.checkpoint.Binario</class>
         <class>domain.Archivos.checkpoint.Carpeta</class>
         <class>domain.Archivos.checkpoint.ArchivoFinal</class>
         <class>domain.Archivos.checkpoint.GrupoDeDatos</class>

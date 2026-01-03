@@ -33,7 +33,7 @@ public class Juego {
     @JsonIgnore
     Partida partidaActual;
     @Setter
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "juego_titulo")
     List<Directorio> saveFilePaths;
 

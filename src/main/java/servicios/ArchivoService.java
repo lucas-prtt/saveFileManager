@@ -1,6 +1,7 @@
 package servicios;
 import domain.Archivos.ObjectStore;
 import domain.Archivos.checkpoint.*;
+import domain.Exceptions.ArchivoYaExisteException;
 import domain.Juegos.Juego;
 import repositorios.ArchivoRepository;
 import ui.MainController;
@@ -137,35 +138,50 @@ public class ArchivoService {
                 resultado.add(carpeta);
 
             } else {
-                ArchivoFinal af = new ArchivoFinal();
-                af.setNombre(file.getName());
 
-                try {
-                    objectStore.storeArchivoFinal(af, file.toPath()); //Setea hash, size y guarda los binarios asociados al hash
-                } catch (IOException e) {
-                    throw new RuntimeException(e); // TODO: Ver que pasa con los archivos ya creados si tira error
-                }
+                ArchivoFinal archivoFinal = Tx.run(()->{
+                    ArchivoFinal af = new ArchivoFinal();
+                    af.setNombre(file.getName());
+                    try {
+                        objectStore.storeArchivoFinal(af, file.toPath()); //Setea hash, size y guarda los binarios asociados al hash
+                        archivoRepository.save(af.getBinario()); // Registra el binario en la BD
+                        // Si hay error al escribir el archivo en el FS, no se registra en la BD
+                        // Suponemos que si se escribe en el FS, se podra escribir en la BD
+                        // La transaccion se realiza a nivel archivo para evitar guardar muchos archivos en el FS que no queden en la BD
+                    } catch (ArchivoYaExisteException e){
+                        af.setBinario(archivoRepository.findByHash(e.getHash()).orElseThrow(() -> new RuntimeException("El fileSystem esta desincronizado con la base de datos de archivos")));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return af;
+                });
 
-                resultado.add(af);
+                resultado.add(archivoFinal);
             }
         }
 
         return resultado;
     }
-
     public void eliminarArchivosHuerfanos(){
-        Tx.runVoid(() -> {
-            Set<String> archivosUsados = archivoRepository.obtenerHashArchivosUsados();
-            System.out.println("Usados: ("+archivosUsados.size()+")");
-
-            Set<String> archivosPersistidos = objectStore.obtenerHashesArchivosPersistidos();
-            System.out.println("Persistidos: ("+archivosPersistidos.size()+")");
-            Set<String> hashesHuerfanos = new HashSet<>(archivosPersistidos);
-            hashesHuerfanos.removeAll(archivosUsados);
-            System.out.println("Huerfanos: ("+hashesHuerfanos.size()+")");
-
-            hashesHuerfanos.forEach(objectStore::delete);
-        });
+        List<Binario> binarios = archivoRepository.obtenerHuerfanos();
+        for (Binario binario : binarios){
+            try{
+                System.out.println("Borrando binario " + binario.getHash() + " con " + binario.getUsos() + " usos");
+                Tx.runVoid(()->{
+                        objectStore.delete(binario.getHash());
+                        archivoRepository.remove(binario);
+                });
+            }catch (Exception ex){
+                System.out.println("No se pudo borrar el binario " + binario.getHash() + ": " + ex.getMessage());
+            }
+        }
     }
 
+    public GrupoDeDatos merge(GrupoDeDatos grupoDeDatos) {
+        return archivoRepository.merge(grupoDeDatos);
+    }
+
+    public Binario merge(Binario binario) {
+        return archivoRepository.merge(binario);
+    }
 }

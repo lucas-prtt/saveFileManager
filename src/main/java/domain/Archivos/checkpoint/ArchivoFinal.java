@@ -2,8 +2,12 @@ package domain.Archivos.checkpoint;
 
 import domain.Archivos.ObjectStore;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import lprtt.ApplicationContext;
+import org.hibernate.annotations.OnDelete;
+import repositorios.ArchivoRepository;
+import utils.Tx;
 
 import java.util.List;
 
@@ -12,9 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 public class ArchivoFinal extends Archivo{
-    @Column(nullable = false, length = 64)
-    private String hash; //SHA 256
-    private long size;
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
+    Binario binario;
 
 
     @Override
@@ -24,6 +28,11 @@ public class ArchivoFinal extends Archivo{
 
     @Override
     public String toString() {
-        return " (Archivo " + nombre + " - " + hash.substring(0, 20) + ") ";
+        return " (Archivo " + nombre + " - " + binario + ") ";
     }
+    @PreRemove
+    private void beforeDelete() {
+        binario.reducirUso();
+    }
+
 }

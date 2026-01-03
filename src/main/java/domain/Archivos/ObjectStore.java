@@ -3,7 +3,9 @@ package domain.Archivos;
 import com.github.luben.zstd.Zstd;
 import domain.Archivos.checkpoint.Archivo;
 import domain.Archivos.checkpoint.ArchivoFinal;
+import domain.Archivos.checkpoint.Binario;
 import domain.Archivos.checkpoint.Carpeta;
+import domain.Exceptions.ArchivoYaExisteException;
 import servicios.DirectorySecurity;
 
 import javax.swing.*;
@@ -35,20 +37,18 @@ public class ObjectStore {
         path.toFile().delete();
     }
 
-    public void storeArchivoFinal(ArchivoFinal archivo, Path path) throws IOException {
+    public void storeArchivoFinal(ArchivoFinal archivo, Path path) throws IOException, ArchivoYaExisteException {
 
         byte[] raw = Files.readAllBytes(path);
 
         String hash = sha256(raw);
-        System.out.println("Se persistio " + path.resolve(archivo.getNombre()).toAbsolutePath().normalize());
-        archivo.setHash(hash);
-        archivo.setSize(raw.length);
-
         Path objPath = pathFromHash(hash);
-
         if (Files.exists(objPath)) {
-            return;
+            System.out.println("Ya existia " + path.resolve(archivo.getNombre()).toAbsolutePath().normalize() + " -> " + hash);
+            throw new ArchivoYaExisteException(hash);
         }
+        System.out.println("Se persistio " + path.resolve(archivo.getNombre()).toAbsolutePath().normalize() + " -> " + hash);
+        archivo.setBinario(new Binario(hash, raw.length));
 
         byte[] compressed = Zstd.compress(raw, 3);
 
@@ -64,16 +64,16 @@ public class ObjectStore {
 
     public void loadArchivoFinal(ArchivoFinal archivo, Path destino) throws IOException {
 
-        Path objPath = pathFromHash(archivo.getHash());
+        Path objPath = pathFromHash(archivo.getBinario().getHash());
         Path destinoFinal = destino.resolve(archivo.getNombre());
-
+        directorySecurity.validarRuta(destino);
         if (!Files.exists(objPath)) {
-            throw new FileNotFoundException("Objeto no encontrado: " + archivo.getHash());
+            throw new FileNotFoundException("Objeto no encontrado: " + archivo.getBinario().getHash());
         }
 
         byte[] compressed = Files.readAllBytes(objPath);
 
-        byte[] raw = Zstd.decompress(compressed, (int) archivo.getSize());
+        byte[] raw = Zstd.decompress(compressed, (int) archivo.getBinario().getSize());
 
         Files.createDirectories(destinoFinal.getParent());
 
@@ -117,11 +117,11 @@ public class ObjectStore {
                 if (!file.getName().equals(archivoFinal.getNombre())) {
                     return false;
                 }
-                if (file.length() != archivoFinal.getSize()) {
+                if (file.length() != archivoFinal.getBinario().getSize()) {
                     return false;
                 }
                 byte[] data = Files.readAllBytes(file.toPath());
-                return Objects.equals(archivoFinal.getHash(), sha256(data));
+                return Objects.equals(archivoFinal.getBinario().getHash(), sha256(data));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
