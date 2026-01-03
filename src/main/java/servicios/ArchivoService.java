@@ -1,4 +1,5 @@
 package servicios;
+import com.github.luben.zstd.Zstd;
 import domain.Archivos.ObjectStore;
 import domain.Archivos.checkpoint.*;
 import domain.Archivos.juego.Directorio;
@@ -16,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class ArchivoService {
     private final DirectorySecurity directorySecurity;
@@ -49,27 +52,38 @@ public class ArchivoService {
         archivosACargar.forEach((datos, path) -> {
             directorySecurity.validarRuta(path);
             purgar(path, datos.getArchivos());
-            datos.getArchivos().forEach(archivo -> cargarArchivo(archivo, (archivo instanceof Carpeta ? path : path.getParent())));
+            datos.getArchivos().forEach(archivo -> cargarArchivo(archivo, path));
         });
     }
 
     public  void cargarArchivo(Archivo archivo, Path path){
+        //System.out.println("cargarArchivo(" + archivo.getNombre() + ", " + path + ")");
         directorySecurity.validarRuta(path);
         if(archivo instanceof Carpeta carpeta){
             purgar(path.resolve(carpeta.getNombre()), carpeta.getArchivos());
+            //System.out.println("!Files.exists(" + path.resolve(carpeta.getNombre()) + ")");
             if(!Files.exists(path.resolve(carpeta.getNombre()))){
+
                 try {
+                    //System.out.println("Files.createDirectories(" + path.resolve(carpeta.getNombre()) + ")");
                     Files.createDirectories(path.resolve(carpeta.getNombre()));
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
+            //System.out.println("carpeta.getArchivos.forEach(");
+            //carpeta.getArchivos().forEach(a -> System.out.println("cargarArchivo(" + a + ", "  + path.resolve(carpeta.getNombre()) + ")"));
+            //System.out.println(")");
             carpeta.getArchivos().forEach( archivoInterno -> cargarArchivo(archivoInterno, path.resolve(carpeta.getNombre())));
         }else if (archivo instanceof ArchivoFinal archivoFinal){
             try {
+
+                //System.out.println("!ObjectStore.esArchivoIgual("+path.resolve(archivo.getNombre()).toFile().toString() + ", " +  archivo.getNombre() + ")" );
                 if(!ObjectStore.esArchivoIgual(path.resolve(archivo.getNombre()).toFile(), archivo)){
+                    //System.out.println("objectStore.loadArchivoFinal("+archivoFinal.getNombre() + ", " +  path + ")");
                     objectStore.loadArchivoFinal(archivoFinal, path);
-                    System.out.println(" + Se agrego el archivo " + path.resolve(archivo.getNombre()).toAbsolutePath().normalize().toAbsolutePath().normalize() );
+                    System.out.println(" + Se agrego el archivo " + path.resolve(archivo.getNombre()).toAbsolutePath().normalize());
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -122,20 +136,20 @@ public class ArchivoService {
         File file = path.toFile();
         List<Archivo> resultado = new ArrayList<>();
 
-
             if (Files.isDirectory(file.toPath(), LinkOption.NOFOLLOW_LINKS)){ // Ignorar Junctions
                 File[] files = path.toFile().listFiles();
                 if (files == null) return List.of();
                 files = Arrays.stream(files) // Ignorar Accesos directos
                         .filter(file2 -> !Files.isSymbolicLink(file2.toPath())).toArray(File[]::new);
                 for (File file2 : files) {
-                    Carpeta carpeta = new Carpeta();
-                    carpeta.setNombre(file2.getName());
-
-                    carpeta.setArchivos(crearArchivos(
-                            file2.toPath()
-                    ));
-                    resultado.add(carpeta);
+                    if(Files.isDirectory(file2.toPath(), LinkOption.NOFOLLOW_LINKS)){
+                        Carpeta carpeta = new Carpeta();
+                        carpeta.setNombre(file2.getName());
+                        carpeta.setArchivos(crearArchivos(file.toPath().resolve(file2.getName())));
+                        resultado.add(carpeta);
+                    }else{
+                        resultado.add(crearArchivos(file2.toPath()).getFirst());
+                    }
                 }
 
             } else {
@@ -189,4 +203,29 @@ public class ArchivoService {
         archivoRepository.eliminarDatosDeDirectorio(d);
         eliminarArchivosHuerfanos();
     }
+
+    public void exportarArchivoZip(Archivo archivo, String rutaBase, ZipOutputStream zos) throws IOException {
+
+        if (archivo instanceof Carpeta carpeta) {
+            String rutaCarpeta = rutaBase.isEmpty()
+                    ? carpeta.getNombre()
+                    : rutaBase + "/" + carpeta.getNombre();
+            rutaCarpeta = rutaCarpeta.replace("\\", "/");
+            zos.putNextEntry(new ZipEntry(rutaCarpeta + "/"));
+            zos.closeEntry();
+            for (Archivo hijo : carpeta.getArchivos()) {
+                exportarArchivoZip(hijo, rutaCarpeta, zos);
+            }
+        } else if (archivo instanceof ArchivoFinal af) {
+            String rutaArchivo = rutaBase.isEmpty()
+                    ? af.getNombre()
+                    : rutaBase + "/" + af.getNombre();
+            rutaArchivo = rutaArchivo.replace("\\", "/");
+            zos.putNextEntry(new ZipEntry(rutaArchivo));
+            byte[] raw = objectStore.loadRaw(af.getBinario());
+            zos.write(raw);
+            zos.closeEntry();
+        }
+    }
+
 }

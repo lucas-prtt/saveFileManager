@@ -1,9 +1,7 @@
 package servicios;
 
-import domain.Archivos.checkpoint.Archivo;
-import domain.Archivos.checkpoint.ArchivoFinal;
-import domain.Archivos.checkpoint.Binario;
-import domain.Archivos.checkpoint.GrupoDeDatos;
+import com.github.luben.zstd.Zstd;
+import domain.Archivos.checkpoint.*;
 import domain.Exceptions.ResourceAlreadyExistsException;
 import domain.Exceptions.ResourceNotFoundException;
 import domain.Juegos.Checkpoint;
@@ -14,10 +12,14 @@ import repositorios.CheckpointRepository;
 import utils.EntityManagerProvider;
 import utils.Tx;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class CheckpointService {
 
@@ -25,7 +27,6 @@ public class CheckpointService {
     private final JuegosService juegosService;
     private final PartidaService partidaService;
     private final ArchivoService archivoService;
-
     public CheckpointService(CheckpointRepository checkpointRepository, JuegosService juegosService, PartidaService partidaService, ArchivoService archivoService) {
         this.checkpointRepository = checkpointRepository;
         this.juegosService = juegosService;
@@ -97,4 +98,21 @@ public class CheckpointService {
                 }
         );
     }
+
+    public void exportarCheckpoint(Path path, Checkpoint seleccionado) {
+        try (ZipOutputStream zos = new ZipOutputStream(
+                Files.newOutputStream(path))) {
+
+            for (GrupoDeDatos grupo : seleccionado.getArchivos()) {
+                for (Archivo archivo : grupo.getArchivos()) {
+                    archivoService.exportarArchivoZip(archivo, "", zos);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
 }

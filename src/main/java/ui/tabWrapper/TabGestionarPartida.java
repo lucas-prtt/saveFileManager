@@ -9,11 +9,16 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import lombok.Getter;
 import servicios.CheckpointService;
 import servicios.PartidaService;
 import ui.MainController;
 import utils.Dialogs;
+
+import java.io.File;
+import java.nio.file.Path;
 
 public class TabGestionarPartida extends TabWrapper{
     private CheckpointService checkpointService;
@@ -82,7 +87,10 @@ public class TabGestionarPartida extends TabWrapper{
         Button eliminarBtn = new Button("Eliminar seleccionado");
         eliminarBtn.setOnAction(e -> eliminarCheckpointSeleccionado());
 
-        HBox acciones = new HBox(10, guardarBtn, cargarUltimoBtn, cargarBtn, eliminarBtn);
+        Button exportarSeleccionado = new Button("Exportar seleccionado");
+        exportarSeleccionado.setOnAction(e -> exportarCheckpointSeleccionado());
+
+        HBox acciones = new HBox(10, guardarBtn, cargarUltimoBtn, cargarBtn, eliminarBtn, exportarSeleccionado);
 
         VBox content = new VBox(10,superTitulo, titulo, checkpointList, acciones);
         content.setPadding(new Insets(10));
@@ -167,6 +175,24 @@ public class TabGestionarPartida extends TabWrapper{
         if (seleccionado == null) return;
         cargarCheckpointConVerificaciones(seleccionado);
     }
+    private void exportarCheckpointSeleccionado() {
+        Checkpoint seleccionado = checkpointList.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) return;
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Exportar checkpoint");
+        fileChooser.setInitialFileName(
+                "Export.zip"
+        );
+
+
+        Window window = checkpointList.getScene().getWindow();
+        File file = fileChooser.showSaveDialog(window);
+        if (file == null) return;
+        Path path = file.toPath();
+        checkpointService.exportarCheckpoint(path, seleccionado);
+    }
+
     private void eliminarCheckpointSeleccionado() {
         Checkpoint seleccionado = checkpointList.getSelectionModel().getSelectedItem();
         if (seleccionado == null) return;

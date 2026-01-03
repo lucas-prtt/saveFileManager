@@ -4,11 +4,9 @@ Cosas para hacer:
 Complejas:
 - Completar sistema de sinonimos de paths y paths "inteligentes"
 - Permitir Transmitir checkpoints por red
-- Modo de "Rotacion de checkpoints" donde los nuevos vayan sobreescribiendo a los viejos cada tanto
 
 
 Simples:
 - Crear un modo de rotacion de checkpoints (Solo quedan los X más recientes/otras reglas, los viejos se van eliminando).
-- Permitir exportar a directorio a eleccion
 - Arreglar UI listas (Elementos de tamaño variable y que parpadean)
 - I18n

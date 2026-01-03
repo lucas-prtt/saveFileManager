@@ -109,6 +109,8 @@ public class ObjectStore {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }*/
+        if(!file.exists())
+            return false;
         if(archivo instanceof Carpeta carpeta){
             return carpeta.getNombre().equals(file.getName());
         }
@@ -143,5 +145,19 @@ public class ObjectStore {
                 })
                 .map(File::getName).map(fileName -> fileName.replaceFirst("\\.zst$", ""))
                 .collect(Collectors.toSet());
+    }
+
+    public byte[] loadRaw(Binario binario) throws IOException {
+
+
+        Path objPath = pathFromHash(binario.getHash());
+        if (!Files.exists(objPath)) {
+            throw new FileNotFoundException("Objeto no encontrado: " + binario.getHash());
+        }
+
+        byte[] compressed = Files.readAllBytes(objPath);
+
+        byte[] raw = Zstd.decompress(compressed, (int) binario.getSize());
+        return raw;
     }
 }

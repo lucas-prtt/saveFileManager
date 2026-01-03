@@ -78,9 +78,12 @@ public class TabElegirJuego extends TabWrapper{
         });
         Button btnEliminar = new Button("Eliminar juego");
         btnEliminar.setOnAction(e -> {
-            if(listJuegos.getSelectionModel().getSelectedItem() == null)
-                throw new RuntimeException("No hay ningun juego seleccionado");
-            if(Dialogs.confirmarDoble("Esta seguro que desea eliminar " + listJuegos.getSelectionModel().getSelectedItem().getTitulo()+ "? ", listJuegos.getSelectionModel().getSelectedItem().getTitulo())) {
+            if(listJuegos.getSelectionModel().getSelectedItem() == null){
+                controller.showToast("Seleccione un juego primero");
+                return;
+            }
+
+                if(Dialogs.confirmarDoble("Esta seguro que desea eliminar " + listJuegos.getSelectionModel().getSelectedItem().getTitulo()+ "? ", listJuegos.getSelectionModel().getSelectedItem().getTitulo())) {
                 juegosService.eliminarJuego(listJuegos.getSelectionModel().getSelectedItem());
                 update();
                 System.out.println("Se borro el juego" + listJuegos.getSelectionModel().getSelectedItem().getTitulo() + " - " + listJuegos.getSelectionModel().getSelectedItem().getId());
