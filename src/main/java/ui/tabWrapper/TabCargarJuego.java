@@ -142,7 +142,7 @@ public class TabCargarJuego extends TabWrapper {
             }
         });
 
-        HBox agregarPathBox = new HBox(8, txtNuevoPath, btnElegirCarpeta, btnElegirArchivo, btnAgregarPath);
+        HBox agregarPathBox = new HBox(8, txtNuevoPath, btnElegirArchivo, btnElegirCarpeta, btnAgregarPath);
         agregarPathBox.setStyle("-fx-alignment: center-left;");
 
         /*      Confirmar/Cancelar       */
