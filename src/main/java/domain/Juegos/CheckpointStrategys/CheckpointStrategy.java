@@ -5,9 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import domain.Archivos.checkpoint.ArchivoFinal;
 import domain.Archivos.checkpoint.Carpeta;
 import domain.Juegos.Checkpoint;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
 
 import java.util.List;
 @JsonTypeInfo(
@@ -23,5 +21,8 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class CheckpointStrategy {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     public abstract List<Checkpoint> checkpointsABorrar(List<Checkpoint> checkpoints);
 }

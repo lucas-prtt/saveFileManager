@@ -17,6 +17,11 @@
         <class>domain.Archivos.checkpoint.ArchivoFinal</class>
         <class>domain.Archivos.checkpoint.GrupoDeDatos</class>
         <class>domain.Archivos.juego.Directorio</class>
+        <class>domain.Juegos.CheckpointStrategys.SaveAllCheckpointsStrategy</class>
+        <class>domain.Juegos.CheckpointStrategys.FIFOMaxCheckpointStrategy</class>
+        <class>domain.Juegos.CheckpointStrategys.RandomChanceCheckpointStrategy</class>
+        <class>domain.Juegos.CheckpointStrategys.CheckpointStrategy</class>
+
         <properties>
             <!-- JDBC -->
             <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
