@@ -20,4 +20,14 @@ public class FIFOMaxCheckpointStrategy extends CheckpointStrategy{
     @Override
     public List<Checkpoint> checkpointsABorrar(List<Checkpoint> checkpoints) {
         return checkpoints.subList(0, checkpoints.size() <= maxCheckpoints ? 0 : checkpoints.size()-maxCheckpoints);    }
+
+    @Override
+    public String nombre() {
+        return "Rotación FIFO";
+    }
+
+    @Override
+    public String descripcion() {
+        return "Cuando se alcanza un valor maximo, se elimina el ultimo checkpoint cada vez que se guarda el siguiente. FIFO viene del ingles \"First in, First Out\", pues el primero en entrar es el primero en salir";
+    }
 }

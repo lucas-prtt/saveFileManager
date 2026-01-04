@@ -44,6 +44,17 @@ public class RandomChanceCheckpointStrategy extends CheckpointStrategy{
 
         return aBorrar.stream().toList();
     }
+
+    @Override
+    public String nombre() {
+        return "Random";
+    }
+
+    @Override
+    public String descripcion() {
+        return "Se elimina los checkpoints de manera aleatoria, con mas posibilidades de ser eliminados cuanto mas viejos sean. Se puede definir un máximo de checkpoints a conservar y un minimo de los mas recientes que no se eliminarán";
+    }
+
     private int deleteNumber(){
         return allCheckpointsTailSize + (int) (Math.round(Math.abs(random.nextGaussian(0, (double) maxTailSize / 2))) % (maxTailSize - allCheckpointsTailSize));
                 // Da un numero para usar para borrar entre la cantidad minima que debe estar en tod o momento y el max

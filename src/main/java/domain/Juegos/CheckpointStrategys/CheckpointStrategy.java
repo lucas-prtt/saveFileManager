@@ -25,4 +25,7 @@ public abstract class CheckpointStrategy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     public abstract List<Checkpoint> checkpointsABorrar(List<Checkpoint> checkpoints);
+    public abstract String nombre();
+    public abstract String descripcion();
+
 }

@@ -17,4 +17,14 @@ public class SaveAllCheckpointsStrategy extends CheckpointStrategy{
     public List<Checkpoint> checkpointsABorrar(List<Checkpoint> checkpoints) {
         return List.of();
     }
+
+    @Override
+    public String nombre() {
+        return "Sin rotación";
+    }
+
+    @Override
+    public String descripcion() {
+        return "No se eliminan nunca los checkpoints. Requiere eliminación manual para no acumular espacio indefinidamente";
+    }
 }

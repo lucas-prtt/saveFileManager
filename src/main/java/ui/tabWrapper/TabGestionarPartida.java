@@ -1,6 +1,10 @@
 package ui.tabWrapper;
 
 import domain.Juegos.Checkpoint;
+import domain.Juegos.CheckpointStrategys.CheckpointStrategy;
+import domain.Juegos.CheckpointStrategys.FIFOMaxCheckpointStrategy;
+import domain.Juegos.CheckpointStrategys.RandomChanceCheckpointStrategy;
+import domain.Juegos.CheckpointStrategys.SaveAllCheckpointsStrategy;
 import domain.Juegos.Partida;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -11,6 +15,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import javafx.util.StringConverter;
 import lombok.Getter;
 import servicios.CheckpointService;
 import servicios.PartidaService;
@@ -90,7 +95,10 @@ public class TabGestionarPartida extends TabWrapper{
         Button exportarSeleccionado = new Button("Exportar seleccionado");
         exportarSeleccionado.setOnAction(e -> exportarCheckpointSeleccionado());
 
-        HBox acciones = new HBox(10, guardarBtn, cargarUltimoBtn, cargarBtn, eliminarBtn, exportarSeleccionado);
+        Button rotacion = new Button("Modificar algoritmo de rotación");
+        rotacion.setOnAction(e -> verMenuEstrategiaCheckpoints());
+
+        HBox acciones = new HBox(10, guardarBtn, cargarUltimoBtn, cargarBtn, eliminarBtn, exportarSeleccionado, rotacion);
 
         VBox content = new VBox(10,superTitulo, titulo, checkpointList, acciones);
         content.setPadding(new Insets(10));
@@ -202,6 +210,135 @@ public class TabGestionarPartida extends TabWrapper{
             refrescarCheckpoints();
         }
     }
+    private void verMenuEstrategiaCheckpoints() {
+        Dialog<CheckpointStrategy> dialog = new Dialog<>();
+        dialog.setTitle("Configuración de Checkpoints");
+        dialog.getDialogPane().setMinWidth(500);
+        dialog.getDialogPane().setMinHeight(400);
+        dialog.getDialogPane().setStyle("-fx-background-color: #1e1e2e;");
+        dialog.getDialogPane().setPadding(new Insets(20));
+
+        ButtonType okButtonType = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
+
+        CheckpointStrategy estrategiaActual = partida.getCheckpointStrategy();
+        ComboBox<CheckpointStrategy> comboBox = new ComboBox<>();
+        comboBox.getItems().addAll(new SaveAllCheckpointsStrategy(), new FIFOMaxCheckpointStrategy(), new RandomChanceCheckpointStrategy());
+
+        comboBox.setStyle("-fx-background-color: #2f2f46; -fx-border-color: #4a6cff; -fx-border-radius: 5; -fx-text-fill: white; -fx-min-height: 45px;");
+        comboBox.setMaxWidth(Double.MAX_VALUE);
+
+        comboBox.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(CheckpointStrategy item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) { setGraphic(null); }
+                else {
+                    Label n = new Label(item.nombre()); n.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+                    Label d = new Label(item.descripcion()); d.setStyle("-fx-text-fill: #a0a0b8; -fx-font-size: 11px;");
+                    setGraphic(new VBox(2, n, d));
+                }
+                setStyle("-fx-background-color: #2f2f46; -fx-border-color: #3f3f5a; -fx-border-width: 0 0 1 0;");
+            }
+        });
+        comboBox.setButtonCell(comboBox.getCellFactory().call(null));
+
+        VBox camposDinamicos = new VBox(15);
+        String labelStyle = "-fx-text-fill: #4a6cff; -fx-font-weight: bold; -fx-font-size: 11px;";
+
+        comboBox.setOnAction(e -> {
+            camposDinamicos.getChildren().clear();
+            CheckpointStrategy selected = comboBox.getValue();
+
+            if (selected instanceof FIFOMaxCheckpointStrategy fifoSelected) {
+                int val = (estrategiaActual instanceof FIFOMaxCheckpointStrategy f) ? f.getMaxCheckpoints() : fifoSelected.getMaxCheckpoints();
+
+                Spinner<Integer> sp = crearSpinnerEditable(1, 1000, val);
+                Label lbl = new Label("LÍMITE DE CHECKPOINTS:");
+                lbl.setStyle(labelStyle);
+
+                camposDinamicos.getChildren().add(new VBox(5, lbl, sp));
+
+                dialog.setResultConverter(btn -> {
+                    if (btn == okButtonType) {
+                        commitSpinnerValue(sp);
+                        fifoSelected.setMaxCheckpoints(sp.getValue());
+                        return fifoSelected;
+                    }
+                    return null;
+                });
+
+            } else if (selected instanceof RandomChanceCheckpointStrategy randSelected) {
+                int valMax = (estrategiaActual instanceof RandomChanceCheckpointStrategy r) ? r.getMaxTailSize() : randSelected.getMaxTailSize();
+                int valSafe = (estrategiaActual instanceof RandomChanceCheckpointStrategy r) ? r.getAllCheckpointsTailSize() : randSelected.getAllCheckpointsTailSize();
+
+                Spinner<Integer> spMax = crearSpinnerEditable(5, 1000, valMax);
+                Spinner<Integer> spSafe = crearSpinnerEditable(2, 1000, valSafe);
+
+                Label l1 = new Label("CHECKPOINTS RECIENTES (SEGUROS):"); l1.setStyle(labelStyle);
+                Label l2 = new Label("CAPACIDAD MÁXIMA TOTAL:"); l2.setStyle(labelStyle);
+
+                camposDinamicos.getChildren().addAll(new VBox(5, l1, spSafe), new VBox(5, l2, spMax));
+
+                dialog.setResultConverter(btn -> {
+                    if (btn == okButtonType) {
+                        commitSpinnerValue(spMax);
+                        commitSpinnerValue(spSafe);
+                        randSelected.setMaxTailSize(spMax.getValue());
+                        randSelected.setAllCheckpointsTailSize(spSafe.getValue());
+                        return randSelected;
+                    }
+                    return null;
+                });
+            } else {
+                dialog.setResultConverter(btn -> btn == okButtonType ? selected : null);
+            }
+        });
+
+        comboBox.getItems().stream()
+                .filter(i -> i.getClass().equals(estrategiaActual.getClass()))
+                .findFirst().ifPresent(comboBox::setValue);
+
+        Label tituloSecundario = new Label("ESTRATEGIA DE ROTACIÓN");
+        tituloSecundario.setStyle("-fx-text-fill: #8888aa; -fx-font-weight: bold;");
+
+        VBox layoutPrincipal = new VBox(10, tituloSecundario, comboBox, camposDinamicos);
+        dialog.getDialogPane().setContent(layoutPrincipal);
+        comboBox.getOnAction().handle(null);
+
+        dialog.showAndWait().ifPresent(strategy -> partidaService.modificarCheckpointStrategy(partida, strategy));
+    }
+
+    private Spinner<Integer> crearSpinnerEditable(int min, int max, int init) {
+        Spinner<Integer> spinner = new Spinner<>(min, max, init);
+        spinner.setEditable(true);
+        spinner.setMaxWidth(Double.MAX_VALUE);
+        spinner.setStyle("-fx-background-color: #2f2f46; -fx-border-color: #4a6cff; -fx-border-radius: 5;");
+        spinner.getEditor().setStyle("-fx-background-color: #2f2f46; -fx-text-fill: white; -fx-font-size: 14px;");
+
+        spinner.getEditor().focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal) commitSpinnerValue(spinner);
+        });
+        return spinner;
+    }
+
+    private <T> void commitSpinnerValue(Spinner<T> spinner) {
+        if (!spinner.isEditable()) return;
+        String text = spinner.getEditor().getText();
+        SpinnerValueFactory<T> valueFactory = spinner.getValueFactory();
+        if (valueFactory != null) {
+            StringConverter<T> converter = valueFactory.getConverter();
+            if (converter != null) {
+                try {
+                    T value = converter.fromString(text);
+                    valueFactory.setValue(value);
+                } catch (Exception e) {
+                    spinner.getEditor().setText(converter.toString(valueFactory.getValue()));
+                }
+            }
+        }
+    }
+
     @Override
     public String getName() {
         return partida.getJuego().getTitulo() + "  -  " +  partida.getTitulo();
