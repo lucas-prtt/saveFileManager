@@ -1,8 +1,6 @@
 package domain.Juegos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import domain.Juegos.CheckpointStrategys.CheckpointStrategy;
-import domain.Juegos.CheckpointStrategys.FIFOMaxCheckpointStrategy;
-import domain.Juegos.CheckpointStrategys.RandomChanceCheckpointStrategy;
 import domain.Juegos.CheckpointStrategys.SaveAllCheckpointsStrategy;
 import jakarta.persistence.*;
 import lombok.Getter;

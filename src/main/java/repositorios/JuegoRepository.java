@@ -2,9 +2,7 @@ package repositorios;
 
 import domain.Juegos.Juego;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import utils.EntityManagerProvider;
-import utils.JpaUtil;
 import utils.Tx;
 
 import java.util.List;

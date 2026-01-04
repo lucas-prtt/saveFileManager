@@ -92,11 +92,11 @@ public class JuegosService {
             directoriosEliminados.forEach(archivoService::eliminarDatosDeDirectorio);
             juegoBD.getSaveFilePaths().removeIf(
                     d -> nuevosDirectorios.stream()
-                            .noneMatch(p -> p.equals(d.getPathPrincipal()))
+                            .noneMatch(p -> p.getPathPrincipal().equals(d.getPathPrincipal()))
             );
             nuevosDirectorios.stream()
                     .filter(p -> juegoBD.getSaveFilePaths().stream()
-                            .noneMatch(d -> d.getPathPrincipal().equals(p)))
+                            .noneMatch(d -> d.getPathPrincipal().equals(p.getPathPrincipal())))
                     .forEach(juegoBD::agregarDirectorio);
         });
 

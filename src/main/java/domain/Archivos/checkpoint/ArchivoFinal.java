@@ -1,13 +1,7 @@
 package domain.Archivos.checkpoint;
 
-import domain.Archivos.ObjectStore;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.*;
-import lprtt.ApplicationContext;
-import org.hibernate.annotations.OnDelete;
-import repositorios.ArchivoRepository;
-import utils.Tx;
 
 import java.util.List;
 

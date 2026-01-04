@@ -1,19 +1,15 @@
 package repositorios;
 
-import domain.Archivos.checkpoint.ArchivoFinal;
 import domain.Archivos.checkpoint.Binario;
 import domain.Archivos.checkpoint.GrupoDeDatos;
 import domain.Archivos.juego.Directorio;
 import domain.Juegos.Checkpoint;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
 import utils.EntityManagerProvider;
 import utils.Tx;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ArchivoRepository {
 

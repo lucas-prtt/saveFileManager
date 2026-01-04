@@ -2,8 +2,6 @@ package domain.Juegos.CheckpointStrategys;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import domain.Archivos.checkpoint.ArchivoFinal;
-import domain.Archivos.checkpoint.Carpeta;
 import domain.Juegos.Checkpoint;
 import jakarta.persistence.*;
 

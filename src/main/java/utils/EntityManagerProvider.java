@@ -1,7 +1,6 @@
 package utils;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 
 public class EntityManagerProvider {
     private static ThreadLocal<EntityManager> entityManagerThreadLocal = new ThreadLocal<>();

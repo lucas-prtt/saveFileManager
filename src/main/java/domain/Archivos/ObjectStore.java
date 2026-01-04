@@ -8,7 +8,6 @@ import domain.Archivos.checkpoint.Carpeta;
 import domain.Exceptions.ArchivoYaExisteException;
 import servicios.DirectorySecurity;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
