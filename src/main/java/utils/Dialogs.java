@@ -3,8 +3,16 @@ package utils;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
+import lprtt.ApplicationContext;
 
+import java.io.File;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.util.Optional;
 
 public class Dialogs {
@@ -44,13 +52,13 @@ public class Dialogs {
         return confirmar(mensaje) && confirmarEscribirTexto(texto);
     }
 
-    public static Optional<String> inputText(String titulo, String mensaje) {
+    public static Optional<String> inputText(String titulo, String mensaje, String defaultText) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle(titulo);
         dialog.setHeaderText(mensaje);
 
         TextField textField = new TextField();
-        textField.setPromptText("...");
+        textField.setPromptText(defaultText);
 
         VBox box = new VBox(10);
         box.getChildren().add(textField);
@@ -63,6 +71,68 @@ public class Dialogs {
         dialog.setResultConverter((b) -> {
             if(b.equals(aceptar)){
                 return textField.getText();
+            }
+            else return null;
+        });
+        return dialog.showAndWait();
+    }
+    public static Optional<Path> inputDirectory(String titulo, String mensaje, Path defaultText) {
+        Dialog<Path> dialog = new Dialog<>();
+        dialog.setTitle(titulo);
+        dialog.setHeaderText(mensaje);
+
+        TextField textField = new TextField();
+        textField.setPromptText(defaultText.toString());
+
+        Button btnElegirCarpeta = new Button("📁");
+        btnElegirCarpeta.setTooltip(new Tooltip("Elegir carpeta"));
+        btnElegirCarpeta.setCursor(javafx.scene.Cursor.HAND);
+        btnElegirCarpeta.setOnAction(e -> {
+            DirectoryChooser chooser = new DirectoryChooser();
+            chooser.setTitle("Seleccionar carpeta de guardado");
+
+            Window window = textField.getScene().getWindow();
+
+            File selectedDir = chooser.showDialog(window);
+            if (selectedDir != null) {
+                textField.setText(selectedDir.getAbsolutePath());
+            }
+        });
+        Button btnElegirArchivo = new Button("📄");
+        btnElegirArchivo.setTooltip(new Tooltip("Elegir archivo"));
+        btnElegirArchivo.setCursor(javafx.scene.Cursor.HAND);
+        btnElegirArchivo.setOnAction(e -> {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Seleccionar archivo de guardado");
+
+            Window window = textField.getScene().getWindow();
+
+            File selectedDir = chooser.showOpenDialog(window);
+            if (selectedDir != null) {
+                textField.setText(selectedDir.getAbsolutePath());
+            }
+        });
+        HBox textFieldBox = new HBox(textField, btnElegirArchivo, btnElegirCarpeta);
+
+
+
+
+        VBox box = new VBox(10);
+        box.getChildren().add(textFieldBox);
+        box.setPadding(new Insets(10));
+        dialog.getDialogPane().setContent(box);
+
+        ButtonType aceptar = new ButtonType("Aceptar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType rechazar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(aceptar, rechazar);
+        dialog.setResultConverter((b) -> {
+            if(b.equals(aceptar)){
+                try {
+                    return Path.of(textField.getText());
+                }catch (InvalidPathException e){
+                    ApplicationContext.getMainController().showToast("Directorio invalido");
+                    return null;
+                }
             }
             else return null;
         });

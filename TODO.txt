@@ -8,5 +8,4 @@ Complejas:
 
 
 Simples:
-- Arreglar UI listas (Elementos de tamaño variable y que parpadean, parece que es por instanciar VBox cada vez que se updatea)
 - I18n

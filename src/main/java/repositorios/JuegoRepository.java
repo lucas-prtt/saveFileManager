@@ -1,5 +1,6 @@
 package repositorios;
 
+import domain.Archivos.juego.Directorio;
 import domain.Juegos.Juego;
 import jakarta.persistence.EntityManager;
 import utils.EntityManagerProvider;
@@ -45,6 +46,23 @@ public class JuegoRepository {
             }catch (Exception e){
                 throw e;
             }
+        });
+    }
+
+    public Optional<Directorio> findDirectorioById(String id) {
+        return Tx.run(() -> {
+            try {
+                Directorio directorio = em().find(Directorio.class, id);
+                return Optional.ofNullable(directorio);
+            }catch (Exception e){
+                throw e;
+            }
+        });
+    }
+
+    public void saveDirectorio(Directorio directorioBD) {
+        Tx.runVoid(()->{
+            em().merge(directorioBD);
         });
     }
 }

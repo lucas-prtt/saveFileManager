@@ -6,8 +6,10 @@ import domain.Juegos.Juego;
 import domain.Juegos.Partida;
 import org.hibernate.Hibernate;
 import repositorios.JuegoRepository;
+import utils.Dialogs;
 import utils.Tx;
 
+import java.nio.file.Path;
 import java.util.*;
 
 public class JuegosService {
@@ -98,6 +100,15 @@ public class JuegosService {
                     .filter(p -> juegoBD.getSaveFilePaths().stream()
                             .noneMatch(d -> d.getPathPrincipal().equals(p.getPathPrincipal())))
                     .forEach(juegoBD::agregarDirectorio);
+        });
+
+    }
+
+    public void modificarDirectorio(Directorio directorio, Path nuevoPath) {
+        Tx.runVoid(() -> {
+            Directorio directorioBD = juegoRepository.findDirectorioById(directorio.getId()).orElseThrow();
+            directorioBD.setPathPrincipal(nuevoPath);
+            juegoRepository.saveDirectorio(directorioBD);
         });
 
     }

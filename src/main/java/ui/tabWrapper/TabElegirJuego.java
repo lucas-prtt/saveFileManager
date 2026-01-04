@@ -141,6 +141,7 @@ public class TabElegirJuego extends TabWrapper{
         listPaths.setCellFactory(lv -> new ListCell<>() {
             private final Label lblPath = new Label();
             private final Button btnEliminar = new Button("✖");
+            private final Button btnEditar = new Button("✎");
             private final Region spacer = new Region();
             private final HBox content = new HBox(10);
 
@@ -155,7 +156,21 @@ public class TabElegirJuego extends TabWrapper{
                         listPaths.getItems().remove(item);
                     }
                 });
-                content.getChildren().addAll(lblPath, spacer, btnEliminar);
+                btnEditar.getStyleClass().add("icon-button");
+
+                btnEditar.setOnAction(e -> {
+                    Directorio item = getItem();
+                    if(item != null){
+                        Dialogs.inputDirectory("Editar directorio", "Ingrese el nuevo directorio", item.getPathPrincipal()).ifPresent( path ->
+                                {
+                                    item.setPathPrincipal(path);
+                                    juegosService.modificarDirectorio(item, path);
+                                    listPaths.refresh();
+                                }
+                        );
+                    }
+                });
+                content.getChildren().addAll(lblPath, spacer, btnEditar, btnEliminar);
                 content.getStyleClass().add("path-row");
             }
 

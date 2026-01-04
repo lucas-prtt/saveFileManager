@@ -126,7 +126,7 @@ public class TabGestionarJuego extends TabWrapper {
                 controller.showToast("Seleccione una partida ya creada");
                 return;
             }
-            Optional<String> nuevoTitulo = Dialogs.inputText("Partida " + p.getTitulo(), "Elija el nuevo nombre para la partida");
+            Optional<String> nuevoTitulo = Dialogs.inputText("Partida " + p.getTitulo(), "Elija el nuevo nombre para la partida", "...");
             if(nuevoTitulo.isEmpty()){
                 return;
             }
