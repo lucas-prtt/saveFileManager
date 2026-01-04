@@ -1,0 +1,27 @@
+package domain.Juegos.CheckpointStrategys;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import domain.Archivos.checkpoint.ArchivoFinal;
+import domain.Archivos.checkpoint.Carpeta;
+import domain.Juegos.Checkpoint;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+
+import java.util.List;
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "tipo"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = RandomChanceCheckpointStrategy.class, name = "random"),
+        @JsonSubTypes.Type(value = FIFOMaxCheckpointStrategy.class, name = "fifo"),
+        @JsonSubTypes.Type(value = SaveAllCheckpointsStrategy.class, name = "safe")
+})
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public abstract class CheckpointStrategy {
+    public abstract List<Checkpoint> checkpointsABorrar(List<Checkpoint> checkpoints);
+}
