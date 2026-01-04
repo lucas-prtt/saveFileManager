@@ -6,7 +6,7 @@ Complejas:
 - Permitir Transmitir checkpoints por red
 
 
+
 Simples:
-- Crear un modo de rotacion de checkpoints (Solo quedan los X más recientes/otras reglas, los viejos se van eliminando).
-- Arreglar UI listas (Elementos de tamaño variable y que parpadean)
+- Arreglar UI listas (Elementos de tamaño variable y que parpadean, parece que es por instanciar VBox cada vez que se updatea)
 - I18n
