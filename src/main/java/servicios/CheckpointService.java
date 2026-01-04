@@ -59,6 +59,16 @@ public class CheckpointService {
                     // Se crea un checkpoint con los archivos obtenidos. Si falla crear le checkpoint, los usos quedan en 0 y los archivos se eliminan
                 }
         );
+        Tx.runVoid( () ->
+                {
+                    Partida partidaBD = partidaService.obtenerPartida(partida.getId()).orElseThrow();
+                    List<Checkpoint> checkpointsABorrar = new ArrayList<> (partidaBD.getCheckpointStrategy().checkpointsABorrar(partidaBD.getCheckpoints()));
+                    checkpointsABorrar.forEach((c)->{
+                        partidaBD.eliminarCheckpointById(c.getId());
+                    });
+                }
+        );
+
         archivoService.eliminarArchivosHuerfanos(); // Si alguno quedo sin asociar se elimina
     }
     public void eliminarCheckpoint(Checkpoint checkpoint) throws ResourceNotFoundException{

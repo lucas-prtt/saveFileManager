@@ -17,30 +17,35 @@ public class RandomChanceCheckpointStrategy extends CheckpointStrategy{
     Integer maxDeletionAttemptsPerExecution = 5;
     Random random = new Random();
 
+    public RandomChanceCheckpointStrategy(Integer maxTailSize, Integer allCheckpointsTailSize, Integer maxDeletionAttemptsPerExecution){
+        this.maxTailSize = maxTailSize;
+        this.allCheckpointsTailSize = allCheckpointsTailSize;
+        this.maxDeletionAttemptsPerExecution = maxDeletionAttemptsPerExecution;
+    }
+
     @Override
     public List<Checkpoint> checkpointsABorrar(List<Checkpoint> checkpoints) {
         Set<Checkpoint> aBorrar = new HashSet<>();
 
-        int total = checkpoints.size();
 
 
         int startIndex = allCheckpointsTailSize;
-        int exceso = total - maxTailSize;
+        int exceso = checkpoints.size() - maxTailSize;
         int deletionAttempts = 0;
-        while (exceso>0 || deletionAttempts < maxDeletionAttemptsPerExecution){
+        while (exceso>0 && deletionAttempts < maxDeletionAttemptsPerExecution){
             int deleteNumber = deleteNumber();
             deletionAttempts++;
-            if(checkpoints.size() >= deleteNumber) {
+            if(checkpoints.size() <= deleteNumber) {
                 continue;
             }
-            aBorrar.add(checkpoints.get(deleteNumber()));
+            aBorrar.add(checkpoints.get(deleteNumber));
             exceso--;
         }
 
         return aBorrar.stream().toList();
     }
     private int deleteNumber(){
-        return (int) (allCheckpointsTailSize + Math.abs(random.nextGaussian(0, (double) maxTailSize /2)) % (maxTailSize-allCheckpointsTailSize));
-        // Da un numero para usar para borrar entre la cantidad minima que debe estar en tod o momento y el max
+        return allCheckpointsTailSize + (int) (Math.round(Math.abs(random.nextGaussian(0, (double) maxTailSize / 2))) % (maxTailSize - allCheckpointsTailSize));
+                // Da un numero para usar para borrar entre la cantidad minima que debe estar en tod o momento y el max
     }
 }

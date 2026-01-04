@@ -14,8 +14,10 @@ import java.util.List;
 public class FIFOMaxCheckpointStrategy extends CheckpointStrategy{
     Integer maxCheckpoints = 10;
 
+    public FIFOMaxCheckpointStrategy(Integer maxCheckpoints){
+        this.maxCheckpoints = maxCheckpoints;
+    }
     @Override
     public List<Checkpoint> checkpointsABorrar(List<Checkpoint> checkpoints) {
-        return checkpoints.subList(checkpoints.size()-maxCheckpoints-1, checkpoints.size()-1);
-    }
+        return checkpoints.subList(0, checkpoints.size() <= maxCheckpoints ? 0 : checkpoints.size()-maxCheckpoints);    }
 }

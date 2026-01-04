@@ -1,6 +1,7 @@
 package servicios;
 
 import domain.Juegos.Checkpoint;
+import domain.Juegos.CheckpointStrategys.CheckpointStrategy;
 import domain.Juegos.Juego;
 import domain.Juegos.Partida;
 import org.hibernate.Hibernate;
@@ -52,6 +53,12 @@ public class PartidaService {
         Partida partidaBD = partidaRepository.findById(p.getId()).orElseThrow();
         String tituloAInsertar = nuevoTitulo.orElseThrow().isBlank()?"Sin titulo" : nuevoTitulo.get();
         partidaBD.setTitulo(tituloAInsertar);
+        });
+    }
+    public void modificarCheckpointStrategy(Partida p, CheckpointStrategy checkpointStrategy) {
+        Tx.runVoid(()->{
+            Partida partidaBD = partidaRepository.findById(p.getId()).orElseThrow();
+            partidaBD.setCheckpointStrategy(checkpointStrategy);
         });
     }
 }

@@ -14,12 +14,12 @@ import java.util.List;
         property = "tipo"
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = RandomChanceCheckpointStrategy.class, name = "random"),
+        @JsonSubTypes.Type(value = RandomChanceCheckpointStrategy.class, name = "rand"),
         @JsonSubTypes.Type(value = FIFOMaxCheckpointStrategy.class, name = "fifo"),
         @JsonSubTypes.Type(value = SaveAllCheckpointsStrategy.class, name = "safe")
 })
-@Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Entity
 public abstract class CheckpointStrategy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,9 @@
 package domain.Juegos;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import domain.Juegos.CheckpointStrategys.CheckpointStrategy;
+import domain.Juegos.CheckpointStrategys.FIFOMaxCheckpointStrategy;
+import domain.Juegos.CheckpointStrategys.RandomChanceCheckpointStrategy;
+import domain.Juegos.CheckpointStrategys.SaveAllCheckpointsStrategy;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +27,8 @@ public class Partida {
     @JoinColumn(name="juego_id")
     @Setter
     Juego juego;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    CheckpointStrategy checkpointStrategy = new SaveAllCheckpointsStrategy();
 
     public Partida(String titulo) {
         this.titulo = titulo;
