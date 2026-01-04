@@ -76,33 +76,14 @@ public class Checkpoint {
         return String.format(" (Checkpoint) { fechaDeCreacion:%s, id: %s } ", fechaDeCreacion, id);
     }
 
-    public VBox listRepresentation() {
-        Label nombreLabel = new Label(
-                nombre != null ? nombre : ""
-        );
-        nombreLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
-
-
-
-        Label fechaLabel = new Label(
-                fechaDeCreacion != null
-                        ? fechaDeCreacion.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                        : ""
-        );
-        fechaLabel.setStyle(" -fx-font-size: 14 px;");
-        Region espacio = new Region();
-        HBox.setHgrow(espacio, Priority.ALWAYS);
-        HBox nombreHBox = new HBox(1, fechaLabel, espacio, nombreLabel);
-        Label descripcionLabel = new Label(
-                descripcion != null ? descripcion : "Sin descripción"
-        );
-        descripcionLabel.setWrapText(true);
-        descripcionLabel.setStyle("-fx-text-fill: gray; -fx-font-weight: bold; -fx-font-size: 11 px;");
-        VBox box = new VBox(2, nombreHBox, descripcionLabel);
-        box.setPadding(new Insets(5));
-        descripcionLabel.maxWidthProperty().bind(box.widthProperty().subtract(20));
-        descripcionLabel.setWrapText(true);
-
-        return box;
+    public String nombreLabelText(){
+        return nombre != null ? nombre : "";
     }
+    public String fechaLabelText(){
+        return fechaDeCreacion != null ? fechaDeCreacion.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : "";
+    }
+    public String descripcionLabelText(){
+        return descripcion != null ? descripcion : "Sin descripción";
+    }
+
 }

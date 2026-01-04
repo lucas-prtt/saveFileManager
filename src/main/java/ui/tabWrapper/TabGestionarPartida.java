@@ -22,6 +22,7 @@ import utils.Dialogs;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.time.format.DateTimeFormatter;
 
 public class TabGestionarPartida extends TabWrapper{
     private CheckpointService checkpointService;
@@ -61,18 +62,52 @@ public class TabGestionarPartida extends TabWrapper{
         checkpointList = new ListView<>();
         checkpointList.setCellFactory(lv -> new ListCell<>(){
 
-            private final HBox content = new HBox(10);
+            private final Label nombreLabel = new Label();
+            private final Label fechaLabel = new Label();
+            private final Label descripcionLabel = new Label();
+            private final Region espacio = new Region();
+            private final HBox nombreHBox = new HBox(1, fechaLabel, espacio, nombreLabel);
+            private final VBox box = new VBox(2, nombreHBox, descripcionLabel);
+            private final HBox content = new HBox(10, box);
+
             {
+                nombreLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+                fechaLabel.setStyle(" -fx-font-size: 14px;");
+                HBox.setHgrow(espacio, Priority.ALWAYS);
+                descripcionLabel.setStyle("-fx-text-fill: gray; -fx-font-weight: bold; -fx-font-size: 11px;");
+                descripcionLabel.setWrapText(true);
+                descripcionLabel.setMaxWidth(Double.MAX_VALUE);
+                setPrefWidth(USE_COMPUTED_SIZE);
+
+                box.setFillWidth(true);
+                nombreHBox.setMaxWidth(Double.MAX_VALUE);
+                HBox.setHgrow(nombreHBox, Priority.ALWAYS);
+
+
+                box.setPadding(new Insets(5));
+                box.setMaxWidth(Double.MAX_VALUE);
+                VBox.setVgrow(descripcionLabel, Priority.ALWAYS);
+                //descripcionLabel.maxWidthProperty().bind(box.widthProperty().subtract(20));
+                descripcionLabel.setWrapText(true);
+                descripcionLabel.prefWidthProperty().bind(
+                        content.widthProperty()
+                );
                 HBox.setHgrow(content, Priority.ALWAYS);
+                content.prefWidthProperty().bind(widthProperty().subtract(30));
+
             }
             @Override
             protected void updateItem(Checkpoint item, boolean empty) {
                 super.updateItem(item, empty);
-
                 if (empty || item == null) {
                     setGraphic(null);
+                    setText(null);
                 } else {
-                    setGraphic(item.listRepresentation());
+                    nombreLabel.setText(item.nombreLabelText());
+                    descripcionLabel.setText(item.descripcionLabelText());
+                    fechaLabel.setText(item.fechaLabelText());
+                    setGraphic(content);
+                    setText(null);
                 }
             }
         } );
