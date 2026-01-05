@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 import ui.MainController;
+import utils.Buttons;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -35,7 +36,7 @@ public class TabSettings extends TabWrapper{
         labelOpciones.setText("Configuración: Que directorios puede modificar el programa?");
         labelOpciones.getStyleClass().add("inicio-title");
 
-        card.getChildren().addAll(labelOpciones, whiteList(), blackList(), botonOverride());
+        card.getChildren().addAll(labelOpciones, whiteList(), blackList(), botonOverride(), botonDeleteFiles(), botonMaximoTamañoArchivo());
         content.getChildren().add(card);
         return content;
     }
@@ -210,21 +211,13 @@ public class TabSettings extends TabWrapper{
         return directorySecurity.isWhitelistOverridesBlackList() ? "(Se permite modificar directorios que estén en ambas listas)" : "(No se permite modificar directorios que estén en ambas listas)";
     }
     public HBox botonOverride(){
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        HBox content = new HBox(5);
-        Label label = new Label(whiteListOverridesBlackListText());
-
-        CheckBox check = new CheckBox("Whitelist toma prioridad sobre blacklist");
-        check.setSelected(directorySecurity.isWhitelistOverridesBlackList());
-        check.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            directorySecurity.setWhitelistOverridesBlackList(newVal);
-            label.setText(whiteListOverridesBlackListText());
-        });
-        content.setPadding(new Insets(5));
-        content.getChildren().addAll(check, spacer, label);
-        return content;
+        return Buttons.checkBox("Whitelist toma prioridad sobre blacklist", this::whiteListOverridesBlackListText, directorySecurity::isWhitelistOverridesBlackList, directorySecurity::setWhitelistOverridesBlackList);
+    }
+    public HBox botonDeleteFiles(){
+        return Buttons.checkBox("Cargar checkpoints elimina archivos", () -> directorySecurity.isDeleteFilesNotInCheckpoint() == true ? "(Los archivos del directorio de guardado que no esten en el checkpoint seran eliminados)" : "(No se eliminarán archivos al cargar el checkpoint)", directorySecurity::isDeleteFilesNotInCheckpoint, directorySecurity::setDeleteFilesNotInCheckpoint);
+    }
+    public HBox botonMaximoTamañoArchivo(){
+        return Buttons.fileSizeField("Tamaño maximo de checkpoint", directorySecurity::getMaxCheckpointSizeInBytes, directorySecurity::setMaxCheckpointSizeInBytes);
     }
 
     @Override

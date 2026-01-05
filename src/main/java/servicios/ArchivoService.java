@@ -3,6 +3,8 @@ import domain.Archivos.ObjectStore;
 import domain.Archivos.checkpoint.*;
 import domain.Archivos.juego.Directorio;
 import domain.Exceptions.ArchivoYaExisteException;
+import domain.Exceptions.CheckpointTooBigException;
+import domain.Juegos.Checkpoint;
 import domain.Juegos.Juego;
 import repositorios.ArchivoRepository;
 import utils.Tx;
@@ -90,7 +92,8 @@ public class ArchivoService {
     }
 
     public void purgar(Path carpeta, List<Archivo> archivos) {
-
+        if(!directorySecurity.isDeleteFilesNotInCheckpoint())
+            return;
         directorySecurity.validarRuta(carpeta);
         if(Files.isDirectory(carpeta)){
             try {
@@ -116,7 +119,10 @@ public class ArchivoService {
         System.out.println("Leyendo archivos de:");
         juego.getSaveFilePaths()
                 .forEach(d -> System.out.println(d.getPathPrincipal()));
-
+        long size = checkpointSize(juego);
+        System.out.println("Tamaño de los archivos: " + size);
+        if(size > directorySecurity.getMaxCheckpointSizeInBytes())
+            throw new CheckpointTooBigException(size, directorySecurity.getMaxCheckpointSizeInBytes());
         return juego.getSaveFilePaths().stream()
                 .map(dir -> {
                     try {
@@ -126,6 +132,31 @@ public class ArchivoService {
                     }
                 })
                 .toList();
+    }
+
+    private long checkpointSize(Juego juego){
+        return juego.getSaveFilePaths().stream().mapToLong(directorio -> directorySize(directorio.getPathPrincipal())).sum();
+    }
+    private long directorySize(Path path){
+        return directorySize(path.toFile());
+    }
+
+    private long directorySize(File file){
+        long sizeInBytes = 0;
+        directorySecurity.validarRuta(Path.of(file.getPath()));
+        if (file.isFile()) {
+            return file.length();
+        }
+        if (Files.isDirectory(file.toPath(), LinkOption.NOFOLLOW_LINKS)) {
+            File[] files = file.listFiles();
+            if (files == null) return 0;
+            for (File file2 : files) {
+                if (!Files.isSymbolicLink(file2.toPath())) {
+                    sizeInBytes += directorySize(file2);
+                }
+            }
+        }
+        return sizeInBytes;
     }
 
     private  List<Archivo> crearArchivos(Path path)

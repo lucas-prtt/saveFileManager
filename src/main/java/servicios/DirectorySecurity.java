@@ -11,15 +11,26 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 @Getter
-@Setter
 public class DirectorySecurity {
     private final Path configFile = Paths.get("data/directorySecurity.json");
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Set<Path> whitelist = new HashSet<>();
     private final Set<Path> blacklist = new HashSet<>();
-    private boolean whitelistOverridesBlackList = true;
+    private boolean whitelistOverridesBlackList;
+    private boolean deleteFilesNotInCheckpoint;
+    private long maxCheckpointSizeInBytes;
     public DirectorySecurity() {
         loadConfig();
+    }
+
+    public void setMaxCheckpointSizeInBytes(long maxCheckpointSizeInBytes){
+        this.maxCheckpointSizeInBytes = maxCheckpointSizeInBytes;
+        saveConfig();
+    }
+
+    public void setDeleteFilesNotInCheckpoint(boolean deleteFilesNotInCheckpoint){
+        this.deleteFilesNotInCheckpoint = deleteFilesNotInCheckpoint;
+        saveConfig();
     }
 
     public void setWhitelistOverridesBlackList(boolean whitelistOverridesBlackList) {
@@ -105,7 +116,8 @@ public class DirectorySecurity {
         whitelist.clear();
         blacklist.clear();
         whitelistOverridesBlackList = data.whitelistOverridesBlackList;
-
+        deleteFilesNotInCheckpoint = data.deleteFilesNoInCheckpoint;
+        maxCheckpointSizeInBytes = data.maxCheckpointSizeInBytes;
         data.whitelist.forEach(p -> whitelist.add(Paths.get(p).toAbsolutePath().normalize()));
         data.blacklist.forEach(p -> blacklist.add(Paths.get(p).toAbsolutePath().normalize()));
         System.out.println("Config cargada de " + configFile.toAbsolutePath().toString());
@@ -116,6 +128,8 @@ public class DirectorySecurity {
         try {
             ConfigData data = new ConfigData();
             data.whitelistOverridesBlackList = whitelistOverridesBlackList;
+            data.deleteFilesNoInCheckpoint = deleteFilesNotInCheckpoint;
+            data.maxCheckpointSizeInBytes = maxCheckpointSizeInBytes;
             whitelist.forEach(p -> data.whitelist.add(p.toAbsolutePath().normalize().toString()));
             blacklist.forEach(p -> data.blacklist.add(p.toAbsolutePath().normalize().toString()));
 
@@ -147,11 +161,15 @@ public class DirectorySecurity {
             blacklist.add(Paths.get("/home"));
         }
         whitelistOverridesBlackList=true;
+        deleteFilesNotInCheckpoint=false;
+        maxCheckpointSizeInBytes = 1024 * 1024 * 32; // 32Mb
     }
 
     private static class ConfigData {
         public Set<String> whitelist = new HashSet<>();
         public Set<String> blacklist = new HashSet<>();
-        public boolean whitelistOverridesBlackList = true;
+        public boolean whitelistOverridesBlackList;
+        public boolean deleteFilesNoInCheckpoint;
+        public long maxCheckpointSizeInBytes;
     }
 }

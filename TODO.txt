@@ -1,11 +1,5 @@
 
 Cosas para hacer:
 
-Complejas:
-- Completar sistema de sinonimos de paths y paths "inteligentes"
 - Permitir Transmitir checkpoints por red
-
-
-
-Simples:
 - I18n

@@ -23,6 +23,7 @@ import utils.Dialogs;
 import java.io.File;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 public class TabGestionarPartida extends TabWrapper{
     private CheckpointService checkpointService;
@@ -338,8 +339,14 @@ public class TabGestionarPartida extends TabWrapper{
         VBox layoutPrincipal = new VBox(10, tituloSecundario, comboBox, camposDinamicos);
         dialog.getDialogPane().setContent(layoutPrincipal);
         comboBox.getOnAction().handle(null);
-
-        dialog.showAndWait().ifPresent(strategy -> partidaService.modificarCheckpointStrategy(partida, strategy));
+        Optional<CheckpointStrategy> strategyOptional;
+        do{
+            strategyOptional = dialog.showAndWait();
+            if(strategyOptional.isPresent() && Dialogs.confirmar("Esta seguro que quiere guardar esta estrategia de rotacion?")){
+                partidaService.modificarCheckpointStrategy(partida, strategyOptional.get());
+                return;
+            }
+        }while (strategyOptional.isPresent());
     }
 
     private Spinner<Integer> crearSpinnerEditable(int min, int max, int init) {

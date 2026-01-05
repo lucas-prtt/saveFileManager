@@ -20,9 +20,6 @@ public class Directorio {
     String id;
     @Convert(converter = PathConverter.class)
     Path pathPrincipal;
-    @ElementCollection
-    @Convert(converter = PathConverter.class)
-    List<Path> pathsSinonimos = new ArrayList<>();
 
     public Directorio(Path pathPrincipal){
         this.pathPrincipal = pathPrincipal;
