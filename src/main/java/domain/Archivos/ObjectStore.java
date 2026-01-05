@@ -6,6 +6,7 @@ import domain.Archivos.checkpoint.ArchivoFinal;
 import domain.Archivos.checkpoint.Binario;
 import domain.Archivos.checkpoint.Carpeta;
 import domain.Exceptions.ArchivoYaExisteException;
+import domain.Exceptions.BinarioNoEncontradoException;
 import servicios.DirectorySecurity;
 
 import java.io.File;
@@ -66,7 +67,7 @@ public class ObjectStore {
         Path destinoFinal = destino.resolve(archivo.getNombre());
         directorySecurity.validarRuta(destino);
         if (!Files.exists(objPath)) {
-            throw new FileNotFoundException("Objeto no encontrado: " + archivo.getBinario().getHash());
+            throw new BinarioNoEncontradoException(archivo);
         }
 
         byte[] compressed = Files.readAllBytes(objPath);
@@ -150,7 +151,7 @@ public class ObjectStore {
 
         Path objPath = pathFromHash(binario.getHash());
         if (!Files.exists(objPath)) {
-            throw new FileNotFoundException("Objeto no encontrado: " + binario.getHash());
+            throw new BinarioNoEncontradoException(binario);
         }
 
         byte[] compressed = Files.readAllBytes(objPath);

@@ -11,6 +11,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 import ui.MainController;
 import utils.Buttons;
+import utils.I18nManager;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -44,7 +45,7 @@ public class TabSettings extends TabWrapper{
     private VBox whiteList(){
 
         Label labelOpciones = new Label();
-        labelOpciones.setText("Whitelist");
+        labelOpciones.setText(I18nManager.get("Whitelist"));
 
         VBox content = new VBox(3);
         ListView<Path> listPaths = new ListView<>();
@@ -88,16 +89,16 @@ public class TabSettings extends TabWrapper{
         });
 
         TextField txtNuevoPath = new TextField();
-        txtNuevoPath.setPromptText("Ingrese un path");
+        txtNuevoPath.setPromptText(I18nManager.get("IngresePath"));
         txtNuevoPath.setPrefWidth(400);
 
-        Button btnAgregarPath = new Button("Agregar");
+        Button btnAgregarPath = new Button(I18nManager.get("Agregar"));
         Button btnElegirCarpeta = new Button("📁");
-        btnElegirCarpeta.setTooltip(new Tooltip("Elegir carpeta"));
+        btnElegirCarpeta.setTooltip(new Tooltip(I18nManager.get("ElegirCarpeta")));
         btnElegirCarpeta.setCursor(javafx.scene.Cursor.HAND);
         btnElegirCarpeta.setOnAction(e -> {
             DirectoryChooser chooser = new DirectoryChooser();
-            chooser.setTitle("Seleccionar carpeta");
+            chooser.setTitle(I18nManager.get("SeleccionarCarpeta"));
 
             Window window = txtNuevoPath.getScene().getWindow();
 
@@ -127,7 +128,7 @@ public class TabSettings extends TabWrapper{
     private VBox blackList(){
 
         Label labelOpciones = new Label();
-        labelOpciones.setText("BlackList");
+        labelOpciones.setText(I18nManager.get("BlackList"));
 
         VBox content = new VBox(3);
         ListView<Path> listPaths = new ListView<>();
@@ -171,16 +172,16 @@ public class TabSettings extends TabWrapper{
         });
 
         TextField txtNuevoPath = new TextField();
-        txtNuevoPath.setPromptText("Ingrese un path");
+        txtNuevoPath.setPromptText(I18nManager.get("IngresePath"));
         txtNuevoPath.setPrefWidth(400);
 
-        Button btnAgregarPath = new Button("Agregar");
+        Button btnAgregarPath = new Button(I18nManager.get("Agregar"));
         Button btnElegirCarpeta = new Button("📁");
-        btnElegirCarpeta.setTooltip(new Tooltip("Elegir carpeta"));
+        btnElegirCarpeta.setTooltip(new Tooltip(I18nManager.get("ElegirCarpeta")));
         btnElegirCarpeta.setCursor(javafx.scene.Cursor.HAND);
         btnElegirCarpeta.setOnAction(e -> {
             DirectoryChooser chooser = new DirectoryChooser();
-            chooser.setTitle("Seleccionar carpeta");
+            chooser.setTitle(I18nManager.get("SeleccionarCarpeta"));
 
             Window window = txtNuevoPath.getScene().getWindow();
 
@@ -208,20 +209,20 @@ public class TabSettings extends TabWrapper{
         return content;
     }
     private String whiteListOverridesBlackListText(){
-        return directorySecurity.isWhitelistOverridesBlackList() ? "(Se permite modificar directorios que estén en ambas listas)" : "(No se permite modificar directorios que estén en ambas listas)";
+        return I18nManager.get(directorySecurity.isWhitelistOverridesBlackList() ? "WhitelistOverridesBlacklistTrueText" : "WhitelistOverridesBlacklistFalseText");
     }
     public HBox botonOverride(){
-        return Buttons.checkBox("Whitelist toma prioridad sobre blacklist", this::whiteListOverridesBlackListText, directorySecurity::isWhitelistOverridesBlackList, directorySecurity::setWhitelistOverridesBlackList);
+        return Buttons.checkBox(I18nManager.get("OverrideCheckbox"), this::whiteListOverridesBlackListText, directorySecurity::isWhitelistOverridesBlackList, directorySecurity::setWhitelistOverridesBlackList);
     }
     public HBox botonDeleteFiles(){
-        return Buttons.checkBox("Cargar checkpoints elimina archivos", () -> directorySecurity.isDeleteFilesNotInCheckpoint() == true ? "(Los archivos del directorio de guardado que no esten en el checkpoint seran eliminados)" : "(No se eliminarán archivos al cargar el checkpoint)", directorySecurity::isDeleteFilesNotInCheckpoint, directorySecurity::setDeleteFilesNotInCheckpoint);
+        return Buttons.checkBox(I18nManager.get("DeleteFilesCheckbox"), () -> I18nManager.get(directorySecurity.isDeleteFilesNotInCheckpoint() == true ? "DeleteFilesNotInCheckpointTrueText" : "DeleteFilesNotInCheckpointFalseText"), directorySecurity::isDeleteFilesNotInCheckpoint, directorySecurity::setDeleteFilesNotInCheckpoint);
     }
     public HBox botonMaximoTamañoArchivo(){
-        return Buttons.fileSizeField("Tamaño maximo de checkpoint", directorySecurity::getMaxCheckpointSizeInBytes, directorySecurity::setMaxCheckpointSizeInBytes);
+        return Buttons.fileSizeField(I18nManager.get("TamañoMaximoDeCheckpoint"), directorySecurity::getMaxCheckpointSizeInBytes, directorySecurity::setMaxCheckpointSizeInBytes);
     }
 
     @Override
     public String getName() {
-        return "Configuracion";
+        return I18nManager.get("Configuracion");
     }
 }

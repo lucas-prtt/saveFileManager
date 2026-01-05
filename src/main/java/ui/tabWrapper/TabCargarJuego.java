@@ -13,6 +13,7 @@ import javafx.stage.Window;
 import servicios.JuegosService;
 import ui.MainController;
 import utils.Dialogs;
+import utils.I18nManager;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -24,10 +25,10 @@ public class TabCargarJuego extends TabWrapper {
 
     private JuegosService juegosService;
 
-    private final String TITULODEFAULT = "Nombre del juego";
+    private final String TITULODEFAULT = I18nManager.get("NombreJuego");
 
     public String getName(){
-        return "Cargar Juego";
+        return I18nManager.get("CargarJuego");
     }
     @Override
     public void init(MainController controller){
@@ -39,14 +40,14 @@ public class TabCargarJuego extends TabWrapper {
     public VBox getContent() {
 
         juego = new Juego();
-        juego.setTitulo("Nombre del juego");
+        juego.setTitulo(I18nManager.get("NombreJuego"));
         juego.setSaveFilePaths(new ArrayList<>());
 
         VBox root = new VBox(10);
         root.setStyle("-fx-padding: 20;");
 
         /*       Titulo      */
-        Label lblTitulo = new Label("Título del juego:");
+        Label lblTitulo = new Label(I18nManager.get("TituloJuego"));
         TextField txtTitulo = new TextField(juego.getTitulo());
 
         txtTitulo.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -54,7 +55,7 @@ public class TabCargarJuego extends TabWrapper {
         });
 
         /*       Lista de paths       */
-        Label lblPaths = new Label("Paths de guardado:");
+        Label lblPaths = new Label(I18nManager.get("SaveFilePaths"));
 
         ListView<Directorio> listPaths = new ListView<>();
         listPaths.getItems().addAll(juego.getSaveFilePaths());
@@ -98,16 +99,16 @@ public class TabCargarJuego extends TabWrapper {
 
         /*      Agregar Paths       */
         TextField txtNuevoPath = new TextField();
-        txtNuevoPath.setPromptText("Ingrese un path");
+        txtNuevoPath.setPromptText(I18nManager.get("IngresePath"));
         txtNuevoPath.setPrefWidth(400);
 
         Button btnElegirCarpeta = new Button("📁");
-        Button btnAgregarPath = new Button("Agregar");
-        btnElegirCarpeta.setTooltip(new Tooltip("Elegir carpeta"));
+        Button btnAgregarPath = new Button(I18nManager.get("Agregar"));
+        btnElegirCarpeta.setTooltip(new Tooltip(I18nManager.get("ElegirCarpeta")));
         btnElegirCarpeta.setCursor(javafx.scene.Cursor.HAND);
         btnElegirCarpeta.setOnAction(e -> {
             DirectoryChooser chooser = new DirectoryChooser();
-            chooser.setTitle("Seleccionar carpeta de guardado");
+            chooser.setTitle(I18nManager.get("SeleccionarCarpeta"));
 
             Window window = txtNuevoPath.getScene().getWindow();
 
@@ -118,11 +119,11 @@ public class TabCargarJuego extends TabWrapper {
             }
         });
         Button btnElegirArchivo = new Button("📄");
-        btnElegirArchivo.setTooltip(new Tooltip("Elegir archivo"));
+        btnElegirArchivo.setTooltip(new Tooltip(I18nManager.get("ElegirArchivo")));
         btnElegirArchivo.setCursor(javafx.scene.Cursor.HAND);
         btnElegirArchivo.setOnAction(e -> {
             FileChooser chooser = new FileChooser();
-            chooser.setTitle("Seleccionar archivo de guardado");
+            chooser.setTitle(I18nManager.get("SeleccionarArchivo"));
 
             Window window = txtNuevoPath.getScene().getWindow();
 
@@ -146,11 +147,11 @@ public class TabCargarJuego extends TabWrapper {
         agregarPathBox.setStyle("-fx-alignment: center-left;");
 
         /*      Confirmar/Cancelar       */
-        Button btnConfirmar = new Button("Confirmar");
+        Button btnConfirmar = new Button(I18nManager.get("Confirmar"));
         btnConfirmar.setOnAction(e -> {
-            if(juego.getTitulo().equals(TITULODEFAULT) && !Dialogs.confirmar("Esta seguro que desea guardar el juego con el titulo " + TITULODEFAULT + "?"))
+            if(juego.getTitulo().equals(TITULODEFAULT) && !Dialogs.confirmar(I18nManager.get("ConfirmarTItuloDefault", TITULODEFAULT)))
                 return;
-            if(juego.getSaveFilePaths().isEmpty() && !Dialogs.confirmar("Esta seguro que desea guardar un juego sin directorios de guardado?"))
+            if(juego.getSaveFilePaths().isEmpty() && !Dialogs.confirmar(I18nManager.get("ConfirmarSinDirectorios")))
                 return;
             try {
                 juegosService.guardarJuego(juego);
@@ -162,7 +163,7 @@ public class TabCargarJuego extends TabWrapper {
             }
         });
 
-        Button btnCancelar = new Button("Cancelar");
+        Button btnCancelar = new Button(I18nManager.get("Cancelar"));
         btnCancelar.setOnAction(e -> controller.findTab(TabInicial.class).ifPresent(TabWrapper::focus));
 
         HBox botones = new HBox(10, btnConfirmar, btnCancelar);

@@ -26,8 +26,8 @@ public class Dialogs {
     }
     private static boolean confirmarEscribirTexto(String texto) {
         Dialog<Boolean> dialog = new Dialog<>();
-        dialog.setTitle("Confirmar");
-        dialog.setHeaderText("Escriba \"" + texto + "\" para confirmar");
+        dialog.setTitle(I18nManager.get("Confirmar"));
+        dialog.setHeaderText(I18nManager.get("EscribirParaConfirmar", texto));
 
         TextField textField = new TextField();
         textField.setPromptText("...");
@@ -37,8 +37,8 @@ public class Dialogs {
         box.setPadding(new Insets(10));
         dialog.getDialogPane().setContent(box);
 
-        ButtonType aceptar = new ButtonType("Aceptar", ButtonBar.ButtonData.OK_DONE);
-        ButtonType rechazar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType aceptar = new ButtonType(I18nManager.get("Aceptar"), ButtonBar.ButtonData.OK_DONE);
+        ButtonType rechazar = new ButtonType(I18nManager.get("Cancelar"), ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(aceptar, rechazar);
         dialog.getDialogPane().lookupButton(aceptar).addEventFilter(ActionEvent.ACTION, e -> {
             if(!texto.equals(textField.getText())) {
@@ -65,8 +65,8 @@ public class Dialogs {
         box.setPadding(new Insets(10));
         dialog.getDialogPane().setContent(box);
 
-        ButtonType aceptar = new ButtonType("Aceptar", ButtonBar.ButtonData.OK_DONE);
-        ButtonType rechazar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType aceptar = new ButtonType(I18nManager.get("Aceptar"), ButtonBar.ButtonData.OK_DONE);
+        ButtonType rechazar = new ButtonType(I18nManager.get("Cancelar"), ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(aceptar, rechazar);
         dialog.setResultConverter((b) -> {
             if(b.equals(aceptar)){
@@ -85,11 +85,11 @@ public class Dialogs {
         textField.setPromptText(defaultText.toString());
 
         Button btnElegirCarpeta = new Button("📁");
-        btnElegirCarpeta.setTooltip(new Tooltip("Elegir carpeta"));
+        btnElegirCarpeta.setTooltip(new Tooltip(I18nManager.get("ElegirCarpeta")));
         btnElegirCarpeta.setCursor(javafx.scene.Cursor.HAND);
         btnElegirCarpeta.setOnAction(e -> {
             DirectoryChooser chooser = new DirectoryChooser();
-            chooser.setTitle("Seleccionar carpeta de guardado");
+            chooser.setTitle(I18nManager.get("SeleccionarCarpeta"));
 
             Window window = textField.getScene().getWindow();
 
@@ -99,11 +99,11 @@ public class Dialogs {
             }
         });
         Button btnElegirArchivo = new Button("📄");
-        btnElegirArchivo.setTooltip(new Tooltip("Elegir archivo"));
+        btnElegirArchivo.setTooltip(new Tooltip(I18nManager.get("ElegirArchivo")));
         btnElegirArchivo.setCursor(javafx.scene.Cursor.HAND);
         btnElegirArchivo.setOnAction(e -> {
             FileChooser chooser = new FileChooser();
-            chooser.setTitle("Seleccionar archivo de guardado");
+            chooser.setTitle(I18nManager.get("SeleccionarArchivo"));
 
             Window window = textField.getScene().getWindow();
 
@@ -122,15 +122,15 @@ public class Dialogs {
         box.setPadding(new Insets(10));
         dialog.getDialogPane().setContent(box);
 
-        ButtonType aceptar = new ButtonType("Aceptar", ButtonBar.ButtonData.OK_DONE);
-        ButtonType rechazar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType aceptar = new ButtonType(I18nManager.get("Aceptar"), ButtonBar.ButtonData.OK_DONE);
+        ButtonType rechazar = new ButtonType(I18nManager.get("Cancelar"), ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(aceptar, rechazar);
         dialog.setResultConverter((b) -> {
             if(b.equals(aceptar)){
                 try {
                     return Path.of(textField.getText());
                 }catch (InvalidPathException e){
-                    ApplicationContext.getMainController().showToast("Directorio invalido");
+                    ApplicationContext.getMainController().showToast(I18nManager.get("DirectorioInvalido"));
                     return null;
                 }
             }

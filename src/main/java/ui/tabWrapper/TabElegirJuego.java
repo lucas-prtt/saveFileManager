@@ -12,6 +12,7 @@ import javafx.stage.FileChooser;
 import servicios.JuegosService;
 import ui.MainController;
 import utils.Dialogs;
+import utils.I18nManager;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -23,7 +24,7 @@ public class TabElegirJuego extends TabWrapper{
     private JuegosService juegosService;
 
     public String getName(){
-        return "Elegir Juego";
+        return I18nManager.get("TabElegirJuego");
     }
 
     @Override
@@ -35,7 +36,7 @@ public class TabElegirJuego extends TabWrapper{
     public VBox getContent() {
         VBox content = new VBox(10);
         content.setStyle("-fx-padding: 20; -fx-alignment: center;");
-        Label label = new Label("Elegir Juego");
+        Label label = new Label(I18nManager.get("ElegirJuego"));
         label.getStyleClass().add("inicio-title");
 
 
@@ -76,21 +77,22 @@ public class TabElegirJuego extends TabWrapper{
                 }
             }
         });
-        Button btnEliminar = new Button("Eliminar juego");
+        Button btnEliminar = new Button(I18nManager.get("EliminarJuego"));
         btnEliminar.setOnAction(e -> {
             if(listJuegos.getSelectionModel().getSelectedItem() == null){
-                controller.showToast("Seleccione un juego primero");
+                controller.showToast(I18nManager.get("SeleccionarJuegoPrimero"));
                 return;
             }
 
-                if(Dialogs.confirmarDoble("Esta seguro que desea eliminar " + listJuegos.getSelectionModel().getSelectedItem().getTitulo()+ "? ", listJuegos.getSelectionModel().getSelectedItem().getTitulo())) {
+                if(Dialogs.confirmarDoble(I18nManager.get("ConfirmarBorrarJuego",listJuegos.getSelectionModel().getSelectedItem().getTitulo()), listJuegos.getSelectionModel().getSelectedItem().getTitulo())) {
                 juegosService.eliminarJuego(listJuegos.getSelectionModel().getSelectedItem());
                 update();
                 System.out.println("Se borro el juego" + listJuegos.getSelectionModel().getSelectedItem().getTitulo() + " - " + listJuegos.getSelectionModel().getSelectedItem().getId());
-            }//TODO: Cerrar tabs de partidas y checkpoints del juego
+            }   controller.showToast(I18nManager.get("JuegoBorradoConExito", listJuegos.getSelectionModel().getSelectedItem().getTitulo()) );
+                //TODO: Cerrar tabs de partidas y checkpoints del juego
         });
 
-        Button btnEditar = new Button("Editar juego");
+        Button btnEditar = new Button(I18nManager.get("EditarJuego"));
         btnEditar.setOnAction(e -> {
             editarJuego(listJuegos.getSelectionModel().getSelectedItem());
         });
@@ -98,7 +100,7 @@ public class TabElegirJuego extends TabWrapper{
         botones.setPadding(new Insets(10));
         botones.setAlignment(Pos.CENTER);
 
-        Button btnIrInicio = new Button("Volver al Inicio");
+        Button btnIrInicio = new Button(I18nManager.get("VolverAlInicio"));
         btnIrInicio.setOnAction(e -> controller.findTab(TabInicial.class).ifPresent(TabWrapper::focus));
         botones.getChildren().addAll(  btnIrInicio, btnEliminar, btnEditar);
         content.getChildren().addAll(label, listJuegos, botones);
@@ -111,7 +113,7 @@ public class TabElegirJuego extends TabWrapper{
     }
     public void editarJuego(Juego juegoExistente) {
         if(juegoExistente == null){
-            controller.showToast("Seleccione un juego ya registrado");
+            controller.showToast(I18nManager.get("SeleccionarJuegoRegistrado"));
             return;
         }
         AtomicReference<Boolean> eliminaDirectorios = new AtomicReference<>(false);
@@ -121,20 +123,20 @@ public class TabElegirJuego extends TabWrapper{
         juegoEditDTO.id = juegoExistente.getId();
 
         Dialog<JuegoEditDTO> dialog = new Dialog<>();
-        dialog.setTitle("Editar Juego");
-        dialog.setHeaderText("Editar juego: " + juegoEditDTO.titulo);
+        dialog.setTitle(I18nManager.get("EditarJuego"));
+        dialog.setHeaderText(I18nManager.get("EditarJuegoAclaraNombre", juegoEditDTO.titulo));
 
-        ButtonType confirmarBtnType = new ButtonType("Confirmar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType confirmarBtnType = new ButtonType(I18nManager.get("Confirmar"), ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(confirmarBtnType, ButtonType.CANCEL);
 
         VBox root = new VBox(10);
         root.setStyle("-fx-padding: 20;");
 
-        Label lblTitulo = new Label("Título del juego:");
+        Label lblTitulo = new Label(I18nManager.get("TituloJuego") + ":");
         TextField txtTitulo = new TextField(juegoEditDTO.titulo);
         txtTitulo.textProperty().addListener((obs, oldVal, newVal) -> juegoEditDTO.titulo = newVal);
 
-        Label lblPaths = new Label("Paths de guardado:");
+        Label lblPaths = new Label(I18nManager.get("SaveFilePaths") + ":");
         ListView<Directorio> listPaths = new ListView<>();
         listPaths.getItems().addAll(juegoEditDTO.directorios);
 
@@ -161,7 +163,7 @@ public class TabElegirJuego extends TabWrapper{
                 btnEditar.setOnAction(e -> {
                     Directorio item = getItem();
                     if(item != null){
-                        Dialogs.inputDirectory("Editar directorio", "Ingrese el nuevo directorio", item.getPathPrincipal()).ifPresent( path ->
+                        Dialogs.inputDirectory(I18nManager.get("EditarDirectorio"), I18nManager.get("IngresarNuevoDirectorio"), item.getPathPrincipal()).ifPresent( path ->
                                 {
                                     item.setPathPrincipal(path);
                                     juegosService.modificarDirectorio(item, path);
@@ -184,16 +186,16 @@ public class TabElegirJuego extends TabWrapper{
 
         /* Agregar paths */
         TextField txtNuevoPath = new TextField();
-        txtNuevoPath.setPromptText("Ingrese un path");
+        txtNuevoPath.setPromptText(I18nManager.get("IngresarUnDirectorio"));
         txtNuevoPath.setPrefWidth(400);
 
         Button btnElegirCarpeta = new Button("📁");
         Button btnElegirArchivo = new Button("📄");
-        Button btnAgregarPath = new Button("Agregar");
+        Button btnAgregarPath = new Button(I18nManager.get("Agregar"));
 
         btnElegirCarpeta.setOnAction(e -> {
             DirectoryChooser chooser = new DirectoryChooser();
-            chooser.setTitle("Seleccionar carpeta de guardado");
+            chooser.setTitle(I18nManager.get("SeleccionarCarpeta"));
             File selectedDir = chooser.showDialog(txtTitulo.getScene().getWindow());
             if (selectedDir != null) {
                 txtNuevoPath.setText(selectedDir.getAbsolutePath());
@@ -203,7 +205,7 @@ public class TabElegirJuego extends TabWrapper{
 
         btnElegirArchivo.setOnAction(e -> {
             FileChooser chooser = new FileChooser();
-            chooser.setTitle("Seleccionar archivo de guardado");
+            chooser.setTitle(I18nManager.get("SeleccionarArchivo"));
             File selectedFile = chooser.showOpenDialog(txtTitulo.getScene().getWindow());
             if (selectedFile != null) {
                 txtNuevoPath.setText(selectedFile.getAbsolutePath());
@@ -232,14 +234,9 @@ public class TabElegirJuego extends TabWrapper{
         });
 
         dialog.showAndWait().ifPresent(j -> {
-            if( eliminaDirectorios.get() && !Dialogs.confirmar("Esta seguro? Si elimina directorios, tambien se eliminaran los archivos guardados en los mismos dentro de cada checkpoint."))
+            if( eliminaDirectorios.get() && !Dialogs.confirmar(I18nManager.get("BorrarDirectoriosAdvertencia")))
                 return;
-            try {
-                controller.getJuegosService().modificarJuego(j.id, j.directorios, j.titulo);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                controller.showToast("Error al guardar el juego: " + ex.getMessage());
-            }
+            controller.getJuegosService().modificarJuego(j.id, j.directorios, j.titulo);
         });
         update();
     }

@@ -2,6 +2,7 @@ package lprtt;
 
 import javafx.application.Platform;
 import ui.MainController;
+import utils.I18nManager;
 
 import java.sql.SQLException;
 import java.sql.SQLTimeoutException;
@@ -38,21 +39,21 @@ public class GlobalErrorHandler {
         if(root instanceof SQLException sqlException){
             if ("22001".equals(sqlException.getSQLState()))
                 if (sqlException.getMessage().contains("NOMBRE"))
-                    mensajeUsuario = "El nombre es demasiado largo (máx. 255 caracteres).";
+                    mensajeUsuario = I18nManager.get("NameTooLong");
                 else if (sqlException.getMessage().contains("DESCRIPCION"))
-                    mensajeUsuario = "La descripcion ingresada es demasiado larga";
+                    mensajeUsuario = I18nManager.get("DescTooLong");
                 else
-                    mensajeUsuario = "El texto ingresado es demasiado largo. ";
+                    mensajeUsuario = I18nManager.get("TextTooLong");
             else if (root instanceof SQLTimeoutException)
-                mensajeUsuario = "La operación tardó demasiado. Intenta nuevamente.";
+                mensajeUsuario = I18nManager.get("OperationTooLong");
             else if (root instanceof SQLTransientConnectionException)
-                mensajeUsuario = "No se pudo conectar a la base de datos.";
+                mensajeUsuario = I18nManager.get("NoDBConnection");
             else
-                mensajeUsuario = "Ocurrió un error al acceder a la base de datos.";
+                mensajeUsuario = I18nManager.get("DBUnknownError");
         } else {
             mensajeUsuario = userMessage != null
                     ? userMessage
-                    : "Ocurrió un error inesperado: " + getRootCause(throwable).getMessage();
+                    : I18nManager.get("UnknownError", getRootCause(throwable).getMessage());
         }
 
 

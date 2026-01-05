@@ -3,7 +3,9 @@ import domain.Archivos.ObjectStore;
 import domain.Archivos.checkpoint.*;
 import domain.Archivos.juego.Directorio;
 import domain.Exceptions.ArchivoYaExisteException;
+import domain.Exceptions.BinarioNoEncontradoException;
 import domain.Exceptions.CheckpointTooBigException;
+import domain.Exceptions.CouldNotDeleteException;
 import domain.Juegos.Checkpoint;
 import domain.Juegos.Juego;
 import repositorios.ArchivoRepository;
@@ -87,6 +89,8 @@ public class ArchivoService {
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
+            } catch (BinarioNoEncontradoException e){
+                System.out.println(" ! No se encontro el binario " + archivoFinal.getBinario().getHash() );
             }
         }
     }
@@ -102,7 +106,7 @@ public class ArchivoService {
                         if(archivos.stream().noneMatch(archivo -> ObjectStore.esArchivoIgual(file, archivo))){
                             directorySecurity.validarRuta(Path.of(file.getAbsolutePath()));
                             if(!file.delete()) {
-                                throw new RuntimeException("No se pudo borrar " + file.toString());
+                                throw new CouldNotDeleteException(file);
                             }
                             System.out.println(" - Se elimino el archivo " +   file.getAbsolutePath());
                         }

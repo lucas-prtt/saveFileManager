@@ -1,7 +1,6 @@
 package servicios;
 
 import domain.Archivos.checkpoint.*;
-import domain.Exceptions.ResourceAlreadyExistsException;
 import domain.Exceptions.ResourceNotFoundException;
 import domain.Juegos.Checkpoint;
 import domain.Juegos.Partida;
@@ -28,7 +27,7 @@ public class CheckpointService {
         this.partidaService = partidaService;
         this.archivoService = archivoService;
     }
-    public void guardarCheckpoint(Partida partida, String nombre, String descripcion) throws ResourceNotFoundException, ResourceAlreadyExistsException{
+    public void guardarCheckpoint(Partida partida, String nombre, String descripcion) throws ResourceNotFoundException{
         List<GrupoDeDatos> nuevosDatos = new ArrayList<>();
         nuevosDatos.addAll(archivoService.guardarArchivos(partida.getJuego()));
         // Grupos de datos tiene archivos binarios ya persistidos en BD y FS, no asociados a ningun checkpoint y con usos en 0, salvo que alguno sea repetido

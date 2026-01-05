@@ -13,6 +13,7 @@ import servicios.JuegosService;
 import servicios.PartidaService;
 import ui.MainController;
 import utils.Dialogs;
+import utils.I18nManager;
 
 import java.util.List;
 import java.util.Objects;
@@ -45,10 +46,10 @@ public class TabGestionarJuego extends TabWrapper {
         root.setAlignment(Pos.CENTER);
         root.getStyleClass().add("root-padding");
 
-        Label lblTitulo = new Label("Gestionar juego");
+        Label lblTitulo = new Label(I18nManager.get("GestionarJuego"));
         lblTitulo.getStyleClass().add("inicio-title");
 
-        Label lblNombre = new Label("Juego: " + juego.getTitulo());
+        Label lblNombre = new Label(I18nManager.get("Juego") + ": " + juego.getTitulo());
         lblNombre.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
 
 
@@ -89,27 +90,28 @@ public class TabGestionarJuego extends TabWrapper {
                 }
             }
         });
-        Label labelNuevaPartida = new Label("Crear una nueva partida");
+        Label labelNuevaPartida = new Label(I18nManager.get("CrearPartida"));
         labelNuevaPartida.setAlignment(Pos.CENTER);
         labelNuevaPartida.getStyleClass().add("inicio-subtitle");
         labelNuevaPartida.setStyle("-fx-padding: 5 0 0 0;");
         TextField txtNuevaPartida = new TextField();
-        txtNuevaPartida.setPromptText("Ingrese el nombre de la partida");
+        txtNuevaPartida.setPromptText(I18nManager.get("IngresarNombrePartida"));
         txtNuevaPartida.setStyle("-fx-padding: 2 2 4 2;");
         txtNuevaPartida.getStyleClass().add("inicio-subtitle");
         txtNuevaPartida.setPrefWidth(400);
-        Button btnEliminarPartida = new Button("Eliminar Partida");
+        Button btnEliminarPartida = new Button(I18nManager.get("EliminarPartida"));
         btnEliminarPartida.setOnAction(e -> {
             if(partidaListView.getSelectionModel().getSelectedItem() == null)
-                throw new RuntimeException("No hay ninguna partida seleccionada");
+                throw new RuntimeException(I18nManager.get("NoHayPartidaSeleccionada"));
 
-            if(Dialogs.confirmarDoble("Esta seguro que desea eliminar la partida " + partidaListView.getSelectionModel().getSelectedItem().getTitulo() + "? ", partidaListView.getSelectionModel().getSelectedItem().getTitulo()))
+            if(Dialogs.confirmarDoble(I18nManager.get("ConfirmarBorrarPartida", partidaListView.getSelectionModel().getSelectedItem().getTitulo()), partidaListView.getSelectionModel().getSelectedItem().getTitulo()))
             {   juegosService.eliminarPartida(partidaListView.getSelectionModel().getSelectedItem());
                 update();
                 System.out.println("Se borro la partida " + partidaListView.getSelectionModel().getSelectedItem().getTitulo() + " - " + partidaListView.getSelectionModel().getSelectedItem().getId());
+                controller.showToast(I18nManager.get("PartidaBorradaConExito", partidaListView.getSelectionModel().getSelectedItem().getTitulo(), partidaListView.getSelectionModel().getSelectedItem().getId()));
             }
         });
-        Button btnAgregarPartida = new Button("Agregar");
+        Button btnAgregarPartida = new Button(I18nManager.get("Agregar"));
         btnAgregarPartida.setCursor(javafx.scene.Cursor.HAND);
         btnAgregarPartida.setOnAction(e -> {
             if (!txtNuevaPartida.getText().isBlank()) {
@@ -118,15 +120,15 @@ public class TabGestionarJuego extends TabWrapper {
                 update();
             }
         });
-        Button btnEditarNombrePartida = new Button("Cambiar nombre");
+        Button btnEditarNombrePartida = new Button(I18nManager.get("CambiarNombre"));
         btnEditarNombrePartida.setCursor(javafx.scene.Cursor.HAND);
         btnEditarNombrePartida.setOnAction(e -> {
             Partida p = partidaListView.getSelectionModel().getSelectedItem();
             if(p == null){
-                controller.showToast("Seleccione una partida ya creada");
+                controller.showToast("SeleccionarPartidaCreada");
                 return;
             }
-            Optional<String> nuevoTitulo = Dialogs.inputText("Partida " + p.getTitulo(), "Elija el nuevo nombre para la partida", "...");
+            Optional<String> nuevoTitulo = Dialogs.inputText(I18nManager.get("Partida") + ": " + p.getTitulo(), I18nManager.get("ElegirNuevoNombrePartida"), "...");
             if(nuevoTitulo.isEmpty()){
                 return;
             }

@@ -6,6 +6,7 @@ import domain.Juegos.Juego;
 import domain.Juegos.Partida;
 import org.hibernate.Hibernate;
 import repositorios.PartidaRepository;
+import utils.I18nManager;
 import utils.Tx;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class PartidaService {
     public void modificarTituloPartida(Partida p, Optional<String> nuevoTitulo) {
         Tx.runVoid(()->{
         Partida partidaBD = partidaRepository.findById(p.getId()).orElseThrow();
-        String tituloAInsertar = nuevoTitulo.orElseThrow().isBlank()?"Sin titulo" : nuevoTitulo.get();
+        String tituloAInsertar = nuevoTitulo.orElseThrow().isBlank()? I18nManager.get("SinTitulo") : nuevoTitulo.get();
         partidaBD.setTitulo(tituloAInsertar);
         });
     }

@@ -10,7 +10,18 @@ Se permite definir estrategias para al rótacion de checkpoints, es decir, si se
 
 Se recomiendo cerrar el juego al momento de guardar o cargar archivos, así como no tener abierto ninguno de sus archivos con algun programa. Tener en cuenta que al momento de cargar un checkpoint, cualquier archivo que no haya estado en el directorio cuando se cargo el checkpoint será eliminado, por lo que es importante no cambiar el directorio por error a uno que tenga informacion importante que no se deba borrar, ni guardar otros archivos en una carpeta de guardado registrada.
 
-## Version 0.1.0 - Modelo Cliente-Servidor
+El software se ofrece en los lenguajes: Español, Inglés, Aleman, Portugues, Frances e Italiano, para lo cual se utilizaron traducciones automaticas mediante Google Translate. El unico idioma que puedo garantizar que esta bien escrito es el español. Tal vez en el futuro me ponga a revisar el ingles y el aleman. 
+
+## Dependencias
+
+Para ejecutarse el programa requiere tener instalado Java 24 (JRE). Para compilar se requiere también el JDK y el gestor de dependencias Maven.
+
+## Licencia
+
+Este software se distribuye bajo la licencia MIT, lo que significa que es libre de usar, copiar, modificar y distribuir, incluso con fines comerciales, siempre que se incluya el aviso de copyright original y esta licencia en todas las copias o partes sustanciales del software. El software se proporciona “tal cual”, sin garantía de ningún tipo, explícita o implícita, incluyendo, pero no limitado a, garantías de comerciabilidad, idoneidad para un propósito particular o ausencia de infracción. En ningún caso los autores serán responsables de cualquier daño o perjuicio derivado del uso del software.
+
+
+## Anexo: Version 0.1.0 - Modelo Cliente-Servidor
 Originalmente, el programa iba a tener un módulo "**Servidor**" que se iba a encargar de manejar la base de datos con las partidas guardadas, y un módulo "**Cliente**" que va a permitir conectarse al módulo servidor local para cargar y descargar archivos de guardado según indicado por el usuario, o conectarse con módulos Servidor externos para obtener archivos de guardado de otros nodos, facilitando la transferencia de archivos entre computadoras para facilitar la continuidad al jugar una misma partida a través de distintos dispositivos. La idea era que se pueda mantener una instancia de "servidor" iniciada permanentemente en una computadora para poder "pedir" los archivos.
 
-Tras repensarlo, decidi que sea un módulo unico que deba iniciarse en ambos nodos al momento de realizar la transferencia. Se puede hallar una version semi-funcional del modelo anterior en la version 0.1.0, commit [**302e74e**](https://github.com/lucas-prtt/saveFileManager/tree/302e74e37c0d137d6f2dae35b45a9d9e81aa6aee). La transferencia de archivos aun no esta reimplementada. Sera agregada en versiones futuras.
+Tras repensarlo, decidi que sea un módulo unico que deba iniciarse en ambos nodos al momento de realizar la transferencia. Se puede hallar una version semi-funcional del modelo anterior en la version 0.1.0, commit [**302e74e**](https://github.com/lucas-prtt/saveFileManager/tree/302e74e37c0d137d6f2dae35b45a9d9e81aa6aee). La transferencia de archivos aun no esta reimplementada. Será agregada en versiones futuras.

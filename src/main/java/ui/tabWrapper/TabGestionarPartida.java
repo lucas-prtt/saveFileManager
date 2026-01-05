@@ -19,6 +19,7 @@ import servicios.CheckpointService;
 import servicios.PartidaService;
 import ui.MainController;
 import utils.Dialogs;
+import utils.I18nManager;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -46,12 +47,12 @@ public class TabGestionarPartida extends TabWrapper{
 
     @Override
     public VBox getContent() {
-        Label superTitulo = new Label("Gestionar partida");
+        Label superTitulo = new Label(I18nManager.get("GestionarPartida"));
         superTitulo.getStyleClass().add("inicio-title");
 
         Label titulo = new Label(
-                "Juego: " + partida.getJuego().getTitulo() +
-                        " \n Partida: " + partida.getTitulo()
+                I18nManager.get("Juego") + ": " + partida.getJuego().getTitulo() +
+                        " \n"+I18nManager.get("Partida")+": " + partida.getTitulo()
         );
         titulo.getStyleClass().add("inicio-subtitle");
         titulo.setTextAlignment(TextAlignment.CENTER);
@@ -114,22 +115,22 @@ public class TabGestionarPartida extends TabWrapper{
         } );
         refrescarCheckpoints();
 
-        Button guardarBtn = new Button("Guardar checkpoint");
+        Button guardarBtn = new Button(I18nManager.get("GuardarCheckpoint"));
         guardarBtn.setOnAction(e -> guardarCheckpoint());
 
-        Button cargarUltimoBtn = new Button("Cargar último checkpoint");
+        Button cargarUltimoBtn = new Button(I18nManager.get("CargarUltimoCheckpoint"));
         cargarUltimoBtn.setOnAction(e -> cargarUltimoCheckpoint());
 
-        Button cargarBtn = new Button("Cargar seleccionado");
+        Button cargarBtn = new Button(I18nManager.get("CargarSeleccionado"));
         cargarBtn.setOnAction(e -> cargarCheckpointSeleccionado());
 
-        Button eliminarBtn = new Button("Eliminar seleccionado");
+        Button eliminarBtn = new Button(I18nManager.get("EliminarSeleccionado"));
         eliminarBtn.setOnAction(e -> eliminarCheckpointSeleccionado());
 
-        Button exportarSeleccionado = new Button("Exportar seleccionado");
+        Button exportarSeleccionado = new Button(I18nManager.get("ExportarSeleccionado"));
         exportarSeleccionado.setOnAction(e -> exportarCheckpointSeleccionado());
 
-        Button rotacion = new Button("Modificar algoritmo de rotación");
+        Button rotacion = new Button(I18nManager.get("ModificarRotacion"));
         rotacion.setOnAction(e -> verMenuEstrategiaCheckpoints());
 
         HBox acciones = new HBox(10, guardarBtn, cargarUltimoBtn, cargarBtn, eliminarBtn, exportarSeleccionado, rotacion);
@@ -147,22 +148,22 @@ public class TabGestionarPartida extends TabWrapper{
     }
 
     private void guardarCheckpoint() {
-        if(!partidaService.isPartidaActualCargada(partida) && !Dialogs.confirmar("Actualmente hay otra partida cargada ( " +partida.getJuego().getPartidaActual().getTitulo()+ " ) . Esta seguro que desea guardar aqui?"))
+        if(!partidaService.isPartidaActualCargada(partida) && !Dialogs.confirmar(I18nManager.get("ConfirmarGuardarOtraPartidaCargada", partida.getJuego().getPartidaActual().getTitulo())))
             return;
         Dialog<Void> dialog = new Dialog<>();
-        dialog.setTitle("Guardar checkpoint");
-        dialog.setHeaderText("Ingrese los datos del checkpoint");
+        dialog.setTitle(I18nManager.get("GuardarCheckpoint"));
+        dialog.setHeaderText(I18nManager.get("IngresarDatosCheckpoint"));
 
-        ButtonType aceptarBtn = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelarBtn = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType aceptarBtn = new ButtonType(I18nManager.get("Guardar"), ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelarBtn = new ButtonType(I18nManager.get("Cancelar"), ButtonBar.ButtonData.CANCEL_CLOSE);
 
         dialog.getDialogPane().getButtonTypes().addAll(aceptarBtn, cancelarBtn);
 
         TextField nombreField = new TextField();
-        nombreField.setPromptText("Nombre (opcional)");
+        nombreField.setPromptText(I18nManager.get("NombreOpcional"));
 
         TextArea descripcionField = new TextArea();
-        descripcionField.setPromptText("Descripción (opcional)");
+        descripcionField.setPromptText(I18nManager.get("DescripcionOpcional"));
         descripcionField.setPrefRowCount(3);
         descripcionField.setWrapText(true);
         descripcionField.setMaxWidth(400);
@@ -171,9 +172,9 @@ public class TabGestionarPartida extends TabWrapper{
         grid.setHgap(10);
         grid.setVgap(10);
 
-        grid.add(new Label("Nombre:"), 0, 0);
+        grid.add(new Label(I18nManager.get("Nombre") + ":"), 0, 0);
         grid.add(nombreField, 1, 0);
-        grid.add(new Label("Descripción:"), 0, 1);
+        grid.add(new Label(I18nManager.get("Descripción") + ":"), 0, 1);
         grid.add(descripcionField, 1, 1);
 
         dialog.getDialogPane().setContent(grid);
@@ -205,8 +206,8 @@ public class TabGestionarPartida extends TabWrapper{
         cargarCheckpointConVerificaciones(checkpoint);
     }
     private void cargarCheckpointConVerificaciones(Checkpoint checkpoint){
-        if(Dialogs.confirmar("Esta seguro que desea cargar este checkpoint ("+checkpoint.getStringReferencia()+") ?")){
-            if (!partidaService.isPartidaActualCargada(partida) && Dialogs.confirmar("Actualmente hay otra partida cargada en el sistema ( " + partida.getJuego().getPartidaActual().getTitulo() + " ). Quiere guardar su proceso allí antes de cargar esta?")) {
+        if(Dialogs.confirmar(I18nManager.get("ConfirmarCargarCheckpoint", checkpoint.getStringReferencia()))){
+            if (!partidaService.isPartidaActualCargada(partida) && Dialogs.confirmar(I18nManager.get("GuardarPartidaAntesDeCargar", partida.getJuego().getPartidaActual().getTitulo()))) {
                 checkpointService.guardarCheckpointUltimaPartida(partida);
             }
             checkpointService.cargarCheckpoint(checkpoint);
@@ -222,7 +223,7 @@ public class TabGestionarPartida extends TabWrapper{
         if (seleccionado == null) return;
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Exportar checkpoint");
+        fileChooser.setTitle(I18nManager.get("ExportarCheckpoint"));
         fileChooser.setInitialFileName(
                 "Export.zip"
         );
@@ -239,20 +240,20 @@ public class TabGestionarPartida extends TabWrapper{
         Checkpoint seleccionado = checkpointList.getSelectionModel().getSelectedItem();
         if (seleccionado == null) return;
 
-        if (Dialogs.confirmar("¿Desea eliminar este checkpoint?")) {
+        if (Dialogs.confirmar(I18nManager.get("ConfirmarBorrarCheckpoint"))) {
             checkpointService.eliminarCheckpoint(seleccionado);
             refrescarCheckpoints();
         }
     }
     private void verMenuEstrategiaCheckpoints() {
         Dialog<CheckpointStrategy> dialog = new Dialog<>();
-        dialog.setTitle("Configuración de Checkpoints");
+        dialog.setTitle(I18nManager.get("ConfiguracionDeCheckpoints"));
         dialog.getDialogPane().setMinWidth(500);
         dialog.getDialogPane().setMinHeight(400);
         dialog.getDialogPane().setStyle("-fx-background-color: #1e1e2e;");
         dialog.getDialogPane().setPadding(new Insets(20));
 
-        ButtonType okButtonType = new ButtonType("Guardar", ButtonBar.ButtonData.OK_DONE);
+        ButtonType okButtonType = new ButtonType(I18nManager.get("Guardar"), ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
         CheckpointStrategy estrategiaActual = partida.getCheckpointStrategy();
@@ -288,7 +289,7 @@ public class TabGestionarPartida extends TabWrapper{
                 int val = (estrategiaActual instanceof FIFOMaxCheckpointStrategy f) ? f.getMaxCheckpoints() : fifoSelected.getMaxCheckpoints();
 
                 Spinner<Integer> sp = crearSpinnerEditable(1, 1000, val);
-                Label lbl = new Label("LÍMITE DE CHECKPOINTS:");
+                Label lbl = new Label(I18nManager.get("LimiteDeCheckpoints"));
                 lbl.setStyle(labelStyle);
 
                 camposDinamicos.getChildren().add(new VBox(5, lbl, sp));
@@ -309,8 +310,8 @@ public class TabGestionarPartida extends TabWrapper{
                 Spinner<Integer> spMax = crearSpinnerEditable(5, 1000, valMax);
                 Spinner<Integer> spSafe = crearSpinnerEditable(2, 1000, valSafe);
 
-                Label l1 = new Label("CHECKPOINTS RECIENTES (SEGUROS):"); l1.setStyle(labelStyle);
-                Label l2 = new Label("CAPACIDAD MÁXIMA TOTAL:"); l2.setStyle(labelStyle);
+                Label l1 = new Label(I18nManager.get("CheckpoiintsRecientesSeguros")); l1.setStyle(labelStyle);
+                Label l2 = new Label(I18nManager.get("CapacidadMaximaTotal")); l2.setStyle(labelStyle);
 
                 camposDinamicos.getChildren().addAll(new VBox(5, l1, spSafe), new VBox(5, l2, spMax));
 
@@ -333,7 +334,7 @@ public class TabGestionarPartida extends TabWrapper{
                 .filter(i -> i.getClass().equals(estrategiaActual.getClass()))
                 .findFirst().ifPresent(comboBox::setValue);
 
-        Label tituloSecundario = new Label("ESTRATEGIA DE ROTACIÓN");
+        Label tituloSecundario = new Label(I18nManager.get("EstrategiaDeRotacion"));
         tituloSecundario.setStyle("-fx-text-fill: #8888aa; -fx-font-weight: bold;");
 
         VBox layoutPrincipal = new VBox(10, tituloSecundario, comboBox, camposDinamicos);
@@ -342,7 +343,7 @@ public class TabGestionarPartida extends TabWrapper{
         Optional<CheckpointStrategy> strategyOptional;
         do{
             strategyOptional = dialog.showAndWait();
-            if(strategyOptional.isPresent() && Dialogs.confirmar("Esta seguro que quiere guardar esta estrategia de rotacion?")){
+            if(strategyOptional.isPresent() && Dialogs.confirmar(I18nManager.get("ConfirmarEstrategiaRotacion"))){
                 partidaService.modificarCheckpointStrategy(partida, strategyOptional.get());
                 return;
             }

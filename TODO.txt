@@ -2,4 +2,3 @@
 Cosas para hacer:
 
 - Permitir Transmitir checkpoints por red
-- I18n

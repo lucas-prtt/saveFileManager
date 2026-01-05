@@ -12,6 +12,7 @@ import servicios.ArchivoService;
 import servicios.JuegosService;
 import servicios.PartidaService;
 import ui.MainController;
+import utils.I18nManager;
 import utils.JpaUtil;
 
 import java.nio.file.Paths;
@@ -55,6 +56,7 @@ public class ApplicationContext {
 
         mainController = new MainController(juegosService, partidaService, checkpointService, directorySecurity);
         GlobalErrorHandler.init(mainController);
+        I18nManager.loadConfig();
         JpaUtil.em();
     }
 

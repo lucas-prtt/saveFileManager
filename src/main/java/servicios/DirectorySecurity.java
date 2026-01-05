@@ -3,6 +3,7 @@ package servicios;
 import lombok.Getter;
 import lombok.Setter;
 import tools.jackson.databind.ObjectMapper;
+import utils.I18nManager;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -95,7 +96,7 @@ public class DirectorySecurity {
             }
         }
         if(!isValid(ruta.toAbsolutePath().normalize()))
-            throw new RuntimeException("Se intento acceder a un directorio no permitido: " + ruta);
+            throw new RuntimeException(I18nManager.get("IntentoAccederADirectorioProhibido", ruta));
     }
 
     private void loadConfig() {
@@ -141,7 +142,7 @@ public class DirectorySecurity {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(configFile.toFile(), data);
             System.out.println("Config guardada en " + configFile.toAbsolutePath().toString());
         } catch (IOException e) {
-            throw new RuntimeException("Error guardando configuración de directorios", e);
+            throw new RuntimeException(I18nManager.get("ErrorGuardandoConfiguracionDeDirectorios", e.getMessage()), e);
         }
     }
     private void configurarPorDefecto(){
